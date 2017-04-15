@@ -9,7 +9,7 @@ resume: I'm Michal Dyzma, a data scientist from Poland. I enjoy building beautif
 Story and experience
 ====================
 
-I'm Michal Dyzma and I like to consider myslef a data scientist. Science is my passion. I graduated University of Lodz holding two M.Sc in my hand one in **Genetics** and one in **Neurobiology**. I was facinated how brain and basic blocks of our structure can influence each other. 
+I'm Michal Dyzma and I like to consider myslef a data scientist. Science is my passion. I graduated University of Lodz holding two M.Sc in my hands: one in **Genetics** and one in **Neurobiology**. I was facinated how brain and basic blocks of our structure can influence each other. 
 
 Experimental research
 ---------------------
@@ -28,9 +28,9 @@ Corporate experience
 
 In 2015, [**GMV Aerospace**][gmv] hired me and I had the chance to work in very exciting and promising field - space projects. I maintained and developed software for ESA data processing centers.
 
-I'm currently living in Warsaw, Poland and working in [**GMV Aerospace**][gmv], developing softwre responsible for data processing from several satelites launched as a part of Living Planet Programm, a Euoropean Space Agency initiative dedicated to observe Earth from space and provide research data about Earth's atmosphere, magnetic field and photosythesis on the surface of the planet. Please visit [**Living Planet**][living-planet] for details.
+I'm currently living in Warsaw, Poland and working in [**GMV Aerospace**][gmv], developing software responsible for data processing from several satelites launched as a part of Living Planet Programm. It is a Euoropean Space Agency initiative dedicated to observe Earth from space and provide research data about Earth's atmosphere, magnetic field, photosythesis and many more aspects of the planet's status. Please visit [**Living Planet**][living-planet] for details.
 
-Here I am. Scientific background, author of many peer reviewed papers on biology, mathematical mmodels and bioinformatics with corporate, large software house, experience in one. 
+Here I am. Scientific background, author of many peer reviewed papers on biology, mathematical modelling and bioinformatics combined with corporate, large software house, experience in one. 
 
 From time to time I write stuff on [Twitter][tw] and throw some code on [GitHub][gh].
 
