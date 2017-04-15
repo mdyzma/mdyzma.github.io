@@ -3,6 +3,7 @@ layout: post
 author: Michal Dyzma
 title:  "Python, R and Julia in one notebook!"
 date:   2017-04-14 14:51:25 +0200
+comments: true
 categories: python R julia jupyter
 keywords: python, R, Julia, jupyter notebook
 ---
