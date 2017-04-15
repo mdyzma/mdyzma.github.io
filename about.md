@@ -1,7 +1,7 @@
 ---
 layout: default
 title:  About
-type: about
+permalink: /about/
 resume: I'm Michal Dyzma, a data scientist from Poland. I enjoy building beautiful projects for science. Biology is my love, Data Science is my choice, Software Development is my way to combine them together.
 ---
 
@@ -20,8 +20,8 @@ After spending some time working on experimental side of the field (Devnertox, S
 
 After my advanture with mathematical modelling I started to develop software using it. I have done some  protein-RNA docking during my post-doc training in one of the best labs in Europe [**IIMCB Laboratory of Bioinformatics and Protein Engineering**][bujnicki-lab] in Warsaw. Over there I got familiar with python and theoretical research on nucleic acids and proteins. 
 
-Corporate expeience
--------------------
+Corporate experience
+--------------------
 
 That same year, [**GMV Aerospace**][gmv] hired me and I had the chance to work in very exciting and promising field - space projects. I maintained and developed software for ESA data processing centers.
 
