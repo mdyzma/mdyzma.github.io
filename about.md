@@ -13,7 +13,7 @@ I'm Michal Dyzma and I like to consider myslef a data scientist. Science is my p
 
 Experimental research
 ---------------------
-After graduation I began very humbly as a Lab technitian in Occupational Medicine Institute, conducting behavioral and lab experiments for large EU project **Devnertox**. 
+After graduation I began very humbly as a Lab technician in Occupational Medicine Institute, conducting behavioral and lab experiments for large EU project **Devnertox**. 
 
 In 2006 I was granted Marie Curie Felowship and left Poland to do experimental work in very prestigious and very inteeresting topic - Effects of sleep restriction on human health. Project was realised in Andre Vesale Hospital near Brussels. In Vesale I was amazed by posibilities of the software clasifying human brain waives. It was my first, but not last, contact with Matlab.
 
