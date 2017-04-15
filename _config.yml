@@ -24,7 +24,7 @@ github_username:  mdyzma
 
 # Build settings
 markdown: kramdown
-theme: jekyll-whiteglass
+
 gems:
   - jekyll-archives
   - jekyll-paginate
