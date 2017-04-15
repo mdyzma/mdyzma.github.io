@@ -13,11 +13,13 @@ I'm Michal Dyzma and I like to consider myslef a data scientist. Science is my p
 
 Experimental research
 ---------------------
-After graduation I began very humbly as a Lab technitian in Occupational Medicine Institute. Conducting behavioral and lab experiments for large EU project **Devnertox**. In 2006 I was granted Marie Curie Felowship and left Poland to do experimental work in very prestigious and very inteeresting topic - Effects of sleep restriction on human health. Project was realised in Andre Vesale Hospital near Brussels. In Vesale I was amazed by posibilities of the software clasifying human brain waives. It was my first, but not last contact with Matlab.
+After graduation I began very humbly as a Lab technitian in Occupational Medicine Institute, conducting behavioral and lab experiments for large EU project **Devnertox**. 
+
+In 2006 I was granted Marie Curie Felowship and left Poland to do experimental work in very prestigious and very inteeresting topic - Effects of sleep restriction on human health. Project was realised in Andre Vesale Hospital near Brussels. In Vesale I was amazed by posibilities of the software clasifying human brain waives. It was my first, but not last, contact with Matlab.
 
 Theoretical research
 --------------------
-After spending some time working on experimental side of the field (Devnertox, Sleep) I decided to go theoretical. As a result I defended PhD thesis in 2016, which expanded currently used mathematical models of the calcium dynamics in the eukaryotic cells. Adding microdomains to the equation and tracing calcium concentration in different cell compartments I was able to recreate initial steps of apoptosis, which is a process leading to the cells death. Numerical analysis of the model was done in Matlab. [**PhD Thesis (in Polish)**][phd-thesis]. 
+After spending some time working on experimental side of the field (Devnertox, Sleep) I decided to do theoretical stuff. As a result, in 2016, I defended PhD thesis, which expanded currently used mathematical models of the calcium dynamics in the eukaryotic cells. Adding microdomains to the equation and tracing calcium concentration in different cell compartments allowed to recreate initial steps of apoptosis. A process leading to the controlled cells death. Numerical analysis of the model was done in Matlab. [**PhD Thesis (in Polish)**][phd-thesis]. 
 
 After my advanture with mathematical modelling I started to develop "real software". I have done some  protein-RNA docking during my post-doc training in one of the best labs in Europe [**IIMCB Laboratory of Bioinformatics and Protein Engineering**][bujnicki-lab] in Warsaw. Over there I got familiar with python and theoretical research on nucleic acids and proteins. 
 
