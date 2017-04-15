@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "Welcome to my Blog!"
-date:   2017-04-13 21:23:35 +0200
-categories: jekyll update
+title:  "Python, R and Julia in one notebook!"
+date:   2017-04-14 14:51:25 +0200
+categories: python R julia jupyter
 ---
 You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
 
@@ -10,10 +10,10 @@ To add new posts, simply add a file in the `_posts` directory that follows the c
 
 Jekyll also offers powerful support for code snippets:
 
-{% highlight ruby %}
+{% highlight python %}
 def print_hi(name)
-  puts "Hi, #{name}"
-end
+  print("Hi, {0}".format(name))
+
 print_hi('Tom')
 #=> prints 'Hi, Tom' to STDOUT.
 {% endhighlight %}

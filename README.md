@@ -1,1 +1,0 @@
-# mdyzma.github.io
