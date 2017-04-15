@@ -42,3 +42,7 @@ jekyll-archives:
   layout: category_archives
   permalinks:
     category: /categories/:name/
+
+google_analytics: 'UA-97434888-1'
+google_adsense: "ca-pub-4566255347044004"
+disqus: 'Michal Dyzma'
