@@ -18,7 +18,7 @@ email: mdyzma@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
   Blog dedicated to promote python/R/Julia as "core data science" tools.
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+url: "http://mdyzma.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 
 # Build settings
 markdown: kramdown
@@ -34,7 +34,7 @@ exclude:
   - Gemfile.lock
 permalink: /:year/:month/:day/:title/
 paginate_path: /posts/:num/
-paginate: 25
+paginate: 5
 
 jekyll-archives:
   enabled:
@@ -54,9 +54,9 @@ twitter:
   username: MichalDyzma
 
 facebook:
- app_id: 1234
- publisher: 1234
- admins: 1234
+ app_id: 422251294815916
+ publisher: mdyzma
+ admins: mdyzma
 
 logo: /assets/md-logo.png
 
@@ -69,3 +69,11 @@ social:
     - https://plus.google.com/+BenBalter
     - https://github.com/benbalter
     - https://keybase.io/benbalter
+
+
+# share buttons
+twitter_username:     MichalDyzma
+github_username:      mdyzma
+linkedin_username:    MichalDyzma
+google_plus_username: mdyzma
+facebook_username:    michal.dyzma
