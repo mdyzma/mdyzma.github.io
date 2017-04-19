@@ -1,0 +1,11 @@
+# Default post template
+---
+layout: post
+author: Michal Dyzma
+title: default-post
+subtitle: subtitle-of-the-post
+date: 
+comments: true
+categories: python R julia jupyter
+keywords:   python, R, Julia, jupyter notebook
+---
