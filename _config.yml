@@ -16,11 +16,9 @@
 title: Consider Python
 email: mdyzma@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
-
+  Blog dedicated to promote python/R/Julia as "core data science" tools.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: MichalDyzma
-github_username:  mdyzma
 
 # Build settings
 markdown: kramdown
@@ -29,6 +27,8 @@ gems:
   - jekyll-archives
   - jekyll-paginate
   - jekyll-sitemap
+  - jekyll-seo-tag
+
 exclude:
   - Gemfile
   - Gemfile.lock
@@ -47,3 +47,25 @@ google_analytics: "UA-97434888-1"
 google_adsense: "ca-pub-4566255347044004"
 comments: true
 disqus: "md-blog"
+
+
+#SEO metadata
+twitter:
+  username: MichalDyzma
+
+facebook:
+ app_id: 1234
+ publisher: 1234
+ admins: 1234
+
+logo: /assets/md-logo.png
+
+social:
+  name: Michal Dyzma
+  links:
+    - https://twitter.com/MichalDyzma
+    - https://www.facebook.com/michal.dyzma
+    - https://www.linkedin.com/in/MichalDyzma
+    - https://plus.google.com/+BenBalter
+    - https://github.com/benbalter
+    - https://keybase.io/benbalter
