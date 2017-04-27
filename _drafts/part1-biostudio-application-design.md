@@ -11,33 +11,35 @@ keywords:   biostudio, software-design, agile, python
 
 In __Part 1__ I will present process of application design. From collecting requirements to low level design describing specific algorithms and implementations. Final result should give something in form of _Software Design Document_  that can be easily transformed to professional SSD template which can be used for other projects.
 
-## Introduction
+## About project
 
-Series of articles explaining entire development process, including best practices and solutions used in corporate projects. From preparing  software specifications to fully functional software deployed to the PyPI repository. Final product will be GUI application for Protein Data Bank ```.pdb``` files editor, which carry information about molecule 3D structure.
+This is part of  what should develop to a series on _Biostudio_ - development of python app, including best practices and solutions used in corporate projects. From preparing  software specifications to fully functional software deployed to the PyPI repository. Final product will be GUI application for Protein Data Bank ```.pdb``` files editor, which carry information about molecule 3D structure.
+
+{% include note.html content="Python version 3 is used throughout this material." %} 
 
 -----
 _Series consists of:_
 
 * [Part 1: Application designs]({{site.url}}/2017/04/21/part1-biostudio-application-design/)
-* [Part 2: Setting up work environment]({{site.url}}/2017/04/13/part2-biostudio-setting-up-environment/)
-* [Part 3: Design implementation, TDD]({{site.url}}/2017/04/14/part3-biostudio-design-implementation-tdd/)
-* [Part 4: Design implementation, continue]({{site.url}}/2017/04/15/part4-biostudio-design-implementation-continue/)
+
+<!-- * [Part 2: Setting up work environment]({{site.url}}/2017/04/13/part2-biostudio-setting-up-environment/)
+* [Part 3: Test Driven Development]({{site.url}}/2017/04/14/part3-biostudio-design-implementation-tdd/)
+* [Part 4: Low Level Design implementation]({{site.url}}/2017/04/15/part4-biostudio-design-implementation-continue/)
 * [Part 5: Debugging and profiling]({{site.url}}/2017/04/16/part5-biostudio-debugging-and-profiling/)
 * [Part 6: Application deployment]({{site.url}}/2017/04/17/part6-biostudio-application-deployment/)
-* [Part 7: Application life cycle, issues, bugs, enhancements]({{site.url}}/2017/04/18/part7-biostudio-application-lifecycle/)
-* [Part 8: Code metrics - measuring code quality]({{site.url}}/2017/04/19/part8-biostudio-code-metrics/)
+* [Part 7: Application life cycle]({{site.url}}/2017/04/18/part7-biostudio-application-lifecycle/)
+* [Part 8: Code metrics]({{site.url}}/2017/04/19/part8-biostudio-code-metrics/) -->
 
 -----
 
-## 
+## Introduction
 
 Simple fact is that it is not important what kind of methodology you use, as long as it allows you to deliver high quality software at the end of each development cycle (on time and on budget). Most of the small open-source projects is born as an idea in the head of one person, without any design documentation, requirements, with rudimentary diagrams drawn on the piece of paper in the notebook. The only automated task used from day one is usually source code control. This works in the beginning of the project, when single person handles all the tasks. Unfortunately it fails miserably when project gains popularity or grows bigger and requires more team members, who's work must be coordinated.
 
-Maintaining project written by team of developers without any specs, design, common goal, and way of tracking progress is a horrible idea, and should not happen at all, ever! It can be easily avoided, just by following already tested solutions, which can give you some decent control over the project. If you run company and try to sell product It is a MUST, and allows to promise and provide software, that will satisfy your customer.
+Maintaining project written by team of developers without any specs, design, common goal, and automatic delivery is a horrible idea, and should not happen at all, ever! It can be easily avoided, just by following already tested solutions, which can give you some decent control over the project. If you run company and try to sell product It is a MUST, and allows to promise and provide software, that will satisfy your customer.
 
-In corporate projects one of the most important part of the project is : DOCUMENTATION. From the very beginning i.e software specification, to the final version of user's manual. Documentation must be maintained and updated. Period.
-
-Writing documentation is always a good idea, but because it is very ungrateful task, usually is left in TODO's for better times. Therefore one should try to write self-documenting code and keep specific branch in your delivery pipeline devoted to proper documentation production, which will alway kee. We will deal with this problem in Part 2. In this article we will prepare __Software Design Document__ for our project I called biostudio.
+In corporate projects one of the most important part of the project is : DOCUMENTATION. From the very beginning i.e software specification, to the final version of user's manual. Documentation must be maintained and updated. Period. Because it is time-consuming, dull and requires collaboration between many team members, writing documentation/comments is usually assigned to the new team members as a part of _getting familiar with the project_. It is a mistake in my humble opinion Due to this reasons documentation is generally incomplete
+or out-of-date at any given time. There is one solution - writing documentation must be automatic process, triggered by code staging or release. Therefore one should try to write self-documenting code and keep specific branch in your delivery pipeline devoted to proper documentation production, which will guarantee that your documentation reflects at least comments in your code. We will deal with this problem in Part 2. In this article we will prepare __Software Design Document__ for our project I called biostudio.
 
 <!-- 
 
@@ -190,7 +192,7 @@ The clean blog template include the blog name in every post title, which is bad 
 {% endraw %}
 {% endhighlight %}
 
-To continue, go to:
+To continue check:
 
 [Part 2: Setting up work environment]({{ site.url }}/2017/04/13/part2-biostudio-setting-up-environment/) 
 
