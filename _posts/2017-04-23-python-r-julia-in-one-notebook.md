@@ -11,19 +11,23 @@ keywords:   python, R, Julia, jupyter notebook, data science
 It is hard to choose "right" language for data analysis, especially if you are beginner and do not want to go into details about strengths and weaknesses of particular solutions. Should I choose R or python (2 or 3), maybe Julia would be better?  What should I use? My answer is: use all of them! Take the best you can from each language and make it work. This post will show you how.
 
 
-How to create versatile environment, in which different languages are available without changing program you work with and data may be passed between specific structures characteristic for specified languages? This post will show you how to do it with three most powerful languages used in Data Science: __Python__, __R__ and __Julia__.
+How to create versatile environment, in which different languages are available without changing program you work with and data may be passed between specific structures characteristic for specified languages? This post will show you how to do it with three most powerful languages used in Data Science: __Python__, __R__, __Scala__ and __Julia__.
 
 For demonstration I have chosen current versions of:
 
 | Language              | | Version    |
 |------------           | |---------   |
-| [python 2][python2]    | | __2.7.13__ |
-| [python 3][python3]    | | __3.6.1__  |
+| [python 2][python2]   | | __2.7.13__ |
+| [python 3][python3]   | | __3.6.1__  |
 | [R][rlang]            | | __3.4.0__  |
-| [Scala][scala]        | | __
+| [Scala][scala]        | | __2.12.2__ |
 | [Julia][julia]        | | __0.5.1__  |
 
-## Four horsmen of data science?
+## Four horsmen of data science...
+And I saw when the Lamb opened one of the seals, and I heard, as it were the noise of thunder, one of the four beasts saying, Come and see.
+And I saw, and behold a white horse
+
+<iframe width="420" height="315" src="https://www.youtube.com/watch?v=aJ5uRxWCb2g" frameborder="0" allowfullscreen></iframe>
 
 Python and R are well known in data science. They've been competeing with each other for decades. Both languages have  There has been 
 
