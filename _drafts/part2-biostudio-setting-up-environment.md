@@ -31,7 +31,8 @@ _Series consists of:_
 -----
 https://tech.knewton.com/blog/2015/09/best-practices-for-python-dependency-management/
 https://jpetazzo.github.io/2013/12/01/docker-python-pip-requirements/
-
+https://github.com/pybuilder/pybuilder
+https://www.blazemeter.com/blog/jenkins-vs-other-open-source-continuous-integration-servers
 # Automatic start
 
 

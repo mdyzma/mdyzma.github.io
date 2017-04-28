@@ -1,18 +1,18 @@
 ---
 layout:     post
 author:     Michal Dyzma
-title:      Work with data in Python's Jupyter Notebook
+title:      Jupyter Notebook - python based lab book
 date:       2017-04-14 17:28:54 +0200
 comments:   true
-categories: data python-for-biologists jupyter notebook
-keywords:   data, python, HDF5, netCDF, jupyter notebook
+categories: python jupyter notebook data
+keywords:   python, jupyter notebook, data
 ---
 
 
-Data analysis using python's Jupyter Notebook. I will mention biology and focus on work with data specific for biology, but  all the principles and tools described here may be applied in other projects and disciplines.
+Data analysis using Jupyter Notebook. I will mention biology and focus on work with data specific for biology, but  all the principles and tools described here may be applied in other projects and disciplines.
 
 
-## Basic data workflow
+## Data analysis
 
 Roger D. Peng in his book [_"The Art of Data Science"_](https://leanpub.com/artofdatascience) distinguished five core activities in data analysis:
 
@@ -22,7 +22,7 @@ Roger D. Peng in his book [_"The Art of Data Science"_](https://leanpub.com/arto
 4. Interpreting the results
 5. Communicating the results
 
-All these activities may be successfully performed using python ecosystem. No doubt python has one of the best communities, active and contributing frequently with quality packages. I would risk statement, that python's community is even better, than R's, but I do not want to provoke yet another flame war about 
+All these activities may be successfully performed using python ecosystem. No doubt python has one of the best communities, active and contributing frequently with quality packages. I would risk statement, that python's community is even better, than R's, but I do not want to provoke another flame war.
 
 
 ## Data and biology
