@@ -27,8 +27,6 @@ For demonstration I have chosen current versions of:
 And I saw when the Lamb opened one of the seals, and I heard, as it were the noise of thunder, one of the four beasts saying, Come and see.
 And I saw, and behold a white horse
 
-<iframe width="420" height="315" src="https://www.youtube.com/watch?v=aJ5uRxWCb2g" frameborder="0" allowfullscreen></iframe>
-
 Python and R are well known in data science. They've been competeing with each other for decades. Both languages have  There has been 
 
 
