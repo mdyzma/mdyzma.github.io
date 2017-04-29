@@ -15,8 +15,12 @@ This repo contains example blog generated with [jekyll](https://jekyllrb.com).
 
 ![blog][screen]
 
-[screen]: /assets/screen.png
+Share buttons and disqus:
 
+![features][screen2]
+
+[screen]: /assets/screen.png
+[screen2]: /assets/screen2.png
 
 ## Install
 
