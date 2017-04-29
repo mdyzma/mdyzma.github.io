@@ -40,7 +40,7 @@ From time to time I write stuff on [Twitter][tw] and throw some code on [GitHub]
 
 [tw]: https://twitter.com/MichalDyzma
 [gh]: https://github.com/mdyzma
-[phd-thesis]: https://github.com/mdyzma/phd_thesis/
+[phd-thesis]: https://github.com/mdyzma/phd_thesis/blob/master/thesis.pdf
 [living-planet]: http://www.esa.int/Our_Activities/Observing_the_Earth/The_Living_Planet_Programme
 
 [bujnicki-lab]: http://genesilico.pl
