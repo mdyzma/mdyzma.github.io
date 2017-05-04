@@ -4,8 +4,8 @@ author:     Michal Dyzma
 title:      Deploying jupyter dashboard app on Heroku
 date:       2017-03-22 01:15:08
 comments:   true
-categories: python devops heroku jupyter
-keywords:   python, devops, heroku, jupyter
+categories: python devops heroku jupyter-notebook
+keywords:   python, devops, heroku, jupyter notebook
 ---
 
 

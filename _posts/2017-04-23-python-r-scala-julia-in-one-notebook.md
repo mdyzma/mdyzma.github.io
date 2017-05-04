@@ -4,11 +4,11 @@ author:     Michal Dyzma
 title:      "Python, R, Scala and Julia in one Notebook"
 date:       2017-04-23 14:51:25 +0200
 comments:   true
-categories: python R julia jupyter
-keywords:   python, R, Julia, jupyter notebook, data science
+categories: python R Scala Julia jupyter-notebook
+keywords:   python, R, Scala, Julia, jupyter notebook, data science
 ---
 
-It is hard to choose "right" language for data analysis, especially if you are beginner and do not want to go into details about strengths and weaknesses of particular solutions. Should I choose R or python (2 or 3), maybe Julia would be better?  What should I use? My answer is: use all of them! Take the best you can from each language and make it work. This post will show you how.
+It is hard to choose "right" language for data analysis, especially if you are beginner and do not want to go into details about strengths and weaknesses of particular solutions. Should I choose R or python (2 or 3), maybe Julia would be better?  What should I use to work with large data set? My answer is: use what you can! Take the best you can from several languages and make it work. This post will show you how.
 
 
 How to create versatile environment, in which different languages are available without changing program you work with and data may be passed between specific structures characteristic for specified languages? This post will show you how to do it with three most powerful languages used in Data Science: __Python__, __R__, __Scala__ and __Julia__.
@@ -23,11 +23,24 @@ For demonstration I have chosen current versions of:
 | [Scala][scala]        | | __2.12.2__ |
 | [Julia][julia]        | | __0.5.1__  |
 
-## Four horsmen of data science...
+## Four horsemen of data science...
+
+
+Procedura:
+1.1  install anaconda3
+1.2 install python 2 in env
+2.1 install R z condy
+2.2 install R z RSTUDIO
+3.1 Install Scala language or sbt
+3.2 install iscala
+4.1 Install Julia language
+4.2 install ijulia
+
+
 And I saw when the Lamb opened one of the seals, and I heard, as it were the noise of thunder, one of the four beasts saying, Come and see.
 And I saw, and behold a white horse
 
-Python and R are well known in data science. They've been competeing with each other for decades. Both languages have  There has been 
+Python and R are well known in data science. They've been competing with each other for decades. Both languages have  There has been 
 
 
 ## Kernels installation
@@ -42,7 +55,52 @@ I strongly recommended to use [Anaconda distribution][anaconda], which will inst
 
 In many Linux distributions python 3.x is accessible by using `python3` command, but it cumbersome to manage both python versions and calls to them from the system level. There is much easier way to manage python instances and it is called __virtual environments__.
 
-### Installing additional ipykernel
+{% highlight Bash %}
+conda create -n python2 python=2.7 ipykernel
+Fetching package metadata .............
+Solving package specifications: .
+
+Package plan for installation in environment C:\Users\admin\Anaconda3\envs\python2:
+
+The following NEW packages will be INSTALLED:
+
+    backports:           1.0-py27_0
+    backports_abc:       0.5-py27_0
+    colorama:            0.3.7-py27_0
+    decorator:           4.0.11-py27_0
+    enum34:              1.1.6-py27_0
+    get_terminal_size:   1.0.0-py27_0
+    ipykernel:           4.6.1-py27_0
+    ipython:             5.3.0-py27_0
+    ipython_genutils:    0.2.0-py27_0
+    jupyter_client:      5.0.1-py27_0
+    jupyter_core:        4.3.0-py27_0
+    path.py:             10.3.1-py27_0
+    pathlib2:            2.2.1-py27_0
+    pickleshare:         0.7.4-py27_0
+    pip:                 9.0.1-py27_1
+    prompt_toolkit:      1.0.14-py27_0
+    pygments:            2.2.0-py27_0
+    python:              2.7.13-0
+    python-dateutil:     2.6.0-py27_0
+    pyzmq:               16.0.2-py27_0
+    scandir:             1.5-py27_0
+    setuptools:          27.2.0-py27_1
+    simplegeneric:       0.8.1-py27_1
+    singledispatch:      3.4.0.3-py27_0
+    six:                 1.10.0-py27_0
+    ssl_match_hostname:  3.4.0.2-py27_1
+    tornado:             4.5.1-py27_0
+    traitlets:           4.3.2-py27_0
+    vs2008_runtime:      9.00.30729.5054-0
+    wcwidth:             0.1.7-py27_0
+    wheel:               0.29.0-py27_0
+    win_unicode_console: 0.5-py27_0
+
+Proceed ([y]/n)?
+{% endhighlight %}
+
+### Installing additional Ipykernel
 
 
 So, depending on which Anaconda version you had to compose new environment with additional python interpreter. To check conda versionfirst and which , you have to either install 
@@ -67,7 +125,7 @@ Simple and efficient. If you want to go hard way check next section.
 We will soon submit the IRkernel package to CRAN. Until then, you can install it via the devtools package:
 
 {% highlight R %}
-install.packages(c('repr', 'IRdisplay', 'crayon', 'pbdZMQ', 'devtools'))
+install.packages(c('repr', 'IRdisplay', 'crayon', 'pbdZMQ', 'devtools', 'stringr'))
 devtools::install_github('IRkernel/IRkernel')
 IRkernel::installspec()  # to register the kernel in the current R installation
 {% endhighlight %}
@@ -75,6 +133,10 @@ IRkernel::installspec()  # to register the kernel in the current R installation
 #### iScala kernel
 
 https://datasciencevademecum.wordpress.com/2016/01/28/6-points-to-compare-python-and-scala-for-data-science-using-apache-spark/
+
+Scala programs compile to JVM bytecodes. Their
+run-time performance is usually on par with Java programs. Scala code can
+call Java methods, access Java fields, inherit from Java classes, and implement Java interfaces. 
 
 ### Installing IJulia kernel
 
@@ -163,3 +225,4 @@ print_hi('Tom')
 [jupyterlab]: https://github.com/jupyterlab/jupyterlab  
 [pep373]:     https://www.python.org/dev/peps/pep-0373/
 [miniconda]:  https://conda.io/miniconda.html
+

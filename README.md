@@ -26,11 +26,15 @@ Share buttons and disqus:
 
 Clone repository. You must have ruby and bundle gem installed.
 
-``` gem install bundle```
+```
+gem install bundle
+```
 
 Go to the blog directory and run:
 
-```bundle install```
+```
+bundle install
+```
 
 This should acquire and install all necessary gems. To preview blog locally type:
 
@@ -64,6 +68,6 @@ Information is available in your app dashboard in Settings tab.
 
 ### Disqus integration
 
-Create account in discus and get you disqus short name. Change `_config.yml` variable `disqus` for your own. 
+Create account in Discus service and get you disqus short name. Change `_config.yml` variable `disqus` for your own. 
 
 Please note, that disqus does not allow to change your short name. It is part of the unique link associated with the site presenting comments on your blog. Pick it with consideration. 

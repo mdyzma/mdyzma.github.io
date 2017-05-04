@@ -4,8 +4,8 @@ author:     Michal Dyzma
 title:      Jupyter notebook dashboard
 date:       2017-03-20 01:15:08
 comments:   true
-categories: python jupyter notebook
-keywords:   python, jupyter, notebook
+categories: python jupyter-notebook
+keywords:   python, jupyter notebook
 ---
 
 

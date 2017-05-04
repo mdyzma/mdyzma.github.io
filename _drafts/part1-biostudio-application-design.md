@@ -15,7 +15,7 @@ In __Part 1__ I will present process of application design. From collecting requ
 
 This is part of  what should develop to a series on _Biostudio_ - development of python app, including best practices and solutions used in corporate projects. From preparing  software specifications to fully functional software deployed to the PyPI repository. Final product will be GUI application for Protein Data Bank ```.pdb``` files editor, which carry information about molecule 3D structure.
 
-{% include note.html content="Python version 3 is used throughout this material." %} 
+<!-- {% include note.html content="Python version 3 is used throughout this material." %}  -->
 
 -----
 _Series consists of:_
@@ -60,6 +60,20 @@ I will do my best to follow good practices and guidelines in order to prepare be
 Employed technologies will also help to automate some management tasks like overall progress tracking, single tasks progress tracking, code metrics and end users feedback/bugs tracking.
 
 Since it is agile methodology, each iteration will result in deploying new version of functional software, which should meet client criteria.
+
+ To choose a technology platform and testing tools.
+• To set up a simple, automated build.
+• To work out stories that follow the INVEST principles [ddVMFH] (they
+should be Independent, Negotiable, Valuable, Estimable, Small, and
+Testable), with acceptance criteria.
+You can then implement a strict process:
+• Customers, analysts, and testers define acceptance criteria.
+• Testers work with developers to automate acceptance tests based on the
+acceptance criteria.
+• Developers code behavior to fulfill the acceptance criteria.
+• If any automated tests fail (whether unit, component, or acceptance tests),
+developers make it a priority to fix them
+
 
 ## Initial requirements
 

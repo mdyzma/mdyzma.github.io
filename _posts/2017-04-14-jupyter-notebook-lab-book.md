@@ -4,10 +4,9 @@ author:     Michal Dyzma
 title:      Jupyter Notebook - python based lab book
 date:       2017-04-14 17:28:54 +0200
 comments:   true
-categories: python jupyter notebook data
+categories: python jupyter-notebook data
 keywords:   python, jupyter notebook, data
 ---
-
 
 Data analysis using Jupyter Notebook. I will mention biology and focus on work with data specific for biology, but  all the principles and tools described here may be applied in other projects and disciplines.
 
@@ -50,7 +49,7 @@ How do we start working with python? In the beginning it good to see what you co
 
 ## Jupyter notebook / Jupyter Lab 
 
-To start the notebook simply type ```jupyer notebook ``` in your cmd or terminal. 
+To start the notebook simply type `jupyter notebook` in your command line or terminal. 
 
 Alternatively you may add path to the existing jupyter notebook file with `.ipybn` extension
 
