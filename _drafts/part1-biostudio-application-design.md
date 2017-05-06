@@ -32,6 +32,8 @@ _Series consists of:_
 
 -----
 
+{% include note.html content="PYTHON 3!" %}
+
 ## Introduction
 
 Simple fact is that it is not important what kind of methodology you use, as long as it allows you to deliver high quality software at the end of each development cycle (on time and on budget). Most of the small open-source projects is born as an idea in the head of one person, without any design documentation, requirements, with rudimentary diagrams drawn on the piece of paper in the notebook. The only automated task used from day one is usually source code control. This works in the beginning of the project, when single person handles all the tasks. Unfortunately it fails miserably when project gains popularity or grows bigger and requires more team members, who's work must be coordinated.

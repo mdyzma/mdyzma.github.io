@@ -6,14 +6,20 @@ date:       2017-04-23 14:51:25 +0200
 comments:   true
 categories: python R Scala Julia jupyter-notebook
 keywords:   python, R, Scala, Julia, jupyter notebook, data science
+tabs:       [Python 2, Python 3, R, Scala, Julia]
 ---
 
-It is hard to choose "right" language for data analysis, especially if you are beginner and do not want to go into details about strengths and weaknesses of particular solutions. Should I choose R or python (2 or 3), maybe Julia would be better?  What should I use to work with large data set? My answer is: use what you can! Take the best you can from several languages and make it work. This post will show you how.
+How to create versatile environment, in which different languages are available and able to communicate with each other? Without changing program you work with and where data may be passed between specific structures characteristic for specified languages? This post will show you how to do it with four most powerful languages used in Data Science: __Python__, __R__, __Scala__ and __Julia__.
 
 
-How to create versatile environment, in which different languages are available without changing program you work with and data may be passed between specific structures characteristic for specified languages? This post will show you how to do it with three most powerful languages used in Data Science: __Python__, __R__, __Scala__ and __Julia__.
+## Introduction
+
+It is hard to choose "right" language for data analysis, especially if you are beginner and do not want to go into details about strengths and weaknesses of particular solutions. Should I choose R or python (2 or 3), maybe Julia would be faster?  What should I use to work with large data sets? My answer is: use what you can! Take the best you can from several languages and make it work. This post will show you how.
+
+> Use what you can! Take the best you can!
 
 For demonstration I have chosen current versions of:
+
 
 | Language              | | Version    |
 |------------           | |---------   |
@@ -23,11 +29,15 @@ For demonstration I have chosen current versions of:
 | [Scala][scala]        | | __2.12.2__ |
 | [Julia][julia]        | | __0.5.1__  |
 
-## Four horsemen of data science...
 
+## Procedure
 
-Procedura:
-1.1  install anaconda3
+We will follow this procedure to prepare work environment:
+
+    1. install Python interpreter
+    2. install R language
+    3. install Scala and sbt
+    4. 
 1.2 install python 2 in env
 2.1 install R z condy
 2.2 install R z RSTUDIO
@@ -36,70 +46,54 @@ Procedura:
 4.1 Install Julia language
 4.2 install ijulia
 
+So our goal is to: install Python, Scala, Julia and R on our machine. Additionally to run notebooks in languages other than Python, such as R, Scala or Julia, we need to install specific middle-ware called kernels. 
 
-And I saw when the Lamb opened one of the seals, and I heard, as it were the noise of thunder, one of the four beasts saying, Come and see.
-And I saw, and behold a white horse
+First we shall grab necessary tools - compilers and interpreters for each language (linked in table above). All languages presented here are multi-platform and can be installed on Windows, Linux and OSX machines. 
 
-Python and R are well known in data science. They've been competing with each other for decades. Both languages have  There has been 
+## Python interpreter
 
+I assume you have basic knowledge of python flavors available today and their strengths and weaknesses. In this tutorial basic python is __python 3__ running on __fedora 25__ workstation. 
 
-## Kernels installation
+Moreover I have chosen specific distribution of python, prepared by Continuum Analytics called [Anaconda][anaconda]. It is the most comprehensive and free bundle of python software dedicated to do __Data Science__.
 
-So our goal is to install python, Julia and R on our machines. To run notebooks in languages other than Python, such as R or Julia, we need to install additional middle-ware called kernels. 
+<!-- {% include note.html content = "Python 3 only" %} -->
 
-First we shall grab necessary tools - compiler, interpreters for each language (linked in table above). All languages presented here are multi-platform and can be installed on Windows, Linux and OSX machines. You can find detailed instructions about [R](http://www.jason-french.com/blog/2013/03/11/installing-r-in-linux/) or [Julia](https://julialang.org/downloads/platform.html) in blog posts I found in the Internet. If it comes to python...
+I strongly recommended to use [Anaconda distribution][anaconda], which will install python interpreter, the Jupyter Notebook, and several other packages commonly used in data science. If you choose Anaconda 3, your interpreter will be of version 3.6 (current version) or higher. 
 
-> There is no excuse not to use Python 3. Grab it! Use it!
+Python branch 2.7.x is currently considered a legacy code and it's support will drop in 2020 (see: [PEP 373][pep373]). There will be no official bug fixes after that date. Additionally most of the currently used libraries are able to run on python 3. Unless you have some obscure dependency, there is no excuse not to use python 3. Python 2 is included here just for the sake of keeping backward compatibility with some old scripts,  and to demonstrate how to manage different python versions.
 
-I strongly recommended to use [Anaconda distribution][anaconda], which will install python interpreter, the Jupyter Notebook, and several other packages commonly used in data science. If you choose to install Anaconda 2, your default python interpreter will be 2.7.x, If you choose Anaconda 3, your interpreter will be of version 3.6 (current version) or higher. Python branch 2.x is currently considered a legacy code. You should definitely switch to Anaconda 3. First of all Python 2 support will drop in 2020 (according to [PEP 373][pep373]) and there will be no official bug fixes after that date. Second of all - most of the currently used libraries are able to use python 3. Unless you have some obscure dependency, there is no excuse not to use python 3. Python 2 is included here just for the sake of keeping backward compatibility with some old scripts, we may have.
+> There is no excuse not to use Python 3 anymore. Grab it! Use it!
 
 In many Linux distributions python 3.x is accessible by using `python3` command, but it cumbersome to manage both python versions and calls to them from the system level. There is much easier way to manage python instances and it is called __virtual environments__.
 
-{% highlight Bash %}
-conda create -n python2 python=2.7 ipykernel
-Fetching package metadata .............
-Solving package specifications: .
 
-Package plan for installation in environment C:\Users\admin\Anaconda3\envs\python2:
 
-The following NEW packages will be INSTALLED:
+Python 2 interpreter
 
-    backports:           1.0-py27_0
-    backports_abc:       0.5-py27_0
-    colorama:            0.3.7-py27_0
-    decorator:           4.0.11-py27_0
-    enum34:              1.1.6-py27_0
-    get_terminal_size:   1.0.0-py27_0
-    ipykernel:           4.6.1-py27_0
-    ipython:             5.3.0-py27_0
-    ipython_genutils:    0.2.0-py27_0
-    jupyter_client:      5.0.1-py27_0
-    jupyter_core:        4.3.0-py27_0
-    path.py:             10.3.1-py27_0
-    pathlib2:            2.2.1-py27_0
-    pickleshare:         0.7.4-py27_0
-    pip:                 9.0.1-py27_1
-    prompt_toolkit:      1.0.14-py27_0
-    pygments:            2.2.0-py27_0
-    python:              2.7.13-0
-    python-dateutil:     2.6.0-py27_0
-    pyzmq:               16.0.2-py27_0
-    scandir:             1.5-py27_0
-    setuptools:          27.2.0-py27_1
-    simplegeneric:       0.8.1-py27_1
-    singledispatch:      3.4.0.3-py27_0
-    six:                 1.10.0-py27_0
-    ssl_match_hostname:  3.4.0.2-py27_1
-    tornado:             4.5.1-py27_0
-    traitlets:           4.3.2-py27_0
-    vs2008_runtime:      9.00.30729.5054-0
-    wcwidth:             0.1.7-py27_0
-    wheel:               0.29.0-py27_0
-    win_unicode_console: 0.5-py27_0
+Python 3 interpreter
 
-Proceed ([y]/n)?
-{% endhighlight %}
+Scala / sbt
 
+R-lang
+
+Scala compiler
+
+
+You can find detailed instructions about [R](http://www.jason-french.com/blog/2013/03/11/installing-r-in-linux/) or [Julia](https://julialang.org/downloads/platform.html) in blog posts I found in the Internet. If it comes to python...
+
+
+
+
+
+
+{% for tab in site.tabs%}
+    {% capture {{tab}}_note %}The latest version of
+{{ site.product_name }} is now available.{% endcapture %}
+{%endfor%}
+
+{% include  tab.html %}
+
+## Kernels installation
 ### Installing additional Ipykernel
 
 
@@ -198,10 +192,6 @@ This question and answers often appear in discussions. So which one?
 There is no good answer to this questions. If you want do big things use all tools available. Use best tools possible. Nothing more, nothing less.
 
 If you struggle between using python or R, don't! Why not use both?! At the same time in the same notebook, passing data structures between languages and perform analysis with the best tools they can offer. With Jupyter notebook it is all possible. It is possible to add even more players to the game. Julia, Haskel, Lua, bash, Octave... Pick whatever you can... Currently Jupyter supports nearly 100 different kernels (check [here][kernels]).
-
-
-
-<!-- {:.mdtablestyle} -->
 
 
 

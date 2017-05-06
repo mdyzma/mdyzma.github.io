@@ -13,7 +13,7 @@ Data analysis using Jupyter Notebook. I will mention biology and focus on work w
 
 ## Data analysis
 
-Roger D. Peng in his book [_"The Art of Data Science"_](https://leanpub.com/artofdatascience) distinguished five core activities in data analysis:
+In [_"Practical Data Science Cookbook"_][data-science-cookbook] by Tony Ojeda authors distinguished five core activities in data analysis:
 
 1. Stating thesis
 2. Exploring the data
@@ -95,3 +95,4 @@ Cornerstones of any data science project. Basic pair if it comes to deal with da
 [Anaconda]: https://www.continuum.io/anaconda-overview
 [Canopy]: https://www.enthought.com/products/canopy/
 [Rodeo]: https://www.yhat.com/products/rodeo
+[data-science-cookbook]: https://www.packtpub.com/mapt/book/big_data_and_business_intelligence/9781783980246
