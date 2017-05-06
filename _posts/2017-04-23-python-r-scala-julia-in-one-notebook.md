@@ -6,7 +6,6 @@ date:       2017-04-23 14:51:25 +0200
 comments:   true
 categories: python R Scala Julia jupyter-notebook
 keywords:   python, R, Scala, Julia, jupyter notebook, data science
-tabs:       [Python 2, Python 3, R, Scala, Julia]
 ---
 
 How to create versatile environment, in which different languages are available and able to communicate with each other? Without changing program you work with and where data may be passed between specific structures characteristic for specified languages? This post will show you how to do it with four most powerful languages used in Data Science: __Python__, __R__, __Scala__ and __Julia__.
@@ -80,18 +79,6 @@ Scala compiler
 
 
 You can find detailed instructions about [R](http://www.jason-french.com/blog/2013/03/11/installing-r-in-linux/) or [Julia](https://julialang.org/downloads/platform.html) in blog posts I found in the Internet. If it comes to python...
-
-
-
-
-
-
-{% for tab in site.tabs%}
-    {% capture {{tab}}_note %}The latest version of
-{{ site.product_name }} is now available.{% endcapture %}
-{%endfor%}
-
-{% include  tab.html %}
 
 ## Kernels installation
 ### Installing additional Ipykernel
