@@ -1,0 +1,21 @@
+<div class="container"> 
+  <ul class="nav nav-tabs">
+  {% if page.tags %}
+  {% assign tabs = page.tabs %}
+  {% for tab in tabs %}
+    <li>
+      <a  href="#{{ tab }}" data-toggle="tab">{{ tab }}</a>
+    </li>
+  {% endfor %}
+  </ul>
+  
+
+  {% for tab in tabs %}
+    <div class="tab-content ">
+      <div class="tab-pane active" id="{{ tab }}">
+        `include.content-{{tab}}`
+      </div>
+    </div>
+  {% endfor %}
+  {% endif %}
+</div>
