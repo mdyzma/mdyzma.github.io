@@ -11,6 +11,8 @@ This repo contains example blog generated with [jekyll](https://jekyllrb.com).
 3. Google analytics, adwords integration
 4. sharing buttons for  social media
 5. disqus integration for each post
+6. bootstrap 3.3.7
+7. jquery 3.2.1
 
 
 ![blog][screen]
