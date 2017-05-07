@@ -53,7 +53,7 @@ To start the notebook simply type `jupyter notebook` in your command line or ter
 
 Alternatively you may add path to the existing jupyter notebook file with `.ipybn` extension
 
-``` jupyter notebook 
+``` jupyter notebook ```
 
 
 < -- link to python r julia in one notebook

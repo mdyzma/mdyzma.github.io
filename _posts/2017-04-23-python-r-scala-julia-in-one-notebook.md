@@ -8,7 +8,7 @@ categories: python R Scala Julia jupyter-notebook
 keywords:   python, R, Scala, Julia, jupyter notebook, data science
 ---
 
-How to create versatile environment, in which different languages are available and able to communicate with each other? Without changing program you work with and where data may be passed between specific structures characteristic for specified languages? This post will show you how to do it with four most powerful languages used in Data Science: __Python__, __R__, __Scala__ and __Julia__.
+How to create versatile environment, in which different languages are available and able to communicate with each other? Without changing program you work with and where data may be passed between specific structures characteristic for the language? This post will show you how to do it with four most powerful languages used in Data Science: __Python__, __R__, __Scala__ and __Julia__.
 
 
 ## Introduction
@@ -17,7 +17,7 @@ It is hard to choose "right" language for data analysis, especially if you are b
 
 > Use what you can! Take the best you can!
 
-For demonstration I have chosen current versions of:
+I have chosen four most powerfull languages used in Data Science and Big Data,which should give you broadest span of accessible technologies and speed of development of tools. My current versions of chosen software:
 
 
 | Language              | | Version    |
@@ -31,39 +31,40 @@ For demonstration I have chosen current versions of:
 
 ## Procedure
 
-We will follow this procedure to prepare work environment:
+I will follow this procedure to prepare work environment:
 
-    1. install Python interpreter
-    2. install R language
-    3. install Scala and sbt
-    4. 
-1.2 install python 2 in env
-2.1 install R z condy
-2.2 install R z RSTUDIO
-3.1 Install Scala language or sbt
-3.2 install iscala
-4.1 Install Julia language
-4.2 install ijulia
+1. installing Python interpreter
+2. installing R language
+3. installing Scala or sbt compiler
+4. installing Julia language compiler
+5. installing languages kernels:
+    * ipykernel
+    * IRkernel via `conda`
+    * IRkernel via `R`
+    * IScala
+    * IJulia
 
-So our goal is to: install Python, Scala, Julia and R on our machine. Additionally to run notebooks in languages other than Python, such as R, Scala or Julia, we need to install specific middle-ware called kernels. 
+So my goal is to install Python, Scala, Julia and R on working machine. Additionally to run notebooks in languages other than Python I need to install specific middle-ware called kernels. 
 
-First we shall grab necessary tools - compilers and interpreters for each language (linked in table above). All languages presented here are multi-platform and can be installed on Windows, Linux and OSX machines. 
+First let's grab necessary tools - compilers and interpreters for each language (linked in table above). All languages presented here are multi-platform and can be installed on Windows, Linux and Mac OS machines. Since my working system is Fedora 25 I will describe install procedures for this OS. Debian based Linux distributions do not differ much from Red Hat family (except using different package manager and repos). Windows versions have convinient installers and instalation process is trivial. I will place link to the windows installer in each section.
+
 
 ## Python interpreter
 
-I assume you have basic knowledge of python flavors available today and their strengths and weaknesses. In this tutorial basic python is __python 3__ running on __fedora 25__ workstation. 
-
-Moreover I have chosen specific distribution of python, prepared by Continuum Analytics called [Anaconda][anaconda]. It is the most comprehensive and free bundle of python software dedicated to do __Data Science__.
-
-<!-- {% include note.html content = "Python 3 only" %} -->
-
-I strongly recommended to use [Anaconda distribution][anaconda], which will install python interpreter, the Jupyter Notebook, and several other packages commonly used in data science. If you choose Anaconda 3, your interpreter will be of version 3.6 (current version) or higher. 
-
-Python branch 2.7.x is currently considered a legacy code and it's support will drop in 2020 (see: [PEP 373][pep373]). There will be no official bug fixes after that date. Additionally most of the currently used libraries are able to run on python 3. Unless you have some obscure dependency, there is no excuse not to use python 3. Python 2 is included here just for the sake of keeping backward compatibility with some old scripts,  and to demonstrate how to manage different python versions.
+In all Linux distributions python is avaliable "out of the box". Unfortunatelly in many cases default python is still 2.7 branch. Python 2.7.x is currently considered a legacy code and it's support will drop in 2020 (see: [PEP 373][pep373]). There will be no official bug fixes after that date. Additionally most of the currently used libraries are able to run on python 3. Unless you have some obscure dependency, there is no excuse not to use python 3. Python 2 is included here just for the sake of keeping backward compatibility with some old scripts,  and to demonstrate how to manage different python versions.
 
 > There is no excuse not to use Python 3 anymore. Grab it! Use it!
 
-In many Linux distributions python 3.x is accessible by using `python3` command, but it cumbersome to manage both python versions and calls to them from the system level. There is much easier way to manage python instances and it is called __virtual environments__.
+
+I assume you have basic knowledge of python flavors available today and their strengths and weaknesses. In this tutorial basic python is __python 3__ running on __fedora 25__ workstation. 
+
+Moreover I have chosen specific distribution of python, prepared by Continuum Analytics called Anaconda. It is the most comprehensive and free bundle of python software dedicated to do __Data Science__.
+
+<!-- {% include note.html content = "Python 3 only" %} -->
+
+I strongly recommended to use [Anaconda distribution][anaconda], which will install python interpreter, the Jupyter Notebook, and several other packages commonly used in data science and this tutorial. If you choose Anaconda 3, your interpreter will be of version 3.6 (current version) or higher (3.7 alpha is already avaliable). 
+
+In many Linux distributions python 3.x is accessible by using `python3` command, but it is cumbersome to manage both python versions and their dependencies by calling specific pip/pip3 or python/python3 from the system level. There isa lot of third party dependencies and environmental variabloes, that will not guarantie what version of python or library we are currently using. There is much easier way to manage python instances and it is called __virtual environments__. I will use built in conda environment manager, but there is also other popular pacage called `virtualenv` and `virtualenvwrapper`.
 
 
 
