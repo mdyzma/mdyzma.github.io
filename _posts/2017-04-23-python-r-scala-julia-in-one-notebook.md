@@ -17,7 +17,7 @@ It is hard to choose "right" language for data analysis, especially if you are b
 
 > Use what you can! Take the best you can!
 
-I have chosen four most powerfull languages used in Data Science and Big Data,which should give you broadest span of accessible technologies and speed of development of tools. My current versions of chosen software:
+I have chosen four most powerful languages used in Data Science and Big Data,which should give you broadest span of accessible technologies and speed of development of tools. My current versions of chosen software:
 
 
 | Language              | | Version    |
@@ -51,7 +51,7 @@ First let's grab necessary tools - compilers and interpreters for each language 
 
 ## Python interpreter
 
-In all Linux distributions python is avaliable "out of the box". Unfortunatelly in many cases default python is still 2.7 branch. Python 2.7.x is currently considered a legacy code and it's support will drop in 2020 (see: [PEP 373][pep373]). There will be no official bug fixes after that date. Additionally most of the currently used libraries are able to run on python 3. Unless you have some obscure dependency, there is no excuse not to use python 3. Python 2 is included here just for the sake of keeping backward compatibility with some old scripts,  and to demonstrate how to manage different python versions.
+In all Linux distributions python is available "out of the box". Unfortunately in many cases default python is still 2.7 branch. Python 2.7.x is currently considered a legacy code and it's support will drop in 2020 (see: [PEP 373][pep373]). There will be no official bug fixes after that date. Additionally most of the currently used libraries are able to run on python 3. Unless you have some obscure dependency, there is no excuse not to use python 3. Python 2 is included here just for the sake of keeping backward compatibility with some old scripts,  and to demonstrate how to manage different python versions.
 
 > There is no excuse not to use Python 3 anymore. Grab it! Use it!
 
