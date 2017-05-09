@@ -8,22 +8,22 @@ categories: python R Scala Julia jupyter-notebook
 keywords:   python, R, Scala, Julia, jupyter notebook, data science
 ---
 
-How to create versatile environment, in which different languages are available and able to communicate with each other? Without changing program you work with and where data may be passed between specific structures characteristic for the language? This post will show you how to do it with four most powerful languages used in Data Science: __Python__, __R__, __Scala__ and __Julia__.
+How to create versatile environment, in which different languages are available and able to communicate with each other? Without changing program you work in and where data may be passed between specific structures characteristic for the language? This post will show you how to do it with four most powerful languages used in Data Science: __Python__, __R__, __Scala__ and __Julia__.
 
 
 ## Introduction
 
-It is hard to choose "right" language for data analysis, especially if you are beginner and do not want to go into details about strengths and weaknesses of particular solutions. Should I choose R or python (2 or 3), maybe Julia would be faster?  What should I use to work with large data sets? My answer is: use what you can! Take the best you can from several languages and make it work. This post will show you how.
+It is hard to choose "right" language for data analysis, especially if you are beginner and do not want to go into details about strengths and weaknesses of particular solutions. Should I choose R or Python (2 or 3), maybe Julia would be faster?  What should I use to work with large data sets? My answer is: use what you can! Take the best you can from several languages and make it work. This post will show you how.
 
 > Use what you can! Take the best you can!
 
-I have chosen four most powerful languages used in Data Science and Big Data,which should give you broadest span of accessible technologies and speed of development of tools. My current versions of chosen software:
+I have chosen four most powerful languages used in Data Science and Big Data analysis, which should give you broadest span of accessible technologies and speed up development. My current versions of chosen software:
 
 
 | Language              | | Version    |
 |------------           | |---------   |
-| [python 2][python2]   | | __2.7.13__ |
-| [python 3][python3]   | | __3.6.1__  |
+| [Python 2][python2]   | | __2.7.13__ |
+| [Python 3][python3]   | | __3.6.1__  |
 | [R][rlang]            | | __3.4.0__  |
 | [Scala][scala]        | | __2.12.2__ |
 | [Julia][julia]        | | __0.5.1__  |
@@ -33,63 +33,168 @@ I have chosen four most powerful languages used in Data Science and Big Data,whi
 
 I will follow this procedure to prepare work environment:
 
-1. installing Python interpreter
-2. installing R language
-3. installing Scala or sbt compiler
-4. installing Julia language compiler
+1. [installing Python interpreter](#python_dist)
+2. [installing R language](#r_lang)
+3. [installing Scala or sbt compiler](#scala_compiler)
+4. [installing Julia language compiler](#julia_compiler)
 5. installing languages kernels:
-    * ipykernel
-    * IRkernel via `conda`
-    * IRkernel via `R`
-    * IScala
-    * IJulia
+    * [ipykernel]() - multiple Python support
+    * [IRkernel]() via conda - R language support
+    * [IRkernel]() via R
+    * [IScala]() - Scala support
+    * [IJulia]() - Julia REPL in notebook
 
 So my goal is to install Python, Scala, Julia and R on working machine. Additionally to run notebooks in languages other than Python I need to install specific middle-ware called kernels. 
 
-First let's grab necessary tools - compilers and interpreters for each language (linked in table above). All languages presented here are multi-platform and can be installed on Windows, Linux and Mac OS machines. Since my working system is Fedora 25 I will describe install procedures for this OS. Debian based Linux distributions do not differ much from Red Hat family (except using different package manager and repos). Windows versions have convinient installers and instalation process is trivial. I will place link to the windows installer in each section.
+First let's grab necessary tools - compilers and interpreters for each language (linked in table above). All languages presented here are multi-platform and can be installed on Windows, Linux and Mac OS machines. Since my working system is Fedora 25 I will describe install procedures for this OS. Debian based Linux distributions do not differ much from Red Hat family (except using different package manager and repos). Windows versions have convenient installers and installation process is trivial. If necessary, I will place link to the windows installer in each section.
 
+<a name="python_dist"></a>
 
 ## Python interpreter
 
-In all Linux distributions python is available "out of the box". Unfortunately in many cases default python is still 2.7 branch. Python 2.7.x is currently considered a legacy code and it's support will drop in 2020 (see: [PEP 373][pep373]). There will be no official bug fixes after that date. Additionally most of the currently used libraries are able to run on python 3. Unless you have some obscure dependency, there is no excuse not to use python 3. Python 2 is included here just for the sake of keeping backward compatibility with some old scripts,  and to demonstrate how to manage different python versions.
+In all Linux distributions Python is available "out of the box". Unfortunately in many cases default Python is still 2.7 branch. Is hould mention, that 2.7 is last supported branch from 2.x family and it's support will drop in 2020 (see: [PEP 373][pep373]). There will be no official bug fixes after that date. Additionally most of the currently used libraries are able to run at least on 3.5 branch. Unless you have some obscure dependency, there is no excuse not to use Python 3. Older version 2 is included here just for the sake of keeping backward compatibility with some old scripts,  and to demonstrate how to manage different Python versions in isolated environments.
 
 > There is no excuse not to use Python 3 anymore. Grab it! Use it!
 
 
-I assume you have basic knowledge of python flavors available today and their strengths and weaknesses. In this tutorial basic python is __python 3__ running on __fedora 25__ workstation. 
+I assume you have basic knowledge of Python flavors available today and their strengths and weaknesses. In this tutorial basic version is __Python 3__ running on __Fedora 25__ workstation. 
 
-Moreover I have chosen specific distribution of python, prepared by Continuum Analytics called Anaconda. It is the most comprehensive and free bundle of python software dedicated to do __Data Science__.
+Moreover I have chosen specific distribution of Python, prepared by Continuum Analytics called Anaconda. It is the most comprehensive and free bundle of Python software dedicated to do __Data Science__.
 
 <!-- {% include note.html content = "Python 3 only" %} -->
 
-I strongly recommended to use [Anaconda distribution][anaconda], which will install python interpreter, the Jupyter Notebook, and several other packages commonly used in data science and this tutorial. If you choose Anaconda 3, your interpreter will be of version 3.6 (current version) or higher (3.7 alpha is already avaliable). 
+I strongly recommended to use [Anaconda distribution][anaconda], which will install Python interpreter, the Jupyter Notebook, and several other packages commonly used in data science and this tutorial. If you choose Anaconda 3, your interpreter will be of version 3.6 (current version) or higher (3.7 alpha is already available). 
 
-In many Linux distributions python 3.x is accessible by using `python3` command, but it is cumbersome to manage both python versions and their dependencies by calling specific pip/pip3 or python/python3 from the system level. There isa lot of third party dependencies and environmental variabloes, that will not guarantie what version of python or library we are currently using. There is much easier way to manage python instances and it is called __virtual environments__. I will use built in conda environment manager, but there is also other popular pacage called `virtualenv` and `virtualenvwrapper`.
+I will just follow instructions from installation page and simply execute downloaded script:
+
+{% highlight bash %}
+[mdyzma@devbox home]$ wget https://repo.continuum.io/archive/Anaconda3-4.3.1-Linux-x86_64.sh
+--2017-04-23 19:36:37--  https://repo.continuum.io/archive/Anaconda3-4.3.1-Linux-x86_64.sh
+Resolving repo.continuum.io (repo.continuum.io)... 104.16.18.10, 104.16.19.10, 2400:cb00:2048:1::6810:130a, ...
+Connecting to repo.continuum.io (repo.continuum.io)|104.16.18.10|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 497343851 (474M) [application/x-sh]
+Saving to: 'Anaconda3-4.3.1-Linux-x86_64.sh'
+
+Anaconda3-4.3.1-Linux-x86_64.sh     100%[==========================================>] 474.30M  14.1MB/s in 34s
+
+2017-04-23 19:37:12 (13.8 MB/s) - 'Anaconda3-4.3.1-Linux-x86_64.sh' saved [497343851/497343851]
+{% endhighlight %}
 
 
+Script contains all binaries and weights nearly  475 MB. After executing, you should see Anaconda installer:
 
-Python 2 interpreter
 
-Python 3 interpreter
+{% highlight bash %}
+[mdyzma@devbox home]$ bash Anaconda3-4.3.1-Linux-x86_64.sh
 
-Scala / sbt
+Welcome to Anaconda3 4.3.1 (by Continuum Analytics, Inc.)
 
-R-lang
+In order to continue the installation process, please review the license
+agreement.
+Please, press ENTER to continue
+>>>
 
-Scala compiler
+{% endhighlight %}
+
+Automatic process will guide you through installation. You don't have to run installer as a root, unless you want it to be installed for all users. In that case you need sudo privilege to install it in some globally accessible location like `/opt/anaconda3` and append `/etc/profile` with the location of the interpreter `export PATH=/opt/Anaconda3/bin:$PATH`. This will make change system-wide. If you run it with normal user privileges it will choose your user's home directory and place in `/home/<user>/anaconda3`. Installer will install bunch of python packages including MKL optimizations (Math Kernel Library), numpy, pandas, matplotlib, scikit-learn and jupyter - just to name few. 
+
+
+{% highlight bash %}
+PREFIX=/home/mdyzma/anaconda3
+installing: python-3.6.0-0 ...
+
+Python 3.6.0 :: Continuum Analytics, Inc.
+creating default environment...
+installation finished.
+Do you wish the installer to prepend the Anaconda3 install location
+to PATH in your /home/mdyzma/.bashrc ? [yes|no]
+>>>yes
+
+Prepending PATH=/home/mdyzma/anaconda3/bin to PATH in /home/mdyzma/.bashrc
+{% endhighlight %}
+
+Answering `yes` will make Anaconda's python your default interpreter. Sometimes installer may be a little bit outdated. Restart terminal, or source `.bashrc` and upgrade Python. You can do it with all installed packages using single command: `conda update --all`; or just interpreter itself: `conda update python`. 
+
+{% highlight bash %}
+[mdyzma@devbox home]$ conda update python
+Fetching package metadata .........
+Solving package specifications: .
+
+Package plan for installation in environment /home/mdyzma/anaconda3:
+
+The following packages will be UPDATED:
+
+    anaconda: 4.3.1-np111py36_0 --> custom-py36_0
+    conda:    4.3.14-py36_0     --> 4.3.17-py36_0
+    python:   3.6.0-0           --> 3.6.1-0
+
+Proceed ([y]/n)? y
+{% endhighlight %}
+
+After that you should have brand new Python 3.6.1 as your main system interpreter.
+
+<a name="r_lang"></a>
+
+## R language
+
+Fedora users can install `R` from the standard Fedora repository using:
+
+{% highlight bash %}
+[mdyzma@devbox home]$ sudo dnf install R
+{% endhighlight %}
+
+The RPM of `R` is a meta package, which will install following components:
+
+* R-core         User RPM
+* R-core-devel   Developer RPM containing header files
+* R-java         RPM to ensure that R is configured for use with Java
+* libRmath       Standalone R math library
+* libRmath-devel Header file for the standalone R math library
+
+
+According to CRAN manual Fedora will also require developer versions, which contain header files necessary to properly install other R packages from the source.
+
+
+<a name="scala_compiler"></a>
+
+## Scala / sbt
+
+Scala compiles using __Java Virtual Machine__. Therefore before using it, JRE or JDK must be installed in the system.
+
+### Install Oracle Java JDK/JRE packages
+
+Download JRE or JDK from http://www.oracle.com/technetwork/java/javase/downloads/index.html. Select one of the available options (i.e. Download JRE -> `jre-8u131-linux-x64.rpm` or Download JDK -> `jdk-8u131-linux-x64.rpm`)
+
+{% highlight bash %}
+[mdyzma@devbox home]$ su -
+Password: 
+
+[root@devbox home]# rpm -Uvh /home/mdyzma/jdk-8u131-linux-x64.rpm
+# or
+[root@devbox home]# rpm -Uvh /home/mdyzma/jre-8u131-linux-x64.rpm
+{% endhighlight %}
+
+Please remember to change paths to downloaded files.
+
+
+<a name="julia_compiler"></a>
+## Julia compiler
 
 
 You can find detailed instructions about [R](http://www.jason-french.com/blog/2013/03/11/installing-r-in-linux/) or [Julia](https://julialang.org/downloads/platform.html) in blog posts I found in the Internet. If it comes to python...
 
 ## Kernels installation
+
 ### Installing additional Ipykernel
 
+
+In many Linux distributions python 3.x is accessible by using `python3` command, but it is cumbersome to manage both python versions and their dependencies by calling specific pip/pip3 or python/python3 from the system level. Managing versions mess as well as third party dependencies and environmental variables is very, very cumberscome. Anaconda comes with out of the box `conda` utility whihc is package and virtual environments manager. It is much easier to keep multiple python instances using this tool. Other, quite popular environment manager called `virtualenv` especially with additional package `virtualenvwrapper`. I will use manager built in conda.
 
 So, depending on which Anaconda version you had to compose new environment with additional python interpreter. To check conda versionfirst and which , you have to either install 
 
 
 Anaconda team did great job keeping R language available almost out of the box. 
-
 
 
 ### Installing IRkernel with conda
