@@ -37,7 +37,7 @@ I will follow this procedure to prepare work environment:
 2. [installing R language](#r_lang)
 3. [installing Scala or sbt compiler](#scala_compiler)
 4. [installing Julia language compiler](#julia_compiler)
-5. installing languages kernels:
+5. installing additional jupyter kernels:
     * [ipykernel]() - multiple Python support
     * [IRkernel]() via conda - R language support
     * [IRkernel]() via R
@@ -52,10 +52,9 @@ First let's grab necessary tools - compilers and interpreters for each language 
 
 ## Python interpreter
 
-In all Linux distributions Python is available "out of the box". Unfortunately in many cases default Python is still 2.7 branch. Is hould mention, that 2.7 is last supported branch from 2.x family and it's support will drop in 2020 (see: [PEP 373][pep373]). There will be no official bug fixes after that date. Additionally most of the currently used libraries are able to run at least on 3.5 branch. Unless you have some obscure dependency, there is no excuse not to use Python 3. Older version 2 is included here just for the sake of keeping backward compatibility with some old scripts,  and to demonstrate how to manage different Python versions in isolated environments.
+In all Linux distributions Python is available "out of the box". Unfortunately in many cases default Python is still 2.7 branch. It should be mentioned, that 2.7 is very old and it is being slowly depreciated. It is last supported branch from 2.x family and it's support will drop in 2020 (see: [PEP 373][pep373]). There will be no official bug fixes after that date. Additionally most of the currently used libraries are ready to run at least 3.5 version. Unless you have some obscure dependency, there is no excuse not to use Python 3. Older version 2 is included here just for the sake of keeping backward compatibility with some old scripts,  and to demonstrate how to manage different Python versions in isolated environments.
 
 > There is no excuse not to use Python 3 anymore. Grab it! Use it!
-
 
 I assume you have basic knowledge of Python flavors available today and their strengths and weaknesses. In this tutorial basic version is __Python 3__ running on __Fedora 25__ workstation. 
 
@@ -160,7 +159,7 @@ According to CRAN manual Fedora will also require developer versions, which cont
 
 ## Scala / sbt
 
-Scala compiles using __Java Virtual Machine__. Therefore before using it, JRE or JDK must be installed in the system.
+Scala compiles to Java byte-code using __Java Virtual Machine__. Therefore before using it, JRE or JDK must be installed in the system.
 
 ### Install Oracle Java JDK/JRE packages
 
