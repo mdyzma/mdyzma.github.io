@@ -6,16 +6,37 @@ This repo contains example blog generated with [jekyll](https://jekyllrb.com).
 
 ## Features
 
-1. posts written in markdown
-2. [jekyll-whiteglass](https://github.com/yous/whiteglass) theme
-3. Google analytics, adwords integration
-4. sharing buttons for  social media
-5. disqus integration for each post
-6. bootstrap 3.3.7
-7. jquery 3.2.1
+### Posts written in markdown
+
+### Jekyll-whiteglass theme
+
+[jekyll-whiteglass](https://github.com/yous/whiteglass) theme
+
+![blog][white-glass]
 
 
-![blog][screen]
+### Google analytics, adwords integration
+
+### Sharing buttons for  social media
+
+![blog][social-media]
+
+
+### disqus integration for each post
+
+![blog][disqus] 
+
+
+### bootstrap 3.3.7 & jquery 3.2.1
+
+* collapse menu
+* scrolling navigation bar
+
+
+### mathjax for LaTeX mathematical formulas
+
+
+
 
 Share buttons and disqus:
 
@@ -82,4 +103,4 @@ The following directories and their contents are Copyright to Michal Dyzma and l
         * _posts/
         * _drafts/
 
-All other directories and files are MIT licensed unless otherwise specified. Feel free to use the HTML and CSS as you please. If you do use them, a link back would be appreciated, but is not required."
+All other directories and files are MIT licensed unless otherwise specified. Feel free to use jekyll boilerplate as you please. If you do use it, a link back would be appreciated, but is not required."
