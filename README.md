@@ -87,7 +87,9 @@ bundle install
 
 This should acquire all necessary gems. To preview blog locally type:
 
-```bundle exec jekyll serve```
+```
+bundle exec jekyll serve
+```
 
 You can add `--watch` and `--drafts` options to make local server rebuild every time files are changed and to include posts located in `_drafts/` folder.
 
@@ -131,7 +133,7 @@ The following directories and their contents are Copyright to Michal Dyzma and l
 * `_posts/`
 * `_drafts/`
 
-All other directories and files are MIT licensed unless otherwise specified. Feel free to use jekyll boilerplate as you please. If you do use it, a link back would be appreciated, but is not required."
+All other directories and files are MIT licensed unless otherwise specified. Feel free to use jekyll boilerplate as you please. If you do use it, a link back would be appreciated, but is not required.
 
 
 [white-glass]: /assets/white-glass.png
