@@ -73,3 +73,13 @@ Information is available in your app dashboard in Settings tab.
 Create account in Discus service and get you disqus short name. Change `_config.yml` variable `disqus` for your own. 
 
 Please note, that disqus does not allow to change your short name. It is part of the unique link associated with the site presenting comments on your blog. Pick it with consideration. 
+
+
+#LICENSE
+
+The following directories and their contents are Copyright to Michal Dyzma and licensed under terms of GNU/FDL:
+
+        * _posts/
+        * _drafts/
+
+All other directories and files are MIT licensed unless otherwise specified. Feel free to use the HTML and CSS as you please. If you do use them, a link back would be appreciated, but is not required."
