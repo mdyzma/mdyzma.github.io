@@ -96,7 +96,7 @@ Please, press ENTER to continue
 
 {% endhighlight %}
 
-Automatic process will guide you through installation. You don't have to run installer as a root, unless you want it to be installed for all users. In that case you need sudo privilege to install it in some globally accessible location like `/opt/anaconda3` and append `/etc/profile` with the location of the interpreter `export PATH=/opt/Anaconda3/bin:$PATH`. This will make Python change system-wide. If you run it with normal user privileges it will choose your user's home directory and place it in `/home/<user>/anaconda3`. Installer will install bunch of python packages including MKL optimizations (Math Kernel Library), numpy, pandas, matplotlib, scikit-learn and jupyter - just to name few. Nearly 200 packages grouped together to make your life easier. To get list of the packages execute this command: `conda list | wc -l`. Anyway lets continue with installation...
+Automatic process will guide you through installation. You don't have to run installer as a root, unless you want it to be installed for all users. In that case you need sudo privilege to install it in some globally accessible location like `/opt/anaconda3` and append `/etc/profile` with the location of the interpreter `export PATH=/opt/Anaconda3/bin:$PATH`. This will make Python change system-wide. If you run it with normal user privileges it will choose your user's home directory and place it in `/home/<user>/anaconda3`. Installer will install bunch of python packages including MKL optimizations (Math Kernel Library), numpy, pandas, matplotlib, scikit-learn and Jupyter - just to name few. Nearly 200 packages grouped together to make your life easier. To get list of the packages execute this command: `conda list | wc -l`. Anyway lets continue with installation...
 
 
 {% highlight bash %}
@@ -133,7 +133,7 @@ Proceed ([y]/n)? y
 
 After that you should have brand new Python 3.6.1 as your main system interpreter. To confirm it type `conda info` or simply try to run python interpreter in your terminal.
 
-Conda command should result in displaying detailed information about current Anaconda instalation:
+Conda command should result in displaying detailed information about current Anaconda installation:
 
 {% highlight bash %}
 [mdyzma@devbox mdyzma]$ conda info
@@ -170,7 +170,7 @@ Running python should expose interpreter's REPL:
 
 [mdyzma@0devbox mdyzma]$ python
 Python 3.6.1 |Anaconda custom (64-bit)| (default, May 11 2017, 13:09:58)
-[GCC 4.4.7 20120313 (Red Hat 4.4.7-1)] on linux
+[GCC 4.4.7 20120313 (Red Hat 4.4.7-1)] on Linux
 Type "help", "copyright", "credits" or "license" for more information.
 >>>
 
@@ -407,7 +407,7 @@ A [Copr repository](https://copr.fedorainfracloud.org/coprs/nalimilan/julia/) is
 [mdyzma@devbox mdyzma]$ sudo dnf copr enable nalimilan/julia
 {% endhighlight %}
 
-Bleeding edge version of Julia is held inn this repository `sudo dnf copr enable nalimilan/julia-nightlies`.
+Bleeding edge version of Julia is held in this repository `sudo dnf copr enable nalimilan/julia-nightlies`. Adding any of mentioned above results in:
 
 {% highlight bash %}
 [mdyzma@devbox mdyzma]# dnf copr enable nalimilan/julia
