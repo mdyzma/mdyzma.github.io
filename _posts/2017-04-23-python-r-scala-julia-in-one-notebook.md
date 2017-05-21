@@ -401,13 +401,13 @@ hello
 
 ## Julia compiler
 
-A [Copr repository](https://copr.fedorainfracloud.org/coprs/nalimilan/julia/) is provided for Fedora. To install Julia run:
+A [Copr repository](https://copr.fedorainfracloud.org/coprs/nalimilan/julia/) is provided for Fedora users. To install Julia just run:
 
 {% highlight bash %}
 [mdyzma@devbox mdyzma]$ sudo dnf copr enable nalimilan/julia
 {% endhighlight %}
 
-Bleeding edge version of Julia is held in this repository `sudo dnf copr enable nalimilan/julia-nightlies`. Adding any of mentioned above results in:
+Bleeding edge version of Julia is held in separate repository, which can be added with this command: `sudo dnf copr enable nalimilan/julia-nightlies`. I decided to install stable Julia release. Adding any of mentioned above results in:
 
 {% highlight bash %}
 [mdyzma@devbox mdyzma]# dnf copr enable nalimilan/julia
@@ -428,7 +428,7 @@ Do you want to continue? [y/N]: y
 Repository successfully enabled.
 {% endhighlight %}
 
-After that you can easily install nightly build of Julia:
+After that you can easily install specific build of Julia compiler:
 
 {% highlight bash %}
 [mdyzma@devbox mdyzma]$ sudo dnf install julia
@@ -477,26 +477,110 @@ julia>
 
 #### Ipykernel (additional python)
 
-In many Linux distributions python 3.x is accessible by using `python3` command, but it is cumbersome to manage both python versions and their dependencies by calling specific pip/pip3 or python/python3 from the system level. Managing versions mess as well as third party dependencies and environmental variables is very, very cumberscome. Anaconda comes with out of the box `conda` utility whihc is package and virtual environments manager. It is much easier to keep multiple python instances using this tool. Other, quite popular environment manager called `virtualenv` especially with additional package `virtualenvwrapper`. I will use manager built in conda.
+In many Linux distributions python 3.x is accessible from `python3` command, but it is cumbersome to manage both python versions and their dependencies by calling specific pip/pip3 or python/python3 from the system level. Managing versions, as well as third party dependencies and environmental variables is very, very confusing. Unless one uses correct tool. Anaconda has such tool out of the box and it is called `conda`. It is able to manage packages and virtual environments. With minimal effort one can create and delete entire environments with specific python and packages configuration. Other, very popular environment manager is `virtualenv` especially with additional package `virtualenvwrapper`. I will use manager built in conda. More about conda virtual env capabilities [here](https://conda.io/docs/using/envs.html#) or in built in help system `conda env --help`.
 
-So, depending on which Anaconda version you had to compose new environment with additional python interpreter. To check conda versionfirst and which , you have to either install 
+So.... I have Anaconda 3 with Python 3.6.1 on my Fedora machine. Let's say I want to install additional python interpreter from 2.7 branch (last 2.x branch supported by Python Foundation). In order to create environment with specific python version, run this command:
 
 
-Anaconda team did great job keeping R language available almost out of the box. 
+{% highlight bash %}
+[mdyzma@devbox mdyzma]$ conda create --name py27 python=2 ipykernel
+
+Fetching package metadata .........
+Solving package specifications: .
+
+Package plan for installation in environment /opt/conda/envs/py27:
+
+The following NEW packages will be INSTALLED:
+...
+
+Proceed ([y]/n)? y
+...
+
+#
+# To activate this environment, use:
+# > source activate py27
+#
+# To deactivate this environment, use:
+# > source deactivate py27
+#
+{% endhighlight %}
+
+This should install bunch of packages, including latest python 2 version with basic tools to manage packages in new environment. I also specified, that I want `ipykernel` package to be installed as well.  Now I have to activate new environment following conda help from the screen:
+
+{% highlight bash %}
+[mdyzma@devbox mdyzma]$ source activate py27
+
+(py27) [mdyzma@devbox mdyzma]$
+
+{% endhighlight %}
+
+
+Prompt changed, indicating that I am now in py27 environment with its packages. Quick `pip list` reveals, that only handful of basic packages (including ipykernel and its dependencies) were installed :
+
+{% highlight bash %}
+[mdyzma@devbox mdyzma]$ pip list
+DEPRECATION: The default format will switch to columns in the future. You can use --format=(legacy|columns) (or define a format=(legacy|columns) in your pip.conf under the [list] section) to disable this warning.
+decorator (4.0.11)
+ipykernel (4.6.1)
+ipython (6.0.0)
+ipython-genutils (0.2.0)
+jedi (0.10.2)
+jupyter-client (5.0.1)
+jupyter-core (4.3.0)
+pexpect (4.2.1)
+pickleshare (0.7.4)
+pip (9.0.1)
+prompt-toolkit (1.0.14)
+ptyprocess (0.5.1)
+Pygments (2.2.0)
+python-dateutil (2.6.0)
+pyzmq (16.0.2)
+setuptools (27.2.0)
+simplegeneric (0.8.1)
+six (1.10.0)
+tornado (4.5.1)
+traitlets (4.3.2)
+wcwidth (0.1.7)
+wheel (0.29.0)
+(py27) root@fc954edb0a6d:/#
+{% endhighlight %}
+
+
+After activation I have to add this kernel to the global list of kernels managed by Jupyter package from main Anaconda installation. To register this kernel I have to enter: `python -m ipykernel install --user` in the terminal with this kernel activated:
+
+
+
+{% highlight bash %}
+(py27) [mdyzma@devbox mdyzma]$ python -m ipykernel install --user
+Installed kernelspec python2 in /home/mdyzma/.local/share/jupyter/kernels/python2
+{% endhighlight %}
+
+Done.I should have both kernels accessible when I run my Jupyter Notebook:
+
+
+![bothkernels][bothkernels]
+
 
 <a name="irkernel_py"></a>
 
 #### IRkernel with conda
 
-Conda can access different repositories by specifying `--chanel` or `-c` flag when calling install option. To install most popular R packages ported to be used from python you can use official Continuum R repo:
+Continuum Analytics did great job making R language available almost out of the box. Conda can access different repositories by specifying `--chanel` or `-c` flag when calling install option. Continuum is maintaining repository with most popular R packages ported, so they can be used as python packages. To install R packages for conda enter:
 
-```
-conda install -c r r-essentials
-```
+{% highlight bash %}
+conda install --channel r r-essentials
+{% endhighlight %}
 
-This command should install dosens of R packages and will make R kernel available to you when you run jupyter notebook.  For more information go to [R with conda](https://conda.io/docs/r-with-conda.html).
+This command should install dozens of R packages and will make R kernel available to you when you run Jupyter Notebook.  For more information go to [R with conda](https://conda.io/docs/r-with-conda.html).
 
-Simple and efficient. If you want to see alternative way check next section.
+Simple and efficient. To see effects:
+
+![withrkernel][withrkernel]
+
+
+Con of this method is that you have to install nearly 160 packages, taking few gigs of space. On the other hand I will have nice and ready to go R environment in my python after typing just five words. Awesome!
+
+If you want to see alternative way (much less space hungry) check next section.
 
 <a name="irkernel_r"></a>
 
@@ -509,6 +593,9 @@ install.packages(c('repr', 'IRdisplay', 'crayon', 'pbdZMQ', 'devtools', 'stringr
 devtools::install_github('IRkernel/IRkernel')
 IRkernel::installspec()  # to register the kernel in the current R installation
 {% endhighlight %}
+
+
+Effect is identical to the one R will install requested packages
 
 <a name="iscala"></a>
 
@@ -526,20 +613,24 @@ call Java methods, access Java fields, inherit from Java classes, and implement 
 #### IJulia kernel
 
 
-Firs grab __Julia__ and install it on your machine. Run Julia app  (you will see nice prompt `julia>`), then type:
+Once you have __Julia__ installed on your machine, run Julia app  (you will see fancy prompt by `julia>`), then type:
 
 ```
 Pkg.add("IJulia")
 ```
 
-It will download and install basic python environment based on [Miniconda][miniconda], which is local for Julia. Thanks to that you don't really need any python installed in your system to run Julia Notebook. Julia will use its private python interpreter and minimal Jupyter installation to run notebook with it's kernel. You can run it at any time typing in Julia REPL:
+Julia package manager will take care of dependencies and download requested software. Specifically it will download and install basic python environment based on [Miniconda][miniconda], which will be local for Julia, and accessible only by Julia. Thanks to that you don't really need any python installed in your system to run Julia Notebook. In that case only one kernel will be available. Julia will use its private python interpreter and minimal Jupyter installation to run notebook with it's kernel. You can run it at any time typing in Julia REPL:
 
 {% highlight julia %}
     julia> using IJulia
     julia> notebook()
 {% endhighlight %}
 
-If you use `notebook(detached=true)`, Julia will run notebook server in the background and you will be able to use or exit REPL without closing the notebook. 
+Since I already had two additional kernels installed (python 2,  and R), IJulia will be added to the collection. :)
+
+
+
+In Julia language `using <package Name>` is an __import statement__, which pre-compiles and gets ready to work module/program denoted in the statement. Next line calls this programs subroutine called `notebook`. If you use some arguments, you can modify notebooks behavior. For example `notebook(detached=true)`, Julia will run notebook server in the background and you will be able to use or exit REPL without closing the notebook. 
 
 By default, the notebook "dashboard" opens in your home directory, but you can open the dashboard in a different directory with `notebook(dir="/some/path")`.
 
@@ -547,9 +638,9 @@ By default, the notebook "dashboard" opens in your home directory, but you can o
 But we want to add IJulia kernel to existing Jupyter installation. to do that you need to set environmental variable `JUPYTER` to the value of your current jupyer program path before running `Pkg.add("IJulia")`.
 
 
-## Managing kernels
+## Using all kernels
 
-Jupyter notebook is language agnostic platform. It is able to support nearly 100 different languages ((check [here][kernels])) via kernels, which provide is kernel is execution backend for Jupyter to invoke specifics language commands and direct response back to the browser. By default only ipython kernel is installed and runs out of the box. Other kernels must be installed and activated by user. By default installing Jupyter also installs `ipykernel` appropriate to your interpreter version. 
+Jupyter notebook is language agnostic platform. It is able to support nearly 100 different languages (check [here][kernels]) via kernels, which provide is kernel is execution backend for Jupyter to invoke specifics language commands and direct response back to the browser. By default only ipython kernel is installed and runs out of the box. Other kernels must be installed and activated by user. By default installing Jupyter also installs `ipykernel` appropriate to your interpreter version. 
 
 https://jupyter-client.readthedocs.io/en/latest/kernels.html#kernelspecs
 
@@ -598,6 +689,8 @@ print_hi('Tom')
 
 
 <!-- Links -->
+<!-- www -->
+
 [anaconda]:   https://www.continuum.io/DOWNLOADS
 [kernels]:    https://github.com/jupyter/jupyter/wiki/Jupyter-kernels
 [python2]:    https://www.python.org/downloads/release/python-2713/
@@ -611,3 +704,8 @@ print_hi('Tom')
 [pep373]:     https://www.python.org/dev/peps/pep-0373/
 [miniconda]:  https://conda.io/miniconda.html
 [javainstaller]: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+
+<!-- Images -->
+
+[bothkernels]: /assets/23-04-2017-two-kernels.png
+[withrkernel]: /assets/23-04-2017-r-kernel.png
