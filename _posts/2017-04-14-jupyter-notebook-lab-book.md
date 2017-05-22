@@ -4,12 +4,17 @@ author:     Michal Dyzma
 title:      Jupyter Notebook - python based lab book
 date:       2017-04-14 17:28:54 +0200
 comments:   true
+mathjax:    true
 categories: python jupyter-notebook data
 keywords:   python, jupyter notebook, data
 ---
 
 Data analysis using Jupyter Notebook. I will mention biology and focus on work with data specific for biology, but  all the principles and tools described here may be applied in other projects and disciplines.
 
+$$
+\frac{\partial c_\gamma}{\partial t} = D_c \Delta c_\gamma + \phi(c) \delta_{\gamma} + 
+	\sum_{i=1}^n \left[ k^{-}_{i\gamma} b_{i\gamma} - k^{+}_{i\gamma} c (b^0_{i\gamma} -b_{i\gamma})\right]
+$$
 
 ## Data analysis
 
