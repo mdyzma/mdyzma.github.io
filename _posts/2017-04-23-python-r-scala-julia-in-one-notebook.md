@@ -573,7 +573,7 @@ conda install --channel r r-essentials
 
 This command should install dozens of R packages and will make R kernel available to you when you run Jupyter Notebook.  For more information go to [R with conda](https://conda.io/docs/r-with-conda.html).
 
-Simple and efficient. To see effects:
+Simple and efficient. To run R code in Jupyter notebook simply choose R kernel from the drop-down list:
 
 ![withrkernel][withrkernel]
 
@@ -655,17 +655,14 @@ https://ipython.readthedocs.io/en/latest/install/kernel_install.html
 
 Once all kernels are installed, you can see the available kernels:
 
-
-```jupyter kernelspec list ```
-
 {% highlight bash %}
-    > jupyter kernelspec list
-    Available kernels:
-        julia-0.5    C:\Users\MIDY\AppData\Roaming\jupyter\kernels\julia-0.5
-        python2      C:\Users\MIDY\AppData\Roaming\jupyter\kernels\python2
-        python3      C:\Users\MIDY\AppData\Roaming\jupyter\kernels\python3
-        vpython      C:\Users\MIDY\AppData\Roaming\jupyter\kernels\vpython
-        ir           C:\Users\MIDY\AppData\Local\Continuum\Anaconda2\share\jupyter\kernels\ir
+[mdyzma@devbox mdyzma]$ jupyter kernelspec list
+Available kernels:
+    julia-0.5    C:\Users\MIDY\AppData\Roaming\jupyter\kernels\julia-0.5
+    python2      C:\Users\MIDY\AppData\Roaming\jupyter\kernels\python2
+    python3      C:\Users\MIDY\AppData\Roaming\jupyter\kernels\python3
+    vpython      C:\Users\MIDY\AppData\Roaming\jupyter\kernels\vpython
+    ir           C:\Users\MIDY\AppData\Local\Continuum\Anaconda2\share\jupyter\kernels\ir
 {% endhighlight %}
 
 
