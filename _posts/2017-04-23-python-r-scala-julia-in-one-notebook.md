@@ -428,7 +428,11 @@ Do you want to continue? [y/N]: y
 Repository successfully enabled.
 {% endhighlight %}
 
+<<<<<<< HEAD
+After that you can easily install stable build of Julia:
+=======
 After that you can easily install specific build of Julia compiler:
+>>>>>>> c52c846f0ab6b75ccf1c0c8b1462282e084c80af
 
 {% highlight bash %}
 [mdyzma@devbox mdyzma]$ sudo dnf install julia
@@ -448,7 +452,7 @@ Installed size: 260 M
 
 {% endhighlight %}
 
-Windows users can get convenient [installer][julia].
+It is also possible to use less stable repository with nightly builds (v0.7.0 currently) to install bleeding edge developer version. Use `sudo dnf copr enable nalimilan/julia-nightlies` in order to do that. Windows users can get convenient [Julia `installer][julia].
 
 To verify either type `julia --version` or simply try to run Julia REPL:
 
@@ -472,6 +476,8 @@ julia>
 {% endhighlight %}
 
 ## Kernels installation
+
+Jupyter notebook is a fantastic tool, that allows my favorite programming style: Prototype driven development. Existence of REPL (Read, Evaluate, Print Loop) in all installed languages can be used to instantaneously test our code. We can also test our tests. This makes commits cleaner and faster. After all -  it is much easier to control very small chunks of the code and work on it interactively. First IPython  notebook made it possible with python, but later Jupyter project began to live own life and extended functionality by adding more languages it could "manage". It is done by specific middle-ware called "kernel". There is nearly 100 different kernels now(see [here][kernels]). Lets get Big Four. 
 
 <a name="ipykernel"></a>
 
