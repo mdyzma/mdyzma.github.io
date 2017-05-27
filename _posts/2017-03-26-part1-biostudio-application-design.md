@@ -1,7 +1,7 @@
 ---
 layout:     post
 author:     Michal Dyzma
-title:      "Biostudio Part 1: Application design"
+title:      "Part 1: Application design"
 date:       2017-03-26 11:18:53
 comments:   true
 categories: biostudio software-engineering python
