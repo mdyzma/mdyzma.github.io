@@ -1,8 +1,8 @@
 ---
 layout:     post
 author:     Michal Dyzma
-title:      "**Biostudio** Part 1: Application design"
-date:       2017-04-21 11:18:53
+title:      "Biostudio Part 1: Application design"
+date:       2017-03-26 11:18:53
 comments:   true
 categories: biostudio software-engineering python
 keywords:   biostudio, software-design, agile, python
@@ -11,18 +11,18 @@ keywords:   biostudio, software-design, agile, python
 
 In __Part 1__ I will present process of application design. From collecting requirements to low level design describing specific algorithms and implementations. Final result should give something in form of _Software Design Document_  that can be easily transformed to professional SSD template which can be used for other projects.
 
-## About biostudio project
+#### About biostudio project
 
-This is part of  what should develop to a series of articles on development process of _Biostudio_ - python GUI app. It will include best practices and solutions used in corporate projects. From preparing  software specifications to fully functional software deployed to the PyPI repository. Final product will be GUI application for Protein Data Bank ```.pdb``` files editor, which carry information about molecule 3D structure.
+This is part of  what should develop to a series of articles on development process of _Biostudio_ - python GUI app. I will include best practices and solutions used in corporate projects. From preparing  software specifications to fully functional software deployed to the PyPI repository. Final product will be GUI application for Protein Data Bank ```.pdb``` files editor, which carry information about 3D structure of biological macro-molecules.
 
-<!-- {% include note.html content="Python version 3 is used throughout this material." %}  -->
 
 -----
 _Series consists of:_
 
-* [Part 1: Application designs]({{site.url}}/2017/04/21/part1-biostudio-application-design/)
+* [Part 1: Application designs]({{site.url}}/2017/03/26/part1-biostudio-application-design/)
+* [Part 2: Setting up work environment]({{site.url}}/2017/04/13/part2-biostudio-setting-up-environment/)
 
-<!-- * [Part 2: Setting up work environment]({{site.url}}/2017/04/13/part2-biostudio-setting-up-environment/)
+<!-- 
 * [Part 3: Test Driven Development]({{site.url}}/2017/04/14/part3-biostudio-design-implementation-tdd/)
 * [Part 4: Low Level Design implementation]({{site.url}}/2017/04/15/part4-biostudio-design-implementation-continue/)
 * [Part 5: Debugging and profiling]({{site.url}}/2017/04/16/part5-biostudio-debugging-and-profiling/)
@@ -32,7 +32,16 @@ _Series consists of:_
 
 -----
 
-{% include note.html content="PYTHON 3!" %}
+## Basic configuration
+
+
+Platform| | **Linux 64 bit**
+Python  | | **3.6.1**
+Source  | | [link](https://gitlab.com/mdyzma/biostudio)
+
+<br>
+{% include note.html content="I will run the code using docker virtualization technology or spin new VirtualBox Fedora or Ubuntu, to test how it works freshly out of the box. So I can be sure every piece of code was properly tested. Outputs from my tests will be pasted here, unless they are ridiculous long (hundreds of lines). Then I will truncate output to the bare minimum necessary to understand what is going on." %}
+
 
 ## Introduction
 
@@ -41,7 +50,7 @@ Simple fact is that it is not important what kind of methodology you use, as lon
 Maintaining project written by team of developers without any specs, design, common goal, and automatic delivery is a horrible idea, and should not happen at all, ever! It can be easily avoided, just by following already tested solutions, which can give you some decent control over the project. If you run company and try to sell product It is a MUST, and allows to promise and provide software, that will satisfy your customer.
 
 In corporate projects one of the most important part of the project is : DOCUMENTATION. From the very beginning i.e software specification, to the final version of user's manual. Documentation must be maintained and updated. Period. Because it is time-consuming, dull and requires collaboration between many team members, writing documentation/comments is usually assigned to the new team members as a part of _getting familiar with the project_. It is a mistake in my humble opinion Due to this reasons documentation is generally incomplete
-or out-of-date at any given time. There is one solution - writing documentation must be automatic process, triggered by code staging or release. Therefore one should try to write self-documenting code and keep specific branch in your delivery pipeline devoted to proper documentation production, which will guarantee that your documentation reflects at least comments in your code. We will deal with this problem in Part 2. In this article we will prepare __Software Design Document__ for our project I called biostudio.
+or out-of-date at any given time. There is one solution - writing documentation must be automatic process, triggered by code staging or release. Therefore one should try to write self-documenting code and keep specific branch in your delivery pipeline devoted to proper documentation production, which will guarantee that your documentation reflects at least comments in your code. We will deal with this problem in Part 2. In this article we will prepare _Software Design Document_ for our project I called **biostudio**.
 
 <!-- 
 

@@ -10,48 +10,47 @@ keywords:   biostudio, workflow, python
 
 In __Part 2__ I will set up and show how to manage virtual environments in python. Initiate version control and software versioning automation. Additionally I will set up continuous integration service using GitLab, which will include automatic testing with pytest and documentation creation. Code will run tests every time update has been pushed to the master branch of the software repository.
 
+-----
+
 #### About biostudio project
 
 This is part of  what should develop to a series of articles on development process of _Biostudio_ - python GUI app. I will include best practices and solutions used in corporate projects. From preparing  software specifications to fully functional software deployed to the PyPI repository. Final product will be GUI application for Protein Data Bank ```.pdb``` files editor, which carry information about 3D structure of biological macro-molecules.
 
------
 _Series consists of:_
 
-* [Part 1: Application designs]({{site.url}}/2017/04/21/part1-biostudio-application-design/)
+* [Part 1: Application designs]({{site.url}}/2017/03/26/part1-biostudio-application-design/)
 * [Part 2: Setting up work environment]({{site.url}}/2017/04/13/part2-biostudio-setting-up-environment/)
-* [Part 3: Test Driven Development]({{site.url}}/2017/04/14/part3-biostudio-design-implementation-tdd/)
+
+<!-- * [Part 3: Test Driven Development]({{site.url}}/2017/04/14/part3-biostudio-design-implementation-tdd/)
 * [Part 4: Low Level Design implementation]({{site.url}}/2017/04/15/part4-biostudio-design-implementation-continue/)
 * [Part 5: Debugging and profiling]({{site.url}}/2017/04/16/part5-biostudio-debugging-and-profiling/)
 * [Part 6: Application deployment]({{site.url}}/2017/04/17/part6-biostudio-application-deployment/)
 * [Part 7: Application life cycle]({{site.url}}/2017/04/18/part7-biostudio-application-lifecycle/)
 * [Part 8: Code metrics]({{site.url}}/2017/04/19/part8-biostudio-code-metrics/)
-
+ -->
 -----
-https://tech.knewton.com/blog/2015/09/best-practices-for-python-dependency-management/
-https://jpetazzo.github.io/2013/12/01/docker-python-pip-requirements/
-https://github.com/pybuilder/pybuilder
-https://www.blazemeter.com/blog/jenkins-vs-other-open-source-continuous-integration-servers
 
-## basi configuation
 
-========|
-Platform|
-Python  | 3.6
-========|
+## Basic configuration
 
-## Virtualenv
+
+Platform| | **Linux 64 bit**
+Python  | | **3.6.1**
+Source  | | [link][biostudiosource]
+
+<br>
+{% include note.html content="I will run the code using docker virtualization technology or spin new VirtualBox Fedora or Ubuntu, to test how it works freshly out of the box. So I can be sure every piece of code was properly tested. Outputs from my tests will be pasted here, unless they are ridiculous long (hundreds of lines). Then I will truncate output to the bare minimum necessary to understand what is going on." %}
+
+
+
+## Virtual environment
 
 Before I start to write the code I will set up clean environment with Python interpreter. It is a common practice to start new projects with their own Python and packages in a sandbox. Environments are created by `virtualenv` package. It will automatically match main system interpreter found on system path, but it is possible to specify other version as well. To do that one has to specify `--python` flag and point to the executable of specific python version installed in the system. It is also good to separate program code and virtual environment own directory. The later may grow quite big and it makes no sens to keep all python packages, used during development, under our own project version control. Virtual environment may be anywhere on the disc and what I usually do is to create `.envs` folder in home directory and group all environments over there.
 
-{% highlight bash %}
-    mdyzma@devbox:~$ mkdir .envs
-    mdyzma@devbox:~$ cd .envs/
-{% endhighlight %}
-
-Call virtualenv and specify Python interpreter. Because I will use default Python present in the system, 
+Call `virtualenv` and specify Python interpreter using `--python=/path/to/your/python`. I do not do this, because I use default Python present in the system:
 
 {% highlight bash %}
-    mdyzma@devbox:~/.envs$ virtualenv biostudio # optionally --python=path/to/other/python/interpreter/python
+mdyzma@devbox:~/.envs$ virtualenv biostudio # optionally --python=path/to/other/python/interpreter/python
     
 Using base prefix '/home/mdyzma/anaconda3'
 New python executable in /home/mdyzma/.envs/biostudio/bin/python
@@ -62,98 +61,324 @@ Installing setuptools, pip, wheel...done.
 All basic tools, which allow packages control (install, remove, update and create), were installed automatically. To start work in new environment, I need to activate it:
 
 {% highlight bash %}
-    mdyzma@devbox:~/.envs$ source activate biostudio
-    #list packages in new environment
-    (biostudio) mdyzma@devbox:~/.envs$ pip list
-    appdirs (1.4.3)
-    packaging (16.8)
-    pip (9.0.1)
-    pyparsing (2.2.0)
-    setuptools (35.0.2)
-    six (1.10.0)
-    wheel (0.29.0)
+mdyzma@devbox:~/.envs$ source activate biostudio
+#list packages in new environment
+(biostudio) mdyzma@devbox:~/.envs$ pip list
+appdirs (1.4.3)
+packaging (16.8)
+pip (9.0.1)
+pyparsing (2.2.0)
+setuptools (35.0.2)
+six (1.10.0)
+wheel (0.29.0)
 {% endhighlight %}
 
+Now I can install a different Python packages into specific virtualenv, eliminating the conflict with system Python. It is time to create basic development infrastructure.
 
-It is time to install basic development infrastructure:
+* **Folders & files**
+* **Dependencies**:
+    - **coverage** - _tests coverage metrics_
+    - **Sphinx** - _documentation_
+    - **sphinx-autobuild** - _running docs live preview_
+    - **numpydoc** - _convenient docstring style_
+    - **bumpversion** - _control software version_
+    - **pytest** and plug-ins - _unit tests_: 
+        - **pytest-runner**
+        - **pytest-cov**
+    - **tox** - _generic virtualenv manager_
 
-* Folders/files structure
-* Sphinx - documentation
-* sphinx-autobuild - running live preview
-* numpydoc - docstring style 
-* coverage - test coverage
-* pytest and its plugins - tests: 
-    - pytest-runner
-    - pytest-cov
-* 
+#### Folders and files
 
 {% highlight bash %}
-    # requiremnts.txt
-    Sphinx
-    sphinx-autobuild
-    numpydoc
-    coverage
-    pytest
-    pytest-runner
-    pytest-cov
+(biostudio) mdyzma@devbox:~/.envs$ cd
+(biostudio) mdyzma@devbox:~$ mkdir -p biostudio/{docs,src/{common,fileandler/pdb,functional},tests/{common,filehandler/pdb,functional},uml}
+(biostudio) mdyzma@devbox:~$tree biostudio
+
+biostudio/
+├── docs
+├── src
+│   ├── common
+│   ├── filehandler
+│   │   └── pdb
+│   └── functional
+├── tests
+│   ├── common
+│   ├── filehandler
+│   │   └── pdb
+│   └── functional
+└── uml
+
+12 directories, 0 files
 {% endhighlight %}
+
+Tests folder resembles structure of `src/`, which is advised way to write unit tests and separate test files from the source.
+I will add few necessary files to the main folder, which will help to keep things organized and ship it later to the PyPI repo:
+    
+* `README.md`
+* `LICENSE`
+* `setup.py`
+* `setup.cfg`
+* `tox.ini`
+
+... and `__init__.py` files in each sub-folders of `src/` to make python packages out of them. Later more configuration files will be added, to govern some automation pipelines. I also added `.gitkeep` hidden files to each empty directory, so Git will not ignore them when I push initial folder structure to version control. Later `.gitkeep` was appended to `.gitignore` file to make them "invisible" (see: [here](#vcs)) once folders are no longer empty.
+
+
+Finally skeleton of `biostudio` project is as follows:
+
+{% highlight bash %}
+(biostudio) mdyzma@devbox:~$tree biostudio
+biostudio/
+│   LICENSE
+│   README.md
+│   setup.cfg
+│   setup.py
+│   tox.ini
+│
+├───docs
+├───src
+│   │   biostudio.py
+│   │   __init__.py
+│   │
+│   ├───common
+│   │       __init__.py
+│   │
+│   ├───filehandler
+│   │   │   __init__.py
+│   │   │
+│   │   └───pdb
+│   │           __init__.py
+│   │
+│   └───functional
+│           __init__.py
+│
+├───tests
+│   │   test_biostudio.py
+│   │
+│   ├───common
+│   ├───filehandler
+│   │   └───pdb
+│   └───functional
+└───uml
+{% endhighlight %}
+
 
 #### Dependencies with pip and requirements.txt 
 
-It’s easy to get a Python project off the ground simply by using pip to install dependent packages as you go. This works fine as long as you’re the only one working on the project. As soon as someone else wants to run your code, they’ll need to go through the process of figuring which dependencies the project needs and installing them all by hand. It is problem prone and can lead to some very hard to spot program misbehavior. To prevent this, I can define a `requirements.txt` file that stores all of my project’s dependencies. My current requirements file looks like this:
+It’s easy to get a Python project off the ground simply by using pip to install dependent packages as you go. This works fine as long as you’re the only one working on the project. As soon as someone else wants to run your code, they’ll need to go through the process of figuring which dependencies the project needs and installing them all by hand. It is problem prone and can lead to some very hard to spot program misbehavior. To prevent this, I will define a `requirements.txt` file that stores all of my project’s dependencies. My current requirements file looks like this:
     
 {% highlight bash %}
-    # requiremnts.txt
-    Sphinx
-    sphinx-autobuild
-    numpydoc
-    coverage
-    pytest
-    pytest-runner
-    pytest-cov
+# requiremnts.txt
+Sphinx
+sphinx-autobuild
+numpydoc
+bumpversion
+coverage
+pytest
+pytest-runner
+pytest-cov
+tox
 {% endhighlight %}
 
-I do not include packages versions, therefore latest will be downloaded and installed by pip:
+I do not include packages versions, therefore latest will be downloaded and installed by pip (including their dependencies).
 
 {% highlight bash %}
-    (biostudio) mdyzma@devbox:~$ pip install -r requirements.txt
+(biostudio) mdyzma@devbox:~$ pip install -r requirements.txt
 {% endhighlight %}
 
+It may take some time, since pip manages all the dependencies for each package and their dependencies as well. It is OK, since I create new project from the scratch. When dealing with legacy code, I would have to put more constrains and specify versions for each package, so that there would be no ambiguity and development environment will reflect exactly the one used during program creation, or specified in the SDD. Now I will create such file for future me or other dev team:
+
+{% highlight bash %}
+(biostudio) mdyzma@devbox:~$ pip freeze > requirements.txt
+# Listing created file
+(biostudio) mdyzma@devbox:~/biostudio$ cat requirements.txt 
+alabaster==0.7.10
+appdirs==1.4.3
+argh==0.26.2
+Babel==2.4.0
+bumpversion==0.5.3
+certifi==2017.4.17
+chardet==3.0.3
+coverage==4.4.1
+docutils==0.13.1
+idna==2.5
+imagesize==0.7.1
+Jinja2==2.9.6
+livereload==2.5.1
+MarkupSafe==1.0
+numpydoc==0.6.0
+packaging==16.8
+pathtools==0.1.2
+pluggy==0.4.0
+port-for==0.3.1
+py==1.4.33
+Pygments==2.2.0
+pyparsing==2.2.0
+pytest==3.1.0
+pytest-cov==2.5.1
+pytest-runner==2.11.1
+pytz==2017.2
+PyYAML==3.12
+requests==2.16.0
+six==1.10.0
+snowballstemmer==1.2.1
+Sphinx==1.6.1
+sphinx-autobuild==0.6.0
+sphinxcontrib-websupport==1.0.1
+tornado==4.5.1
+tox==2.7.0
+typing==3.6.1
+urllib3==1.21.1
+virtualenv==15.1.0
+watchdog==0.8.3
+{% endhighlight %}
+
+{% include note.html content="To reduce memory usage it is possible to add `--no-cache-dir` flag during dependencies installation. This way pip will not store downloaded packages for future use." %}
+
+Lots of this packages are dependencies from the first list of requirements. This list does not contain all packages from environment, some of them are by default present in the system, therefore were not included in freeze. I could delete all other and leave only few initial, which will install their own dependencies anyway, but it would be a lot of unnecessary work. Simply typing `pip freeze` is all I need to create list of dependencies for my project. Less work, the better.
+
+For more on pip requirements refer to this pep documentation [section][pip].
+
+## Documentation
+
+Another vital aspect of application development is documentation. There are three levels of documentation I will write:
+
+* project- or distribution-level documentation
+* API documentation
+* code comments
+
+First one is usually written separately from the code (in `docs/`). It is intended to give high-level information on a project, such as installation instructions, examples, and so on. The second,  API-level documentation, summarizes how functions, methods, classes, or modules should be used. It is usually prepared along with the code using Python docstrings. The third level of documentation is in the form of code comments. Such comments help explain how a piece of code works. In this part I will focus on automation of tedious process of **project documentation** and **API documentation** production. This usually goes to the client. Comments are vital part of the project, but I usually treat them as "internal use only". Unless I publish source as well, as in case of this open-source project.
+
+Lets start:
+
+{% highlight bash %}
+sphinx-quickstart
+
+> sphinx-quickstart
+Welcome to the Sphinx 1.5.1 quickstart utility.
+
+Please enter values for the following settings (just press Enter to
+accept a default value, if one is given in brackets).
+
+Enter the root path for documentation.
+> Root path for the documentation [.]:
+
+You have two options for placing the build directory for Sphinx output.
+Either, you use a directory "_build" within the root path, or you separate
+"source" and "build" directories within the root path.
+> Separate source and build directories (y/n) [n]: y
+
+Inside the root directory, two more directories will be created; "_templates"
+for custom HTML templates and "_static" for custom stylesheets and other static
+files. You can enter another prefix (such as ".") to replace the underscore.
+> Name prefix for templates and static dir [_]:
+
+The project name will occur in several places in the built documentation.
+> Project name: biostudio
+> Author name(s): Michal Dyzma
+
+Sphinx has the notion of a "version" and a "release" for the
+software. Each version can have multiple releases. For example, for
+Python the version is something like 2.5 or 3.0, while the release is
+something like 2.5.1 or 3.0a1.  If you dont need this dual structure,
+just set both to the same value.
+> Project version []: 0.0.0
+> Project release [0.0.0]:
+
+If the documents are to be written in a language other than English,
+you can select a language here by its language code. Sphinx will then
+translate text that it generates into that language.
+
+For a list of supported codes, see
+http://sphinx-doc.org/config.html#confval-language.
+> Project language [en]:
+
+The file name suffix for source files. Commonly, this is either ".txt"
+or ".rst".  Only files with this suffix are considered documents.
+> Source file suffix [.rst]:
+
+One document is special in that it is considered the top node of the
+"contents tree", that is, it is the root of the hierarchical structure
+of the documents. Normally, this is "index", but if your "index"
+document is a custom template, you can also set this to another filename.
+> Name of your master document (without suffix) [index]:
+
+Sphinx can also add configuration for epub output:
+> Do you want to use the epub builder (y/n) [n]:
+
+Please indicate if you want to use one of the following Sphinx extensions:
+> autodoc: automatically insert docstrings from modules (y/n) [n]: y
+> doctest: automatically test code snippets in doctest blocks (y/n) [n]:
+> intersphinx: link between Sphinx documentation of different projects (y/n) [n]:
+> todo: write "todo" entries that can be shown or hidden on build (y/n) [n]:
+> coverage: checks for documentation coverage (y/n) [n]:
+> imgmath: include math, rendered as PNG or SVG images (y/n) [n]:
+> mathjax: include math, rendered in the browser by MathJax (y/n) [n]: y
+> ifconfig: conditional inclusion of content based on config values (y/n) [n]:
+> viewcode: include links to the source code of documented Python objects (y/n) [n]:
+> githubpages: create .nojekyll file to publish the document on GitHub pages (y/n) [n]:
+
+A Makefile and a Windows command file can be generated for you so that you
+only have to run e.g. make html instead of invoking sphinx-build
+directly.
+> Create Makefile? (y/n) [y]:
+> Create Windows command file? (y/n) [y]:
+
+Creating file .\source\conf.py.
+Creating file .\source\index.rst.
+Creating file .\Makefile.
+Creating file .\make.bat.
+
+Finished: An initial directory structure has been created.
+
+You should now populate your master file .\source\index.rst and create other documentation
+source files. Use the Makefile to build the docs, like so:
+   make builder
+where "builder" is one of the supported builders, e.g. html, latex or linkcheck.
+{% endhighlight %}
+
+## Software versioning
+
+In many projects control over software version is done by hand. There is no need to say that there must be a better way. Book keeping is tedious and error prone. specially in teams with more than one person. Here I will use [bumpversion][bumpversion] package to control software version through out the project files. Also I will use semantic versioning scheme, which  is a recommended versioning convention. The release is represented by three numbers: MAJOR.MINOR.PATCH. The MAJOR number changes with introducing changes to the API, which are not backward compatible. MInor represents some new functionalities, but compatibility is kept. PATCH is incremented, when some bugs are fixed. There is very specific description of versioning and dependency specification in [PEP 440][pep440] Bumpversion uses `setup.cfg` file to keep track of places in the code, where it must be incremented when I change package version. 
+
+Example of bumpversion configuration:
+
+{% highlight bash %}
+[bumpversion]
+current_version = 0.0.0
+commit = True
+tag = True
+
+[bumpversion:file:setup.py]
+search = version='{current_version}'
+replace = version='{new_version}'
+
+[bumpversion:file:biostudio/__init__.py]
+search = __version__ = '{current_version}'
+replace = __version__ = '{new_version}'
+{% endhighlight %}
+
+Usual tox 
+
+<a name="vcs"></a>
+
+## Code management (VCS)
+
+One of the most important aspect of 
+
+#### Gitignore
 
 
-===================
-To prevent this, you can define a requirements.txt file that records all of your project’s dependencies, versions included. This way, others can run pip install -r requirements.txt and all the project’s dependencies will be installed automatically! Placing this file into version control alongside the source code makes it easy for others to use and edit it. In order to ensure complete reproducibility, your requirements.txt file should include all of your project’s transitive (indirect) dependencies, not just your direct dependencies. Note that pip does not use requirements.txt when your project is installed as a dependency by others — see below for more on this.
 
-SAMPLE FILE
+## Automating stuff
+<!-- 
+### Build virtualenvs and test with tox
 
-requests==2.3.0
-six==1.4.1
-
-The pip user guide has a good section on requirements files.
-
-Isolate your Python environments with virtualenvs
-
-As a result of how Python paths work, pip installs all packages globally by default. This may be confusing if you’re used to Maven or npm, which install packages into your project directory. This may seem like an irrelevant detail, but it becomes very frustrating once you have two different projects that need to use different versions of the same library. Python requires some extra tooling in order to install separate dependencies per-project.
-
-project_1 and project_2 depend on different versions of the requests library. This is bad because only one version of requests can be installed at a time.
-project_1 and project_2 depend on different versions of the requests library. This is bad because only one version of requests can be installed at a time.
-
-The solution for this problem is to use virtual environments. A virtual environment consists of a xseparate copy of Python, along with tools and installed packages. Creating a virtualenv for each project isolates dependencies for different projects. Once you have made a virtualenv for your project, you can install all of that project’s dependencies into the virtualenv instead of into your global Python environment. This makes your setup look more like something you would create with Maven.
-
-Now you can install a different version of requests into each virtualenv, eliminating the conflict.
-Now you can install a different version of requests into each virtualenv, eliminating the conflict.
-
-I try to keep the number of packages I install to a minimum, both in my global Python environment, and in each virtualenv. I’ll be doing a follow-up post on how to handle virtualenvs with large numbers of packages installed.
-
-A good virtualenv tutorial is A non-magical introduction to Pip and Virtualenv for Python beginners. The Python Packaging Guide provides a high-level overview that ties together pip and virtualenvs.
-
-Build and rebuild virtualenvs easily with tox
-
-Now that you’re using virtualenvs for all your projects, you’ll want an easy way to build the virtualenv and install all the dependencies from your requirements.txt file. An automatic way to set up virtualenvs is important for getting new users started with your project, and is also useful for enabling you to quickly and easily rebuild broken virtualenvs.
+Now that I have virtualenvs for the projects, you’ll want an easy way to build the virtualenv and install all the dependencies from your requirements.txt file. An automatic way to set up virtualenvs is important for getting new users started with your project, and is also useful for enabling you to quickly and easily rebuild broken virtualenvs.
 
 Tox is a Python tool for managing virtualenvs. It lets you quickly and easily build virtualenvs and automate running additional build steps like unit tests, documentation generation, and linting. When I download a new Python project at Knewton, I can just run tox, and it’ll build a new virtualenv, install all the dependencies, and run the unit tests. This really reduces setup friction, making it easy to contribute to any Python project at Knewton.
 
 A tox.ini file at Knewton might look something like this:
+
 
 [tox]
 envlist=py27                         # We use only Python 2.7
@@ -240,43 +465,9 @@ Nice package, which will make our work
 
 
 
-# Other tools
-
-
-## source code version control with GitHub
-
-## Dependency automation with pyup.io
-
-## Documentation automation with ### Read-the-docks
-
-## continuous integration
-
-### TravisCI
-
-### CircleCI
-
-
-## Continuous deployment
-
-### Issues and bugs tracking
-
-
 ## Continuous delivery
 
 
-
-
-# What else?
-
-## jenkins
-
-
-## Buildbot
-
-
-## pyup.io
-
-## requirements.txt
 
 
 Virtual environment can be managed using two fantastic tools:
@@ -450,3 +641,11 @@ On that topic, I suggest that you read Nick Stinemates’ blog post about runnin
 Self documenting code from _docstrings_. In this project Sphinx framework will generate quality documentation each time update is being pushed to the project master.
 
 __If you have any comments, or ideas how to improve this tutorial, please let me know by leaving a post below, or contacting me via email.__
+ -->
+<!-- Links -->
+<!-- www -->
+
+[pip]:             https://pip.pypa.io/en/stable/user_guide/#requirements-files
+[pep440]:          https://www.python.org/dev/peps/pep-0440/
+[bumpversion]:     https://github.com/peritus/bumpversion
+[biostudiosource]: https://gitlab.com/mdyzma/biostudio/tree/master

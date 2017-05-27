@@ -40,3 +40,7 @@ http://www.alexconrad.org/2011/10/jenkins-and-python.html
 
 http://bhfsteve.blogspot.be/2012/04/automated-python-unit-testing-code.html
 
+https://tech.knewton.com/blog/2015/09/best-practices-for-python-dependency-management/
+https://jpetazzo.github.io/2013/12/01/docker-python-pip-requirements/
+https://github.com/pybuilder/pybuilder
+https://www.blazemeter.com/blog/jenkins-vs-other-open-source-continuous-integration-servers
