@@ -1,7 +1,7 @@
 ---
 layout:     post
 author:     Michal Dyzma
-title:      "Part 1: Application design"
+title:      "**Biostudio** Part 1: Application design"
 date:       2017-04-21 11:18:53
 comments:   true
 categories: biostudio software-engineering python
@@ -11,9 +11,9 @@ keywords:   biostudio, software-design, agile, python
 
 In __Part 1__ I will present process of application design. From collecting requirements to low level design describing specific algorithms and implementations. Final result should give something in form of _Software Design Document_  that can be easily transformed to professional SSD template which can be used for other projects.
 
-## About project
+## About biostudio project
 
-This is part of  what should develop to a series on _Biostudio_ - development of python app, including best practices and solutions used in corporate projects. From preparing  software specifications to fully functional software deployed to the PyPI repository. Final product will be GUI application for Protein Data Bank ```.pdb``` files editor, which carry information about molecule 3D structure.
+This is part of  what should develop to a series of articles on development process of _Biostudio_ - python GUI app. It will include best practices and solutions used in corporate projects. From preparing  software specifications to fully functional software deployed to the PyPI repository. Final product will be GUI application for Protein Data Bank ```.pdb``` files editor, which carry information about molecule 3D structure.
 
 <!-- {% include note.html content="Python version 3 is used throughout this material." %}  -->
 

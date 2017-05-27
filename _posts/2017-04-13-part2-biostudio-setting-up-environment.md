@@ -8,13 +8,11 @@ categories: biostudio workflow python
 keywords:   biostudio, workflow, python
 ---
 
-In __Part 2__ I will set up and show how to manage virtual environments for python (development, production). Initiate version control and software version automation system. Additionally I will set up continuous integration service using GitLab, which will include automatic testing and documentation update every time update s pushed to the master branch of the software repository.
+In __Part 2__ I will set up and show how to manage virtual environments in python. Initiate version control and software versioning automation. Additionally I will set up continuous integration service using GitLab, which will include automatic testing with pytest and documentation creation. Code will run tests every time update has been pushed to the master branch of the software repository.
 
-## About project
+#### About biostudio project
 
-This is part of  what should develop to a series on _Biostudio_ - development of python app, including best practices and solutions used in corporate projects. From preparing  software specifications to fully functional software deployed to the PyPI repository. Final product will be GUI application for Protein Data Bank ```.pdb``` files editor, which carry information about molecule 3D structure.
-
-{% include note.html content="Python version 3 is used throughout this material." %} 
+This is part of  what should develop to a series of articles on development process of _Biostudio_ - python GUI app. I will include best practices and solutions used in corporate projects. From preparing  software specifications to fully functional software deployed to the PyPI repository. Final product will be GUI application for Protein Data Bank ```.pdb``` files editor, which carry information about 3D structure of biological macro-molecules.
 
 -----
 _Series consists of:_
@@ -33,39 +31,97 @@ https://tech.knewton.com/blog/2015/09/best-practices-for-python-dependency-manag
 https://jpetazzo.github.io/2013/12/01/docker-python-pip-requirements/
 https://github.com/pybuilder/pybuilder
 https://www.blazemeter.com/blog/jenkins-vs-other-open-source-continuous-integration-servers
-# Automatic start
 
+## basi configuation
 
-We will set up basic structure of our project. Basic biolerplate code for our can be generated automatically. It is usually very boring process of copying some files/folders and adjusting all variables to the needs of our project. Typical app may have dosens of places, where you need to put correct values to make it fully custom. Why not automate it? This is wher
-
+========|
+Platform|
+Python  | 3.6
+========|
 
 ## Virtualenv
 
-Best Practices for Python Dependency Management
-Posted on September 28, 2015 by Paul Kernfeld . View the latest posts.
+Before I start to write the code I will set up clean environment with Python interpreter. It is a common practice to start new projects with their own Python and packages in a sandbox. Environments are created by `virtualenv` package. It will automatically match main system interpreter found on system path, but it is possible to specify other version as well. To do that one has to specify `--python` flag and point to the executable of specific python version installed in the system. It is also good to separate program code and virtual environment own directory. The later may grow quite big and it makes no sens to keep all python packages, used during development, under our own project version control. Virtual environment may be anywhere on the disc and what I usually do is to create `.envs` folder in home directory and group all environments over there.
 
-Dependency management is like your city’s sewage system. When it’s working well, it’s easy to forget that it even exists. The only time you’ll remember it is when you experience the agony induced by its failure.
+{% highlight bash %}
+    mdyzma@devbox:~$ mkdir .envs
+    mdyzma@devbox:~$ cd .envs/
+{% endhighlight %}
 
-Here’s what we want to accomplish with dependency management:
+Call virtualenv and specify Python interpreter. Because I will use default Python present in the system, 
 
-Builds should be stable across environments. If a project builds on my machine, it should build on others’ machines and on our build server.
-Builds should be stable over time. If a project builds now, it shouldn’t break in the future.1
-Anyone at Knewton should be able to easily download, build, and make changes to any Knewton project.
-We should be able to have many different projects with large dependency trees without running into dependency hell.
-The items below reflect how we do Python dependency management at Knewton. You may not need everything in this list, so items are introduced in order of increasing complexity.
+{% highlight bash %}
+    mdyzma@devbox:~/.envs$ virtualenv biostudio # optionally --python=path/to/other/python/interpreter/python
+    
+Using base prefix '/home/mdyzma/anaconda3'
+New python executable in /home/mdyzma/.envs/biostudio/bin/python
+copying /home/mdyzma/anaconda3/bin/python => /home/mdyzma/.envs/biostudio/bin/python
+Installing setuptools, pip, wheel...done.
+{% endhighlight %}
 
-Easily install your dependencies with pip
+All basic tools, which allow packages control (install, remove, update and create), were installed automatically. To start work in new environment, I need to activate it:
 
-When you want to use a Python library from your code, you’ll need to download the library, put it somewhere on your computer, and possibly build any external routines (e.g., C, C++, Fortran!?) that the library uses. It’s possible to do this all by hand, but there’s a much better way: pip.2 Pip is a Python tool that specializes in installing Python packages. For example, just run pip install numpy to install numpy and its dependencies. Pip also helps you to keep your version control repositories small by giving you a reproducible way to install packages without needing to include them in your source code repo.
+{% highlight bash %}
+    mdyzma@devbox:~/.envs$ source activate biostudio
+    #list packages in new environment
+    (biostudio) mdyzma@devbox:~/.envs$ pip list
+    appdirs (1.4.3)
+    packaging (16.8)
+    pip (9.0.1)
+    pyparsing (2.2.0)
+    setuptools (35.0.2)
+    six (1.10.0)
+    wheel (0.29.0)
+{% endhighlight %}
 
-Not only does pip let you install normal source packages, but it can also install packages from source control repos, wheels, and legacy binary distribution formats.
 
-The instructions for installing Python from The Hitchhiker’s Guide to Python will also tell you how to install pip.3 Pip’s user guide is a good way to get started with using pip, and the pip install documentation is helpful if you need to dive deeper.
+It is time to install basic development infrastructure:
 
-Pin your requirements with a requirements.txt file
+* Folders/files structure
+* Sphinx - documentation
+* sphinx-autobuild - running live preview
+* numpydoc - docstring style 
+* coverage - test coverage
+* pytest and its plugins - tests: 
+    - pytest-runner
+    - pytest-cov
+* 
 
-It’s easy to get a Python project off the ground by just using pip to install dependent packages as you go. This works fine as long as you’re the only one working on the project, but as soon as someone else wants to run your code, they’ll need to go through the process of figuring which dependencies the project needs and installing them all by hand. Worse yet, if they install a different version of a dependency than you used, they could end up with some very mysterious errors.
+{% highlight bash %}
+    # requiremnts.txt
+    Sphinx
+    sphinx-autobuild
+    numpydoc
+    coverage
+    pytest
+    pytest-runner
+    pytest-cov
+{% endhighlight %}
 
+#### Dependencies with pip and requirements.txt 
+
+It’s easy to get a Python project off the ground simply by using pip to install dependent packages as you go. This works fine as long as you’re the only one working on the project. As soon as someone else wants to run your code, they’ll need to go through the process of figuring which dependencies the project needs and installing them all by hand. It is problem prone and can lead to some very hard to spot program misbehavior. To prevent this, I can define a `requirements.txt` file that stores all of my project’s dependencies. My current requirements file looks like this:
+    
+{% highlight bash %}
+    # requiremnts.txt
+    Sphinx
+    sphinx-autobuild
+    numpydoc
+    coverage
+    pytest
+    pytest-runner
+    pytest-cov
+{% endhighlight %}
+
+I do not include packages versions, therefore latest will be downloaded and installed by pip:
+
+{% highlight bash %}
+    (biostudio) mdyzma@devbox:~$ pip install -r requirements.txt
+{% endhighlight %}
+
+
+
+===================
 To prevent this, you can define a requirements.txt file that records all of your project’s dependencies, versions included. This way, others can run pip install -r requirements.txt and all the project’s dependencies will be installed automatically! Placing this file into version control alongside the source code makes it easy for others to use and edit it. In order to ensure complete reproducibility, your requirements.txt file should include all of your project’s transitive (indirect) dependencies, not just your direct dependencies. Note that pip does not use requirements.txt when your project is installed as a dependency by others — see below for more on this.
 
 SAMPLE FILE
@@ -82,7 +138,7 @@ As a result of how Python paths work, pip installs all packages globally by defa
 project_1 and project_2 depend on different versions of the requests library. This is bad because only one version of requests can be installed at a time.
 project_1 and project_2 depend on different versions of the requests library. This is bad because only one version of requests can be installed at a time.
 
-The solution for this problem is to use virtual environments. A virtual environment consists of a separate copy of Python, along with tools and installed packages. Creating a virtualenv for each project isolates dependencies for different projects. Once you have made a virtualenv for your project, you can install all of that project’s dependencies into the virtualenv instead of into your global Python environment. This makes your setup look more like something you would create with Maven.
+The solution for this problem is to use virtual environments. A virtual environment consists of a xseparate copy of Python, along with tools and installed packages. Creating a virtualenv for each project isolates dependencies for different projects. Once you have made a virtualenv for your project, you can install all of that project’s dependencies into the virtualenv instead of into your global Python environment. This makes your setup look more like something you would create with Maven.
 
 Now you can install a different version of requests into each virtualenv, eliminating the conflict.
 Now you can install a different version of requests into each virtualenv, eliminating the conflict.
@@ -170,7 +226,11 @@ Use your per-project build system to build your project. To do this, run the tox
 What's this? You're reading N choose K, the Knewton tech blog. We're crafting the Knewton Adaptive Learning Platform that uses data from millions of students to continuously personalize the presentation of educational content according to learners' needs. Sound interesting? We're hiring.
 
 
+## Automatic start
 
+
+, this particular project will depend on. it is also advised to keep environments Luckily Python has very convenient tool to manage not only multiple Python instances, but instances with different versions. fresh
+We will set up basic structure of our project. Basic boilerplate code for our can be generated automatically. It is usually very boring process of copying some files/folders and adjusting all variables to the needs of our project. Typical app may have dosens of places, where you need to put correct values to make it fully custom. Why not automate it? This is where cookiecutter comes t the resque.
 ## Dependency management
 https://tech.knewton.com/blog/2015/09/best-practices-for-python-dependency-management/
 
