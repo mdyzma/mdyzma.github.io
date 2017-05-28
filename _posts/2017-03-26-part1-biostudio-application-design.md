@@ -20,7 +20,7 @@ This is part of  what should develop to a series of articles on development proc
 _Series consists of:_
 
 * [Part 1: Application designs]({{site.url}}/2017/03/26/part1-biostudio-application-design/)
-* [Part 2: Setting up work environment]({{site.url}}/2017/04/13/part2-biostudio-setting-up-environment/)
+* [Part 2: Setting up work environment]({{site.url}}/2017/05/28/part2-biostudio-setting-up-environment/)
 
 <!-- 
 * [Part 3: Test Driven Development]({{site.url}}/2017/04/14/part3-biostudio-design-implementation-tdd/)
