@@ -45,24 +45,13 @@ Source  | | [link](https://gitlab.com/mdyzma/biostudio)
 
 ## Introduction
 
-Simple fact is that it is not important what kind of methodology you use, as long as it allows you to deliver high quality software at the end of each development cycle (on time and on budget). Most of the small open-source projects is born as an idea in the head of one person, without any design documentation, requirements, with rudimentary diagrams drawn on the piece of paper in the notebook. The only automated task used from day one is usually source code control. This works in the beginning of the project, when single person handles all the tasks. Unfortunately it fails miserably when project gains popularity or grows bigger and requires more team members, who's work must be coordinated.
+Simple fact is that it is not important what kind of methodology you use, as long as it allows you to deliver high quality software at the end of each development cycle (on time and on budget). Most of the small open-source projects is born as an idea in the head of one person, without any design documentation, requirements, with rudimentary diagrams drawn on the napkin. The only automated task used from day one is usually source code control. This works at the beginning, in projects infancy, when single developer handles all the tasks. Unfortunately it fails miserably when project gains popularity or grows bigger and requires more team members, who's work must be coordinated.
 
-Maintaining project written by team of developers without any specs, design, common goal, and automatic delivery is a horrible idea, and should not happen at all, ever! It can be easily avoided, just by following already tested solutions, which can give you some decent control over the project. If you run company and try to sell product It is a MUST, and allows to promise and provide software, that will satisfy your customer.
+Maintaining project written by team of developers without any specs, design, common goal, and automatic delivery is a horrible idea, and should not happen at all, ever! It can be easily avoided, just by following already tested solutions, which offer some decent control over the project. If you run company and try to sell product It is a MUST. It also allows to promise regular delivery of the  software, that will satisfy customer.
 
-In corporate projects one of the most important part of the project is : DOCUMENTATION. From the very beginning i.e software specification, to the final version of user's manual. Documentation must be maintained and updated. Period. Because it is time-consuming, dull and requires collaboration between many team members, writing documentation/comments is usually assigned to the new team members as a part of _getting familiar with the project_. It is a mistake in my humble opinion Due to this reasons documentation is generally incomplete
-or out-of-date at any given time. There is one solution - writing documentation must be automatic process, triggered by code staging or release. Therefore one should try to write self-documenting code and keep specific branch in your delivery pipeline devoted to proper documentation production, which will guarantee that your documentation reflects at least comments in your code. We will deal with this problem in Part 2. In this article we will prepare _Software Design Document_ for our project I called **biostudio**.
+In corporate projects one of the most important part of the project is documentation. From the very beginning i.e software specification, to the final version of user's manual. Documentation must be maintained and updated. Period. Because it is time-consuming, dull and requires collaboration between many team members, writing documentation/comments is usually assigned to new team members as a part of _getting familiar with the project_. It is a mistake in my humble opinion Due to this reasons documentation is generally incomplete or out-of-date at any given time. There is one solution - writing documentation must be automatic process, triggered by code staging or release. Therefore one should try to write self-documenting code and keep specific branch in your delivery pipeline devoted to proper documentation production, which will guarantee that produced documentation reflects at least docstrings in the code. I will deal with this problem in Part 2 and Part 3. In this article I will prepare _Software Design Document_ for the project I called **Biostudio**.
 
-<!-- 
-
-, speci And it is fine, since there is only one person developing and maintaining it.   Once project grows, gains popularity and becomes developed by a griop some documentation generators are also in use. Book stories usually deal with two kinds of stories:
-
-    1. Perfect projects delivered on time, with beautiful dashboards and velocity graphs etc...
-    2. Perfect projects with some fake perturbations with perfect solutions showing crisis management.
-
-This tutorial is nothing like that. We will utilize some good ideas related to good project management, with 
-    in software-engineering books are full of fake projects and fake management issues related t laHowever some ideas were tested in practice and there is no use to develop wheel again. The best approach is to use someone else's experience, to improve our own process of efficient delivery of high quality software to the client.
- -->
-
+## Go Agile
 
 In this tutorial I will adopt elements of agile software development techniques with some necessary adjustments, which in fact resembles extreme programing paradigm. Obviously I will have to play roles of all partners involved in agile process. The client communicating requirements and making changes to the project, developers team responsible for preparing documentation and proper implementation, as well as project manager contacting assigning/managing tasks, software evolution and releases. There will be no budget constrains and budget planning. No effort or time estimation. No stand-up meetings etc...
 
@@ -72,34 +61,23 @@ Employed technologies will also help to automate some management tasks like over
 
 Since it is agile methodology, each iteration will result in deploying new version of functional software, which should meet client criteria.
 
- To choose a technology platform and testing tools.
-• To set up a simple, automated build.
-• To work out stories that follow the INVEST principles [ddVMFH] (they
-should be Independent, Negotiable, Valuable, Estimable, Small, and
-Testable), with acceptance criteria.
-You can then implement a strict process:
-• Customers, analysts, and testers define acceptance criteria.
-• Testers work with developers to automate acceptance tests based on the
-acceptance criteria.
-• Developers code behavior to fulfill the acceptance criteria.
-• If any automated tests fail (whether unit, component, or acceptance tests),
-developers make it a priority to fix them
-
-
 ## Initial requirements
 
-The purpose of this project is to build a GUI desktop app responsible for reading, viewing and changing Protein Data Bank fies, holding information about proteins 3D structure. Application should work on Windows, Linux and/or MacOS operating system. Actually in the first sentence we have envisioned at least six requirements, which describe general features our app should have:
+The purpose of this project is to build a GUI desktop app responsible for reading, viewing and changing Protein Data Bank fies, holding information about proteins 3D structure. Application should work on Windows, Linux and/or MacOS operating system. Actually in the first sentence I have envisioned at least six requirements, which describe general features my app should have:
 
 
- 1. GUI interface
- 2. read ```pdb``` files
+ 1. GUI interface running on Windows and Linux OS
+ 2. read ``pdb`` files
  3. display file's content
  4. edit/change
- 5. we anticipate necessity to save changes
- 6. platform agnostic 
+ 5. save changes
 
-t the project by doing some initial modeling where we envision the initial requirements for KSMS, in the form of user stories, as well as the initial architecture. A user story is a reminder to have a conversation with a project stakeholder, hence there are not a lot of details provided in the table. When we start working on a user story we work closely with the user, ideally getting them involved with the modeling effort via Agile Modeling's Active Stakeholder Participation practice. As we explore the requirement we capture UI-related ideas, business rules, and structural information (e.g. business entities, the relationships between them). We also implement the requirement, hopefully taking a TDD-based approach which enables us to do less detailed design modeling because the tests capture this critical information, in both our objects and the database. The system will be built using object technology (e.g. J2EE or C#) on the front end and relational technology (e.g. MySql, Oracle) on the back end - See more at: http://www.agiledata.org/essays/agileDataModeling.html#Iteration6
-Scope of the project is o, from users perspective - what our software is supposed to do?
+This initial requirements for _Biostudio_, in the form of user stories may be presented as follows:
+
+1. User can work with pdb files using window interface.
+2. User opens and pdb files from location on hardrive
+
+When we start working on a user story we work closely with the user, ideally getting them involved with the modeling effort via Agile Modeling's Active Stakeholder Participation practice. As we explore the requirement we capture UI-related ideas, business rules, and structural information (e.g. business entities, the relationships between them). We also implement the requirement, hopefully taking a TDD-based approach which enables us to do less detailed design modeling because the tests capture this critical information, in both our objects and the database. The system will be built using object technology (e.g. J2EE or C#) on the front end and relational technology (e.g. MySql, Oracle) on the back end - See more at: http://www.agiledata.org/essays/agileDataModeling.html#Iteration6
 
 
 
@@ -219,7 +197,7 @@ The clean blog template include the blog name in every post title, which is bad 
 
 To continue check:
 
-[Part 2: Setting up work environment]({{ site.url }}/2017/04/13/part2-biostudio-setting-up-environment/) 
+[Part 2: Setting up work environment]({{ site.url }}/2017/05/28/part2-biostudio-setting-up-environment/) 
 
 
 

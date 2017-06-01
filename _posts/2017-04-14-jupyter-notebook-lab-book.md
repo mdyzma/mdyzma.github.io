@@ -13,7 +13,7 @@ Data analysis using Jupyter Notebook. I will mention biology and focus on work w
 
 $$
 \frac{\partial c_\gamma}{\partial t} = D_c \Delta c_\gamma + \phi(c) \delta_{\gamma} + 
-	\sum_{i=1}^n \left[ k^{-}_{i\gamma} b_{i\gamma} - k^{+}_{i\gamma} c (b^0_{i\gamma} -b_{i\gamma})\right]
+    \sum_{i=1}^n \left[ k^{-}_{i\gamma} b_{i\gamma} - k^{+}_{i\gamma} c (b^0_{i\gamma} -b_{i\gamma})\right]
 $$
 
 ## Data analysis

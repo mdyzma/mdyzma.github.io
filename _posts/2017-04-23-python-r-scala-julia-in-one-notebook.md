@@ -428,11 +428,8 @@ Do you want to continue? [y/N]: y
 Repository successfully enabled.
 {% endhighlight %}
 
-<<<<<<< HEAD
-After that you can easily install stable build of Julia:
-=======
+
 After that you can easily install specific build of Julia compiler:
->>>>>>> c52c846f0ab6b75ccf1c0c8b1462282e084c80af
 
 {% highlight bash %}
 [mdyzma@devbox mdyzma]$ sudo dnf install julia
@@ -452,7 +449,6 @@ Installed size: 260 M
 
 {% endhighlight %}
 
-It is also possible to use less stable repository with nightly builds (v0.7.0 currently) to install bleeding edge developer version. Use `sudo dnf copr enable nalimilan/julia-nightlies` in order to do that. Windows users can get convenient [Julia `installer][julia].
 
 To verify either type `julia --version` or simply try to run Julia REPL:
 
