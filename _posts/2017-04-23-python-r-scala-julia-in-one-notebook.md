@@ -25,8 +25,8 @@ I have chosen four most powerful languages used in Data Science and Big Data ana
 | [Python 2][python2]   | | __2.7.13__ |
 | [Python 3][python3]   | | __3.6.1__  |
 | [R][rlang]            | | __3.4.0__  |
-| [Scala][scala]        | | __2.12.1__ |
 | [Julia][julia]        | | __0.7.0__  |
+| [Scala][scala]        | | __2.12.1__ |
 
 
 ## Procedure
@@ -35,14 +35,14 @@ I will follow this procedure to prepare work environment:
 
 1. [installing Python interpreter](#python_dist)
 2. [installing R language](#r_lang)
-3. [installing Scala or sbt compiler](#scala_compiler)
-4. [installing Julia language compiler](#julia_compiler)
+3. [installing Julia language compiler](#julia_compiler)
+4. [installing Scala or sbt compiler](#scala_compiler)
 5. installing additional jupyter kernels:
     * [ipykernel](#ipykernel) - multiple Python support
     * [IRkernel](#irkernel_py) via conda - R language support
     * [IRkernel](#irkernel_r) via R
-    * [IScala](#iscala) - Scala support
     * [IJulia](#ijulia) - Julia REPL in notebook
+    * [IScala](#iscala) - Scala support
 
 So my goal is to install Python, Scala, Julia and R on working machine. Additionally to run notebooks in languages other than Python I need to install specific middle-ware called kernels. 
 
@@ -200,6 +200,82 @@ The RPM of `R` is a meta package, which will install following components:
 
 
 According to CRAN manual Fedora will also require developer versions, which contain header files necessary to properly install other R packages and to compile them from the source. Windows users have simple [installer][rwin] at their disposal.
+
+
+
+<a name="julia_compiler"></a>
+
+## Julia compiler
+
+A [Copr repository](https://copr.fedorainfracloud.org/coprs/nalimilan/julia/) is provided for Fedora users. To install Julia just run:
+
+{% highlight bash %}
+[mdyzma@devbox mdyzma]$ sudo dnf copr enable nalimilan/julia
+{% endhighlight %}
+
+Bleeding edge version of Julia is held in separate repository, which can be added with this command: `sudo dnf copr enable nalimilan/julia-nightlies`. I decided to install nightly Julia release. Adding any of mentioned above results in:
+
+{% highlight bash %}
+[mdyzma@devbox mdyzma]# dnf copr enable nalimilan/julia-nightlies
+
+You are about to enable a Copr repository. Please note that this
+repository is not part of the main Fedora distribution, and quality
+may vary.
+
+The Fedora Project does not exercise any power over the contents of
+this repository beyond the rules outlined in the Copr FAQ at
+<https://fedorahosted.org/copr/wiki/UserDocs#WhatIcanbuildinCopr>, and
+packages are not held to any quality or security level.
+
+Please do not file bug reports about these packages in Fedora
+Bugzilla. In case of problems, contact the owner of this repository.
+
+Do you want to continue? [y/N]: y
+Repository successfully enabled.
+{% endhighlight %}
+
+
+After that you can easily install specific build of Julia compiler:
+
+{% highlight bash %}
+[mdyzma@devbox mdyzma]$ sudo dnf install julia
+Password:
+
+Copr repo for julia-nightlies owned by nalimilan                                                                                                              53 kB/s |  67 kB     00:01
+Dependencies resolved.
+=========================
+... List of packages ...
+
+Transaction Summary
+=========================
+Install  59 Packages
+
+Total download size: 60 M
+Installed size: 260 M
+
+{% endhighlight %}
+
+
+To verify either type `julia --version` or simply try to run Julia REPL:
+
+{% highlight bash %}
+[mdyzma@devbox mdyzma]$ julia
+   _       _ _(_)_     |  A fresh approach to technical computing
+  (_)     | (_) (_)    |  Documentation: https://docs.julialang.org
+   _ _   _| |_  __ _   |  Type "?help" for help.
+  | | | | | | |/ _` |  |
+  | | |_| | | | (_| |  |  Version 0.7.0-DEV.401 (2017-05-30 17:07 UTC)
+ _/ |\__'_|_|_|\__'_|  |  Commit e3794ee* (2 days old master)
+|__/                   |  x86_64-redhat-linux
+
+julia>
+
+julia> 2+2
+4
+
+julia>
+{% endhighlight %}
+
 
 
 <a name="scala_compiler"></a>
@@ -396,80 +472,6 @@ hello
 
 {% endhighlight %}
 
-
-<a name="julia_compiler"></a>
-
-## Julia compiler
-
-A [Copr repository](https://copr.fedorainfracloud.org/coprs/nalimilan/julia/) is provided for Fedora users. To install Julia just run:
-
-{% highlight bash %}
-[mdyzma@devbox mdyzma]$ sudo dnf copr enable nalimilan/julia
-{% endhighlight %}
-
-Bleeding edge version of Julia is held in separate repository, which can be added with this command: `sudo dnf copr enable nalimilan/julia-nightlies`. I decided to install nightly Julia release. Adding any of mentioned above results in:
-
-{% highlight bash %}
-[mdyzma@devbox mdyzma]# dnf copr enable nalimilan/julia-nightlies
-
-You are about to enable a Copr repository. Please note that this
-repository is not part of the main Fedora distribution, and quality
-may vary.
-
-The Fedora Project does not exercise any power over the contents of
-this repository beyond the rules outlined in the Copr FAQ at
-<https://fedorahosted.org/copr/wiki/UserDocs#WhatIcanbuildinCopr>, and
-packages are not held to any quality or security level.
-
-Please do not file bug reports about these packages in Fedora
-Bugzilla. In case of problems, contact the owner of this repository.
-
-Do you want to continue? [y/N]: y
-Repository successfully enabled.
-{% endhighlight %}
-
-
-After that you can easily install specific build of Julia compiler:
-
-{% highlight bash %}
-[mdyzma@devbox mdyzma]$ sudo dnf install julia
-Password:
-
-Copr repo for julia-nightlies owned by nalimilan                                                                                                              53 kB/s |  67 kB     00:01
-Dependencies resolved.
-=========================
-... List of packages ...
-
-Transaction Summary
-=========================
-Install  59 Packages
-
-Total download size: 60 M
-Installed size: 260 M
-
-{% endhighlight %}
-
-
-To verify either type `julia --version` or simply try to run Julia REPL:
-
-{% highlight bash %}
-[mdyzma@devbox mdyzma]$ julia
-   _       _ _(_)_     |  A fresh approach to technical computing
-  (_)     | (_) (_)    |  Documentation: https://docs.julialang.org
-   _ _   _| |_  __ _   |  Type "?help" for help.
-  | | | | | | |/ _` |  |
-  | | |_| | | | (_| |  |  Version 0.7.0-DEV.401 (2017-05-30 17:07 UTC)
- _/ |\__'_|_|_|\__'_|  |  Commit e3794ee* (2 days old master)
-|__/                   |  x86_64-redhat-linux
-
-julia>
-
-julia> 2+2
-4
-
-julia>
-{% endhighlight %}
-
 ## Kernels installation
 
 Jupyter notebook is a fantastic tool, that allows my favorite programming style: Prototype driven development. Existence of REPL (Read, Evaluate, Print Loop) in all installed languages can be used to instantaneously test our code. We can also test our tests. This makes commits cleaner and faster. After all -  it is much easier to control very small chunks of the code and work on it interactively. First IPython  notebook made it possible with python, but later Jupyter project began to live own life and extended functionality by adding more languages it could "manage". It is done by specific middle-ware called "kernel". There is nearly 100 different kernels now(see [here][kernels]). Lets get Big Four. 
@@ -624,11 +626,11 @@ INFO: Precompiling module IJulia.
 julia> notebook()
 {% endhighlight %}
 
-Since I already had two additional kernels installed (python 2,  and R), IJulia will be added to the collection. :)
+Since I already had two additional kernels installed (python 2,  and R), IJulia will be added to the collection.
 
 ![julia-kernel][withjuliakernel]
 
-{% include note.html content="In the meantime I updated entire Anaconda package (``conda update --all``), including Jupyter notebook, which changed little bit its UI. You may notice that kernel are displayed first. Opposite to previous screen-shots." %}
+{% include note.html content="In the meantime I updated entire Anaconda bundle (``conda update --all``), including Jupyter notebook, which changed little bit its UI. You may notice that kernel are displayed first. Opposite to previous screen-shots." %}
 
 
 In Julia language `using <package Name>` is an __import statement__, which pre-compiles and gets ready to work module/program denoted in the statement. Next line calls this programs subroutine called `notebook`. If you use some arguments, you can modify notebooks behavior. For example `notebook(detached=true)`, Julia will run notebook server in the background and you will be able to use or exit REPL without closing the notebook. 
