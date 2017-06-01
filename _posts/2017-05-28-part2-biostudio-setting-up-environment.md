@@ -20,7 +20,7 @@ _Series consists of:_
 
 * [Part 1: Application designs]({{site.url}}/2017/03/26/part1-biostudio-application-design/)
 * [Part 2: Setting up work environment]({{site.url}}/2017/05/28/part2-biostudio-setting-up-environment/)
-* [Part 3: Automate stuff]({{site.url}}/2017/06/24/part3-biostudio-automate-stuff/)
+* [Part 3: Automate everything]({{site.url}}/2017/06/24/part3-biostudio-automate-everything/)
 
 <!-- 
 * [Part 4: Low Level Design implementation]({{site.url}}/2017/04/15/part4-biostudio-design-implementation-continue/)
@@ -29,11 +29,8 @@ _Series consists of:_
 * [Part 7: Application life cycle]({{site.url}}/2017/04/18/part7-biostudio-application-lifecycle/)
 * [Part 8: Code metrics]({{site.url}}/2017/04/19/part8-biostudio-code-metrics/)
  -->
------
 
-
-## Basic configuration
-
+#### Basic configuration
 
 Platform| | **Linux 64 bit** (Fedora or Ubuntu)
 Python  | | **3.6.1**
@@ -42,7 +39,7 @@ Source  | | [link][bsproject]
 <br>
 {% include note.html content="I will run the code using docker virtualization technology or spin new VirtualBox of Fedora or Ubuntu, to test how it works freshly out of the box. So I can be sure every piece of code was properly tested. Outputs from my tests will be pasted here, unless they are ridiculous long (hundreds of lines). Then I will truncate output to the bare minimum necessary to understand what is going on." %}
 
-
+-----
 
 ## Virtual environment
 

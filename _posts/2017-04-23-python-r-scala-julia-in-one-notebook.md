@@ -8,7 +8,7 @@ categories: python R Scala Julia jupyter-notebook
 keywords:   python, R, Scala, Julia, jupyter notebook, data science
 ---
 
-How to create versatile environment, in which different languages are available and able to communicate with each other? Without changing program you work in and where data may be passed between specific structures characteristic for the language? This post will show you how to do it with four most powerful languages used in Data Science: __Python__, __R__, __Scala__ and __Julia__.
+Shall I use R, Julia, Scala or Python? The answer is: **Yes!** How to create versatile environment, in which different languages are available and able to communicate with each other? Without changing program you work in and where data may be passed between specific structures characteristic for the language? This post will show you how to do it with four most powerful languages used in Data Science: __Python__, __R__, __Scala__ and __Julia__.
 
 
 ## Introduction
@@ -164,7 +164,7 @@ Conda command should result in displaying detailed information about current Ana
                     UID:GID : 0:0
 {% endhighlight %}
 
-Running python should expose interpreter's REPL:
+Running python should expose interpreters REPL:
 
 {% highlight bash %}
 
@@ -655,36 +655,24 @@ https://ipython.readthedocs.io/en/latest/install/kernel_install.html
 
 ## One to rule them all...
 
-Once all kernels are installed, you can see the available kernels:
+Once all kernels are installed, you can print all available kernels using Jupyter function:
 
 {% highlight bash %}
 [mdyzma@devbox mdyzma]$ jupyter kernelspec list
 Available kernels:
-    julia-0.5    C:\Users\MIDY\AppData\Roaming\jupyter\kernels\julia-0.5
-    python2      C:\Users\MIDY\AppData\Roaming\jupyter\kernels\python2
-    python3      C:\Users\MIDY\AppData\Roaming\jupyter\kernels\python3
-    vpython      C:\Users\MIDY\AppData\Roaming\jupyter\kernels\vpython
-    ir           C:\Users\MIDY\AppData\Local\Continuum\Anaconda2\share\jupyter\kernels\ir
+    julia-0.5    /home/mdyzma/.jupyter/kernels/julia-0.5
+    python2      /home/mdyzma/.jupyter/kernels/python2
+    python3      /home/mdyzma/.jupyter/kernels/python3
+    vpython      /home/mdyzma/.jupyter/kernels/vpython
+    ir           /home/mdyzma/.jupyter/kernels/kernels\ir
 {% endhighlight %}
 
-
-What language, which program to chose for data science? Which one is better? Python? R? Maybe Julia? Which should I use? All have advantages and weaknesses. Python is more general programming language, R has strong community support in math and statistics. Julia is strongly typed, uber fast...
-
-This question and answers often appear in discussions. So which one?
-
-There is no good answer to this questions. If you want do big things use all tools available. Use best tools possible. Nothing more, nothing less.
-
-If you struggle between using python or R, don't! Why not use both?! At the same time in the same notebook, passing data structures between languages and perform analysis with the best tools they can offer. With Jupyter notebook it is all possible. It is possible to add even more players to the game. Julia, Haskel, Lua, bash, Octave... Pick whatever you can... Currently Jupyter supports nearly 100 different kernels (check [here][kernels]).
+There. Versatile, multi-language prototyping environment. 
 
 
+If you struggle between using python or R, don't! Use all of them! At the same time in the same notebook, passing data structures between languages and perform analysis with the best tools they can offer. With Jupyter notebook it is all possible. It is possible to add even more players to the game. Julia, Haskel, Lua, bash, Octave... Pick whatever you can... Currently Jupyter supports nearly 100 different kernels (check [here][kernels]).
 
-{% highlight python %}
-def print_hi(name)
-  print("Hi, {0}".format(name))
 
-print_hi('Tom')
-#=> prints 'Hi, Tom' to STDOUT.
-{% endhighlight %}
 
 
 <!-- Links -->

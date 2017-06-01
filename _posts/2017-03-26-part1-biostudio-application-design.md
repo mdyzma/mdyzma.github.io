@@ -30,9 +30,9 @@ _Series consists of:_
 * [Part 7: Application life cycle]({{site.url}}/2017/04/18/part7-biostudio-application-lifecycle/)
 * [Part 8: Code metrics]({{site.url}}/2017/04/19/part8-biostudio-code-metrics/) -->
 
------
 
-## Basic configuration
+
+#### Basic configuration
 
 
 Platform| | **Linux 64 bit**
@@ -42,6 +42,7 @@ Source  | | [link](https://gitlab.com/mdyzma/biostudio)
 <br>
 {% include note.html content="I will run the code using docker virtualization technology or spin new VirtualBox Fedora or Ubuntu, to test how it works freshly out of the box. So I can be sure every piece of code was properly tested. Outputs from my tests will be pasted here, unless they are ridiculous long (hundreds of lines). Then I will truncate output to the bare minimum necessary to understand what is going on." %}
 
+-----
 
 ## Introduction
 
