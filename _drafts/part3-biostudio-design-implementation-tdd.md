@@ -53,6 +53,7 @@ There is no need to convince anyone, that automated workflow can
 
 ## Automate everything
 
+<<<<<<< HEAD
 According to Jez Humbles classical 
 
 #### Tox
@@ -67,6 +68,18 @@ lenvs. It lets you quickly and easily build virtualenvs and automate running add
 And there is.. It is called **Continuous Integration**. At this point I have all necessary tools and command, which would allow me to manually build specific part of my application, by creating packages from particular git commits, or documentation. I can run suit of unit tests and check how some basic metrics of my code look like. I can do it using 5 or six terminal commands, and repeat them each time my work progress. But there is still room for improvement. I want system, which fires up application testing,  builds packages and updates documentation each time i push commits to the repository. Moreover I want to track progress of such pipeline and be able to identify steps which fail and quickly revert to latest stable build. 
 
 
+=======
+According to Jazz
+proper pipelineautomating 
+**Tox** comes to the rescue. Tox is a Python tool for managing virtualenvs. It lets you quickly and easily build virtualenvs and automate running additional build steps like unit tests, documentation generation, and linting. When I download a new Python project at Knewton, I can just run tox, and it’ll build a new virtualenv, install all the dependencies, and run the unit tests. This really reduces setup effort, making it easy to contribute to any Python project by other developers.
+
+
+
+
+And there is.. It is called **Continuous Integration**. At this point I have all necessary tools and command, which would allow me to manually build specific part of my application, by creating packages from particular git commits, or documentation. I can run suit of unit tests and check how some basic metrics of my code look like. I can do it using 5 or six terminal commands, and repeat them each time my work progress. But there is still room for improvement. I want system, which fires up application testing,  builds packages and updates documentation each time i push commits to the repository. Moreover I want to track progress of such pipeline and be able to identify steps which fail and quickly revert to latest stable build. 
+
+
+>>>>>>> 7056b8388a71061277634ea1a3277b7b6e689b24
 #### GitLabCI
 
 
@@ -77,12 +90,15 @@ And there is.. It is called **Continuous Integration**. At this point I have all
 
 Another vital aspect is documentation dissemination. It is hard to expect from users to download current source code, install all dependencies (sometimes very numerous) and build actual documentation themselves. [Read the docs web site][rtd] comes to the rescue. Every registered user can bind GitHub or GitLab repository with the service, and have automatic build system, which will sense changes in the repository and rebuild documentation every time push command was executed.
 
+<<<<<<< HEAD
 To continue check:
 
 [Part 4: Using design patterns]({{ site.url }}/2017/05/28/part2-biostudio-setting-up-environment/) 
 
 __If you have any comments, or ideas how to improve this tutorial, please let me know by leaving a post below, or contacting me via email.__
 
+=======
+>>>>>>> 7056b8388a71061277634ea1a3277b7b6e689b24
 <!-- 
 
 Now that I have virtualenvs for the projects, you’ll want an easy way to build the virtualenv and install all the dependencies from your requirements.txt file. An automatic way to set up virtualenvs is important for getting new users started with your project, and is also useful for enabling you to quickly and easily rebuild broken virtualenvs.
