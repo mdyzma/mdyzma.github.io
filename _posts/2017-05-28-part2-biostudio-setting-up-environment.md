@@ -765,24 +765,19 @@ python setup.py bdist bdist_wheel
 {% endhighlight %}
 
 This is the essence of entire post. Each command in this three points forms single brick building entire application. Although it is not a problem to execute this commands every time I need them, it may be very confusing if this approach was adopted by entire team. Imagine each developer using different versions of the code, different test coverage and different stage of documentation production. All this must be combined somehow with our code repository, so everyone can pull current most up-to-date software and start to work on it, and update repository , so everyone else, who might be working on the project, can merge changes to their own working directories. 
-<<<<<<< HEAD
 
 In addition I will need several different virtual environments to test built packages, at least 3-4 for different Python 3.X and maybe two for Python 2.6 and 2.7. Then I must install all production dependencies in every environment... System grows quickly and becomes very hard to maintain across development team. I will follow Raymond Hattinger, one of the core developers, and very talented speaker:
 
 > There must be a better way
 
-And there is. In next part I will focus on setting logical pipeline out of my building blocks and ensure each team member has access to the same pool of tests, dependencies etc. If you are interested how to integrate  Continuous Delivery and Continuous Deployment into your workflow, please check [Part 3: Automate stuff]({{site.url}}/2017/06/24/part3-biostudio-automate-stuff/).
+And there is. In next part I will focus on setting logical pipeline out of my building blocks and ensure each team member has access to the same pool of tests, dependencies etc. If you are interested how to integrate  Continuous Delivery and Continuous Deployment into your workflow.
 
-__If you have any comments, or ideas how to improve this tutorial, please let me know by leaving a post below, or contacting me via email.__
-=======
 
-In addition I will need several different virtual environments to test built packages, at least 3-4 for different Python 3.X and maybe two for Python 2.6 and 2.7. Then I must install all production dependencies in every environment... System grows quickly and becomes very hard to maintain across development team. I will follow Raymond Hattinger, one of the core developers, and very talented speaker:
+Please check [Part 3: Automate everything]({{site.url}}/2017/06/24/part3-biostudio-automate-everything/).
 
-> There must be a better way
 
-And there is. In next part I will focus on setting logical pipeline out of my building blocks and ensure each team member has access to the same pool of tests, dependencies etc. If you are interested how to integrate  Continuous Delivery and Continuous Deployment into your workflow, please check [Part 3: Automate stuff]({{site.url}}/2017/06/24/part3-biostudio-automate-stuff/).
+**If you have any comments, or ideas how to improve this tutorial, please let me know by leaving a post below, or contacting me via email.**
 
->>>>>>> 7056b8388a71061277634ea1a3277b7b6e689b24
 
 <!-- Links -->
 <!-- www -->
