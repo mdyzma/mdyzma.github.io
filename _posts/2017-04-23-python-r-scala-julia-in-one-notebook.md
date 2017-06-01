@@ -13,7 +13,7 @@ Shall I use R, Julia, Scala or Python? The answer is: **Yes!** How to create ver
 
 ## Introduction
 
-It is hard to choose "right" language for data analysis, especially if you are beginner and do not want to go into details about strengths and weaknesses of particular solutions. Should I choose R or Python (2 or 3), maybe Julia would be faster?  What should I use to work with large data sets? My answer is: use what you can! Take the best you can from several languages and make it work. This post will show you how.
+It is hard to choose best language for data analysis, especially if you are beginner and do not want to go into details about strengths and weaknesses of particular solutions. Should I choose R or Python (2 or 3), maybe Julia would be faster?  What should I use to work with large data sets? My answer is: use what you can! Take the best you can from several languages and make it work. This post will show you how.
 
 > Use what you can! Take the best you can!
 
@@ -26,7 +26,7 @@ I have chosen four most powerful languages used in Data Science and Big Data ana
 | [Python 3][python3]   | | __3.6.1__  |
 | [R][rlang]            | | __3.4.0__  |
 | [Scala][scala]        | | __2.12.1__ |
-| [Julia][julia]        | | __0.5.2__  |
+| [Julia][julia]        | | __0.7.0__  |
 
 
 ## Procedure
@@ -407,10 +407,10 @@ A [Copr repository](https://copr.fedorainfracloud.org/coprs/nalimilan/julia/) is
 [mdyzma@devbox mdyzma]$ sudo dnf copr enable nalimilan/julia
 {% endhighlight %}
 
-Bleeding edge version of Julia is held in separate repository, which can be added with this command: `sudo dnf copr enable nalimilan/julia-nightlies`. I decided to install stable Julia release. Adding any of mentioned above results in:
+Bleeding edge version of Julia is held in separate repository, which can be added with this command: `sudo dnf copr enable nalimilan/julia-nightlies`. I decided to install nightly Julia release. Adding any of mentioned above results in:
 
 {% highlight bash %}
-[mdyzma@devbox mdyzma]# dnf copr enable nalimilan/julia
+[mdyzma@devbox mdyzma]# dnf copr enable nalimilan/julia-nightlies
 
 You are about to enable a Copr repository. Please note that this
 repository is not part of the main Fedora distribution, and quality
@@ -454,13 +454,12 @@ To verify either type `julia --version` or simply try to run Julia REPL:
 
 {% highlight bash %}
 [mdyzma@devbox mdyzma]$ julia
-               _
    _       _ _(_)_     |  A fresh approach to technical computing
   (_)     | (_) (_)    |  Documentation: https://docs.julialang.org
    _ _   _| |_  __ _   |  Type "?help" for help.
   | | | | | | |/ _` |  |
-  | | |_| | | | (_| |  |  Version 0.5.2 (2017-05-06 16:34 UTC)
- _/ |\__'_|_|_|\__'_|  |
+  | | |_| | | | (_| |  |  Version 0.7.0-DEV.401 (2017-05-30 17:07 UTC)
+ _/ |\__'_|_|_|\__'_|  |  Commit e3794ee* (2 days old master)
 |__/                   |  x86_64-redhat-linux
 
 julia>
@@ -599,6 +598,47 @@ IRkernel::installspec()  # to register the kernel in the current R installation
 
 Effect is identical to the one R will install requested packages
 
+
+<a name="ijulia"></a>
+
+#### IJulia kernel
+
+
+Once you have __Julia__ installed on your machine, run Julia app  (you will see fancy prompt by `julia>`), then type:
+
+```
+julia> Pkg.add("IJulia")
+INFO: Initializing package repository /home/mdyzma/.julia/v0.7
+INFO: Cloning METADATA from https://github.com/JuliaLang/METADATA.jl
+INFO: Cloning ...
+INFO: Installing ...
+INFO: Building ...
+```
+
+Julia package manager will take care of dependencies and download requested software. Specifically it will download and install basic python environment based on [Miniconda][miniconda], which will be local for Julia, and accessible only by Julia. Thanks to that you don't really need any python installed in your system to run Julia Notebook. In that case only one kernel will be available. Julia will use its private python interpreter and minimal Jupyter installation to run notebook with it's kernel. You can run it at any time typing in Julia REPL:
+
+{% highlight julia %}
+julia> using IJulia
+INFO: Precompiling module IJulia.
+
+julia> notebook()
+{% endhighlight %}
+
+Since I already had two additional kernels installed (python 2,  and R), IJulia will be added to the collection. :)
+
+![julia-kernel][withjuliakernel]
+
+{% include note.html content="In the meantime I updated entire Anaconda package (``conda update --all``), including Jupyter notebook, which changed little bit its UI. You may notice that kernel are displayed first. Opposite to previous screen-shots." %}
+
+
+In Julia language `using <package Name>` is an __import statement__, which pre-compiles and gets ready to work module/program denoted in the statement. Next line calls this programs subroutine called `notebook`. If you use some arguments, you can modify notebooks behavior. For example `notebook(detached=true)`, Julia will run notebook server in the background and you will be able to use or exit REPL without closing the notebook. 
+
+By default, the notebook "dashboard" opens in your home directory, but you can open the dashboard in a different directory with `notebook(dir="/some/path")`.
+
+
+But we want to add IJulia kernel to existing Jupyter installation. to do that you need to set environmental variable `JUPYTER` to the value of your current jupyer program path before running `Pkg.add("IJulia")`.
+
+
 <a name="iscala"></a>
 
 #### IScala kernel
@@ -610,34 +650,6 @@ run-time performance is usually on par with Java programs. Scala code can
 call Java methods, access Java fields, inherit from Java classes, and implement Java interfaces. 
 
 
-<a name="ijulia"></a>
-
-#### IJulia kernel
-
-
-Once you have __Julia__ installed on your machine, run Julia app  (you will see fancy prompt by `julia>`), then type:
-
-```
-Pkg.add("IJulia")
-```
-
-Julia package manager will take care of dependencies and download requested software. Specifically it will download and install basic python environment based on [Miniconda][miniconda], which will be local for Julia, and accessible only by Julia. Thanks to that you don't really need any python installed in your system to run Julia Notebook. In that case only one kernel will be available. Julia will use its private python interpreter and minimal Jupyter installation to run notebook with it's kernel. You can run it at any time typing in Julia REPL:
-
-{% highlight julia %}
-    julia> using IJulia
-    julia> notebook()
-{% endhighlight %}
-
-Since I already had two additional kernels installed (python 2,  and R), IJulia will be added to the collection. :)
-
-
-
-In Julia language `using <package Name>` is an __import statement__, which pre-compiles and gets ready to work module/program denoted in the statement. Next line calls this programs subroutine called `notebook`. If you use some arguments, you can modify notebooks behavior. For example `notebook(detached=true)`, Julia will run notebook server in the background and you will be able to use or exit REPL without closing the notebook. 
-
-By default, the notebook "dashboard" opens in your home directory, but you can open the dashboard in a different directory with `notebook(dir="/some/path")`.
-
-
-But we want to add IJulia kernel to existing Jupyter installation. to do that you need to set environmental variable `JUPYTER` to the value of your current jupyer program path before running `Pkg.add("IJulia")`.
 
 
 ## Using all kernels
@@ -660,15 +672,17 @@ Once all kernels are installed, you can print all available kernels using Jupyte
 {% highlight bash %}
 [mdyzma@devbox mdyzma]$ jupyter kernelspec list
 Available kernels:
-    julia-0.5    /home/mdyzma/.jupyter/kernels/julia-0.5
+    julia-0.5    /home/mdyzma/.jupyter/kernels/julia-0.7
     python2      /home/mdyzma/.jupyter/kernels/python2
     python3      /home/mdyzma/.jupyter/kernels/python3
     vpython      /home/mdyzma/.jupyter/kernels/vpython
     ir           /home/mdyzma/.jupyter/kernels/kernels\ir
 {% endhighlight %}
 
-There. Versatile, multi-language prototyping environment. 
 
+## Summary
+
+There we are. Versatile, multi-language prototyping environment in the browser.
 
 If you struggle between using python or R, don't! Use all of them! At the same time in the same notebook, passing data structures between languages and perform analysis with the best tools they can offer. With Jupyter notebook it is all possible. It is possible to add even more players to the game. Julia, Haskel, Lua, bash, Octave... Pick whatever you can... Currently Jupyter supports nearly 100 different kernels (check [here][kernels]).
 
@@ -694,5 +708,6 @@ If you struggle between using python or R, don't! Use all of them! At the same t
 
 <!-- Images -->
 
-[bothkernels]: /assets/23-04-2017-two-kernels.png
-[withrkernel]: /assets/23-04-2017-r-kernel.png
+[bothkernels]:     /assets/23-04-2017-two-kernels.png
+[withrkernel]:     /assets/23-04-2017-r-kernel.png
+[withjuliakernel]: /assets/23-04-2017-julia-kernel.png
