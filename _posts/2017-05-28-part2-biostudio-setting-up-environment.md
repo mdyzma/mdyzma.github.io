@@ -702,7 +702,7 @@ setup(
 
 #### Creating packages
 
-Binary distribution package may be universal wheel file (`.whl`), or more traditional package distribution (`.tar.gz`). They are called artifacts and their creation will be included into Continuous Integration pipeline. To build package manually:
+Binary distribution package may be universal wheel file `.whl`, or more traditional package distribution `.tar.gz`. They are called artifacts and their creation will be included into **Continuous Integration** pipeline. To build package manually:
     
 
 {% highlight bash %}
@@ -766,7 +766,7 @@ python setup.py bdist bdist_wheel
 
 This is the essence of entire post. Each command in this three points forms single brick building entire application. Although it is not a problem to execute this commands every time I need them, it may be very confusing if this approach was adopted by entire team. Imagine each developer using different versions of the code, different test coverage and different stage of documentation production. All this must be combined somehow with our code repository, so everyone can pull current most up-to-date software and start to work on it, and update repository , so everyone else, who might be working on the project, can merge changes to their own working directories. 
 
-In addition I will need several different virtual environments to test built packages, at least 3-4 for different Python 3.X and maybe two for Python 2.6 and 2.7. Then I must install all production dependencies in every environment... System grows quickly and becomes very hard to maintain across development team. I will follow Raymond Hattinger, one of the core developers, and very talented speaker:
+In addition I will need several different virtual environments to test built packages, at least 3-4 for different Python 3.X and maybe two for Python 2.6 and 2.7. Then I must install all production dependencies in every environment... System grows quickly and becomes very hard to maintain across development team. I will follow Raymond Hattinger's words, Python core developer, very talented speaker:
 
 > There must be a better way
 
