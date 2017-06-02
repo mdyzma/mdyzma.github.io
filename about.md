@@ -27,7 +27,7 @@ After my adventure with mathematical modeling I started to develop "real softwar
 
 In 2015, [**GMV Aerospace**][gmv] hired me and I had the chance to work in very exciting and promising field - space projects. I maintained and developed software for ESA data processing centers.
 
-I'm currently living in Warsaw, Poland and working in [**GMV Aerospace**][gmv], developing software responsible for data processing from several satellites. In work I usee **C++11** in combination with **Python**. SWARM Mission was launched as a part of Living Planet Program. It is a European Space Agency initiative dedicated to observe Earth from space and provide research data about Earth's atmosphere, magnetic field, photosynthesis and many more aspects of the planet's status. Please visit [**Living Planet**][living-planet] for details.
+I'm currently living in Warsaw, Poland and working in [**GMV Aerospace**][gmv], developing software responsible for data processing from several satellites. At work I use **C++11** in combination with **Python**. SWARM Mission was launched as a part of Living Planet Program. It is a European Space Agency initiative dedicated to observe Earth from space and provide research data about Earth's atmosphere, magnetic field, photosynthesis and many more aspects of the planet's status. Please visit [**Living Planet**][living-planet] for details.
 
 Here I am. Scientific background, author of many peer reviewed papers on biology, mathematical modeling and bioinformatics combined with corporate, large software house, experience in one. 
 
