@@ -764,7 +764,7 @@ cd docs &&  make html
 python setup.py bdist bdist_wheel
 {% endhighlight %}
 
-This is the essence of entire post. Each command in this three points forms single brick building entire application. Although it is not a problem to execute this commands every time I need them, it may be very confusing if this approach was adopted by entire team. Imagine each developer using different versions of the code, different test coverage and different stage of documentation production. All this must be combined somehow with our code repository, so everyone can pull current most up-to-date software and start to work on it, and update repository , so everyone else, who might be working on the project, can merge changes to their own working directories. 
+This is the essence of entire post. Each command in this three points forms single brick building entire application. Although it is not a problem to execute this commands every time I need them, it may be very confusing if this approach was adopted by entire team. Imagine each developer using different versions of the code, different test coverage and different stage of documentation production. All this must be combined somehow in common code repository, so everyone can pull current most up-to-date software and start to work on it, and update repository for everyone else.
 
 In addition I will need several different virtual environments to test built packages, at least 3-4 for different Python 3.X and maybe two for Python 2.6 and 2.7. Then I must install all production dependencies in every environment... System grows quickly and becomes very hard to maintain across development team. I will follow Raymond Hettinger's words, Python core developer, very talented speaker:
 
