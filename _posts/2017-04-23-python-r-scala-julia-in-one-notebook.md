@@ -677,8 +677,7 @@ Available kernels:
     julia-0.5    /home/mdyzma/.jupyter/kernels/julia-0.7
     python2      /home/mdyzma/.jupyter/kernels/python2
     python3      /home/mdyzma/.jupyter/kernels/python3
-    vpython      /home/mdyzma/.jupyter/kernels/vpython
-    ir           /home/mdyzma/.jupyter/kernels/kernels\ir
+    ir           /home/mdyzma/.jupyter/kernels/ir
 {% endhighlight %}
 
 
