@@ -69,27 +69,21 @@ The purpose of this project is to build a GUI desktop app responsible for readin
 
  1. GUI interface running on Windows and Linux OS
  2. read ``pdb`` files
- 3. display file's content
+ 3. display file's content in table view
  4. edit/change
  5. save changes
 
 This initial requirements for _Biostudio_, in the form of user stories may be presented as follows:
 
 1. User can work with pdb files using window interface.
-2. User opens and pdb files from location on hardrive
+2. User opens pdb files from location on hardrive
+3. User can change pdb file and save changes
 
-When we start working on a user story we work closely with the user, ideally getting them involved with the modeling effort via Agile Modeling's Active Stakeholder Participation practice. As we explore the requirement we capture UI-related ideas, business rules, and structural information (e.g. business entities, the relationships between them). We also implement the requirement, hopefully taking a TDD-based approach which enables us to do less detailed design modeling because the tests capture this critical information, in both our objects and the database. The system will be built using object technology (e.g. J2EE or C#) on the front end and relational technology (e.g. MySql, Oracle) on the back end - See more at: http://www.agiledata.org/essays/agileDataModeling.html#Iteration6
-
-
-
-## Initial domain model
-
-
+This should suffice for start. 
 
 ## High Level Design
 
-High-level design (HLD) explains the architecture that would be used for developing a software product. The architecture diagram provides an overview of an entire system, identifying the main components that would be developed for the product and their interfaces. The HLD uses possibly nontechnical to mildly technical terms that should be understandable to the administrators of the system. In contrast, low-level design further exposes the logical detailed design of each of these elements for programmers.
-
+High-level design (HLD) explains the architecture of a software product in nontechnical to mildly technical terms.
 A high-level design document or HLDD adds the necessary details to the current project description to represent a suitable model for coding. This document includes a high-level architecture diagram depicting the structure of the system, such as the database architecture, application architecture (layers), application flow (navigation), security architecture and technology architecture. 
 
 A high-level design provides an overview of a solution, platform, system, product, service or process.
@@ -118,6 +112,9 @@ The goal of LLD or a low-level design document (LLDD) is to give the internal lo
 A good low-level design document makes the program easy to develop when proper analysis is utilized to create a low-level design document. The code can then be developed directly from the low-level design document with minimal debugging and testing. Other advantages include lower cost and easier maintenance.
 
 ## From requirements to low-level-design
+
+ In contrast, low-level design further exposes the logical detailed design of each of these elements for programmers.
+
 
 System 
 language
