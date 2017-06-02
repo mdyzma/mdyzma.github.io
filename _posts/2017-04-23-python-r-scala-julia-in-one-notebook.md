@@ -630,7 +630,7 @@ Since I already had two additional kernels installed (python 2,  and R), IJulia 
 
 ![julia-kernel][withjuliakernel]
 
-{% include note.html content="In the meantime I updated entire Anaconda bundle (``conda update --all``), including Jupyter notebook, which changed little bit its UI. You may notice that kernel are displayed first. Opposite to previous screen-shots." %}
+{% include note.html content="In the meantime I updated entire Anaconda bundle (``conda update --all``), including Jupyter notebook, which changed little bit its UI. You may notice that list of kernels is displayed first. Opposite to previous screen-shots." %}
 
 
 In Julia language `using <package Name>` is an __import statement__, which pre-compiles and gets ready to work module/program denoted in the statement. Next line calls this programs subroutine called `notebook`. If you use some arguments, you can modify notebooks behavior. For example `notebook(detached=true)`, Julia will run notebook server in the background and you will be able to use or exit REPL without closing the notebook. 
@@ -686,7 +686,7 @@ Available kernels:
 
 There we are. Versatile, multi-language prototyping environment in the browser.
 
-If you struggle between using python or R, don't! Use all of them! At the same time in the same notebook, passing data structures between languages and perform analysis with the best tools they can offer. With Jupyter notebook it is all possible. It is possible to add even more players to the game. Julia, Haskel, Lua, bash, Octave... Pick whatever you can... Currently Jupyter supports nearly 100 different kernels (check [here][kernels]).
+If you struggle between using python Julia, Scala or R, don't! Use all of them! At the same time in the same notebook, passing data structures between languages and perform analysis with the best tools they can offer. With Jupyter notebook it is all possible. It is possible to add even more players to the game. Julia, Haskel, Lua, bash, Octave... Pick whatever you can... Currently Jupyter supports nearly 100 different kernels (check [here][kernels]).
 
 
 
