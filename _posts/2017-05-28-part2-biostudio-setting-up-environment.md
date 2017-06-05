@@ -758,11 +758,13 @@ git push origin master
 
 {% highlight bash %}
 pylint src
-pytest --cov=src tests/
+python -m pytest --cov=src tests/
 cd docs &&  make html
 
 python setup.py bdist bdist_wheel
 {% endhighlight %}
+
+If I add my source code to the system path by executing `pip instal -e .` I will not have to proceed `pytest` or  `coverage` with `python -m` command.
 
 This is the essence of entire post. Each command in this three points forms single brick building entire application. Although it is not a problem to execute this commands every time I need them, it may be very confusing if this approach was adopted by entire team. Imagine each developer using different versions of the code, different test coverage and different stage of documentation production. All this must be combined somehow in common code repository, so everyone can pull current most up-to-date software and start to work on it. Also their local changes should update repository for everyone else.
 
