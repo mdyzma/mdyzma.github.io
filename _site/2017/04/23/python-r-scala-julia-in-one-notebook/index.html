@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <!-- Begin Jekyll SEO tag v2.2.0 -->
+<title>Python, R, Scala and Julia in one Notebook | Consider Python</title>
+<meta property="og:title" content="Python, R, Scala and Julia in one Notebook" />
+<meta name="author" content="Michal Dyzma" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Shall I use R, Julia, Scala or Python? The answer is: Yes! How to create versatile environment, in which different languages are available and able to communicate with each other? Without changing program you work in and where data may be passed between specific structures characteristic for the language? This post will show you how to do it with four most powerful languages used in Data Science: Python, R, Scala and Julia." />
+<meta property="og:description" content="Shall I use R, Julia, Scala or Python? The answer is: Yes! How to create versatile environment, in which different languages are available and able to communicate with each other? Without changing program you work in and where data may be passed between specific structures characteristic for the language? This post will show you how to do it with four most powerful languages used in Data Science: Python, R, Scala and Julia." />
+<link rel="canonical" href="http://localhost:4000/2017/04/23/python-r-scala-julia-in-one-notebook/" />
+<meta property="og:url" content="http://localhost:4000/2017/04/23/python-r-scala-julia-in-one-notebook/" />
+<meta property="og:site_name" content="Consider Python" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-04-23T14:51:25+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@MichalDyzma" />
+<meta name="twitter:creator" content="@Michal Dyzma" />
+<meta property="fb:admins" content="mdyzma" />
+<meta property="article:publisher" content="mdyzma" />
+<meta property="fb:app_id" content="422251294815916" />
+<script type="application/ld+json">
+{"@context": "http://schema.org",
+"@type": "BlogPosting",
+"headline": "Python, R, Scala and Julia in one Notebook",
+"author": {"@type": "Person",
+"name": "Michal Dyzma"},
+"datePublished": "2017-04-23T14:51:25+02:00",
+"description": "Shall I use R, Julia, Scala or Python? The answer is: Yes! How to create versatile environment, in which different languages are available and able to communicate with each other? Without changing program you work in and where data may be passed between specific structures characteristic for the language? This post will show you how to do it with four most powerful languages used in Data Science: Python, R, Scala and Julia.",
+"publisher": {"@type": "Organization",
+"name": "Michal Dyzma",
+"logo": {"@type": "ImageObject",
+"url": "http://localhost:4000/assets/md-logo.png"}},
+"mainEntityOfPage": {"@type": "WebPage",
+"@id": "http://localhost:4000/2017/04/23/python-r-scala-julia-in-one-notebook/"},
+"url": "http://localhost:4000/2017/04/23/python-r-scala-julia-in-one-notebook/"}</script>
+<!-- End Jekyll SEO tag -->
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>Python, R, Scala and Julia in one Notebook</title>
+  <meta name="description" content="Shall I use R, Julia, Scala or Python? The answer is: Yes! How to create versatile environment, in which different languages are available and able to communicate with each other? Without changing program you work in and where data may be passed between specific structures characteristic for the language? This post will show you how to do it with four most powerful languages used in Data Science: Python, R, Scala and Julia.">
+  <meta name="keywords" content="python, R, Scala, Julia, jupyter notebook, data science">
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://localhost:4000/2017/04/23/python-r-scala-julia-in-one-notebook/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="Consider Python" href="http://localhost:4000/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="MichalDyzma">
+  <meta name="twitter:title" content="Python, R, Scala and Julia in one Notebook">
+  <meta name="twitter:description" content="Shall I use R, Julia, Scala or Python? The answer is: Yes! How to create versatile environment, in which different languages are available and able to communicate with each other? Without changing ...">
+  
+    <meta name="twitter:creator" content="MichalDyzma">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+<!-- Font awesome -->
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  
+  <!-- Google Analytics -->
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-97434888-1', 'auto');
+    ga('send', 'pageview');
+
+  </script>
+
+
+  
+  <!-- Google Adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: ca-pub-4566255347044004,
+    enable_page_level_ads: true
+  });
+</script>
+
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">Consider Python</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="/">Home</a>
+      
+        
+        <a class="page-link" href="/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="/about/">About</a>
+      
+        
+        <a class="page-link" href="https://github.com/mdyzma/mdyzma.github.io">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <h1 class="post-title" itemprop="name headline">Python, R, Scala and Julia in one Notebook</h1>
+    
+    <p class="post-meta"><time datetime="2017-04-23T14:51:25+02:00" itemprop="datePublished">Apr 23, 2017</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Michal Dyzma</span></span> • 
+  
+  
+    
+  
+    
+  
+    
+      <a href="/categories/python/">python</a>,
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/r/">R</a>,
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/scala/">Scala</a>,
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/julia/">Julia</a>,
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/jupyter-notebook/">jupyter-notebook</a>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+</p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>Shall I use R, Julia, Scala or Python? The answer is: <strong>Yes!</strong> How to create versatile environment, in which different languages are available and able to communicate with each other? Without changing program you work in and where data may be passed between specific structures characteristic for the language? This post will show you how to do it with four most powerful languages used in Data Science: <strong>Python</strong>, <strong>R</strong>, <strong>Scala</strong> and <strong>Julia</strong>.</p>
+
+<h2 id="introduction">Introduction</h2>
+
+<p>It is hard to choose best language for data analysis, especially if you are beginner and do not want to go into details about strengths and weaknesses of particular solutions. Should I choose R or Python (2 or 3), maybe Julia would be faster?  What should I use to work with large data sets? My answer is: use what you can! Take the best you can from several languages and make it work. This post will show you how.</p>
+
+<blockquote>
+  <p>Use what you can! Take the best you can!</p>
+</blockquote>
+
+<p>I have chosen four most powerful languages used in Data Science and Big Data analysis, which should give you broadest span of accessible technologies and speed up development or data analysis. Current versions of chosen software:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Language</th>
+      <th> </th>
+      <th>Version</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="https://www.python.org/downloads/release/python-2713/">Python 2</a></td>
+      <td> </td>
+      <td><strong>2.7.13</strong></td>
+    </tr>
+    <tr>
+      <td><a href="https://www.python.org/downloads/release/python-361/">Python 3</a></td>
+      <td> </td>
+      <td><strong>3.6.1</strong></td>
+    </tr>
+    <tr>
+      <td><a href="https://cloud.r-project.org">R</a></td>
+      <td> </td>
+      <td><strong>3.4.0</strong></td>
+    </tr>
+    <tr>
+      <td><a href="https://julialang.org/downloads/">Julia</a></td>
+      <td> </td>
+      <td><strong>0.7.0</strong></td>
+    </tr>
+    <tr>
+      <td><a href="https://www.scala-lang.org/download/">Scala</a></td>
+      <td> </td>
+      <td><strong>2.12.1</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="procedure">Procedure</h2>
+
+<p>I will follow this procedure to prepare work environment:</p>
+
+<ol>
+  <li><a href="#python_dist">installing Python interpreter</a></li>
+  <li><a href="#r_lang">installing R language</a></li>
+  <li><a href="#julia_compiler">installing Julia language compiler</a></li>
+  <li><a href="#scala_compiler">installing Scala or sbt compiler</a></li>
+  <li>installing additional jupyter kernels:
+    <ul>
+      <li><a href="#ipykernel">ipykernel</a> - multiple Python support</li>
+      <li><a href="#irkernel_py">IRkernel</a> via conda - R language support</li>
+      <li><a href="#irkernel_r">IRkernel</a> via R</li>
+      <li><a href="#ijulia">IJulia</a> - Julia REPL in notebook</li>
+      <li><a href="#iscala">IScala</a> - Scala support</li>
+    </ul>
+  </li>
+</ol>
+
+<p>So my goal is to install Python, Scala, Julia and R on working machine. Additionally to run notebooks in languages other than Python I need to install specific middle-ware called kernels.</p>
+
+<p>First let’s grab necessary tools - compilers and interpreters for each language (linked in table above). All languages presented here are multi-platform and can be installed on Windows, Linux and Mac OS machines. Since my working system is Fedora 25 I will describe install procedures for this OS. Debian based Linux distributions do not differ much from Red Hat family (except using different package manager and repos). Windows versions have convenient installers and installation process is trivial. If necessary, I will place link to the windows installer in each section.</p>
+
+<p><a name="python_dist"></a></p>
+
+<h2 id="python-interpreter">Python interpreter</h2>
+
+<p>In all Linux distributions Python is available “out of the box”. Unfortunately in many cases default Python is still 2.7 branch. It should be mentioned, that 2.7 is very old and it is being slowly depreciated. It is last supported branch from 2.x family and it’s support will drop in 2020 (see: <a href="https://www.python.org/dev/peps/pep-0373/">PEP 373</a>). There will be no official bug fixes after that date. Additionally most of the currently used libraries are ready to run at least 3.5 version. Unless you have some obscure dependency, there is no excuse not to use Python 3. Older version is included here just for to demonstrate how to manage different Python versions in isolated environments.</p>
+
+<blockquote>
+  <p>There is no excuse not to use Python 3 anymore. Grab it! Use it!</p>
+</blockquote>
+
+<p>I assume you have basic knowledge of Python flavors available today and their strengths and weaknesses. In this tutorial I will use <strong>Python 3</strong> running on <strong>Fedora 25</strong> workstation.</p>
+
+<p>Moreover I have chosen specific distribution of Python, prepared by Continuum Analytics called <strong>Anaconda</strong>. It is the most comprehensive and free bundle of Python software dedicated to <strong>Data Science</strong>.</p>
+
+<!-- <div markdown="span" class="alert alert-info" role="alert" style="text-align: justify; vertical-align:middle;">
+Python 3 only
+</div>
+ -->
+
+<p>I strongly recommended to use <a href="https://www.continuum.io/DOWNLOADS">Anaconda distribution</a>, which will install Python interpreter, the Jupyter Notebook, and several other packages commonly used in data science and this tutorial. If you choose Anaconda 3, your interpreter will be of version 3.6 (current version) or higher (3.7 alpha is already available).</p>
+
+<p>I will just follow instructions from installation page and simply execute downloaded script:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox mdyzma]<span class="nv">$ </span>wget https://repo.continuum.io/archive/Anaconda3-4.3.1-Linux-x86_64.sh
+--2017-04-23 19:36:37--  https://repo.continuum.io/archive/Anaconda3-4.3.1-Linux-x86_64.sh
+Resolving repo.continuum.io <span class="o">(</span>repo.continuum.io<span class="o">)</span>... 104.16.18.10, 104.16.19.10, 2400:cb00:2048:1::6810:130a, ...
+Connecting to repo.continuum.io <span class="o">(</span>repo.continuum.io<span class="o">)</span>|104.16.18.10|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 497343851 <span class="o">(</span>474M<span class="o">)</span> <span class="o">[</span>application/x-sh]
+Saving to: <span class="s1">'Anaconda3-4.3.1-Linux-x86_64.sh'</span>
+
+Anaconda3-4.3.1-Linux-x86_64.sh     100%[<span class="o">==========================================</span>&gt;] 474.30M  14.1MB/s <span class="k">in </span>34s
+
+2017-04-23 19:37:12 <span class="o">(</span>13.8 MB/s<span class="o">)</span> - <span class="s1">'Anaconda3-4.3.1-Linux-x86_64.sh'</span> saved <span class="o">[</span>497343851/497343851]</code></pre></figure>
+
+<p>Script contains all binaries and weights nearly  475 MB. After executing, you should see Anaconda installer:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox mdyzma]<span class="nv">$ </span>bash Anaconda3-4.3.1-Linux-x86_64.sh
+
+Welcome to Anaconda3 4.3.1 <span class="o">(</span>by Continuum Analytics, Inc.<span class="o">)</span>
+
+In order to <span class="k">continue </span>the installation process, please review the license
+agreement.
+Please, press ENTER to <span class="k">continue</span>
+&gt;&gt;&gt;</code></pre></figure>
+
+<p>Automatic process will guide you through installation. You don’t have to run installer as a root, unless you want it to be installed for all users. In that case you need sudo privilege to install it in some globally accessible location like <code class="highlighter-rouge">/opt/anaconda3</code> and append <code class="highlighter-rouge">/etc/profile</code> with the location of the interpreter <code class="highlighter-rouge">export PATH=/opt/Anaconda3/bin:$PATH</code>. This will make Python change system-wide. If you run it with normal user privileges it will choose your user’s home directory and place it in <code class="highlighter-rouge">/home/&lt;user&gt;/anaconda3</code>. Installer will install bunch of python packages including MKL optimizations (Math Kernel Library), numpy, pandas, matplotlib, scikit-learn and Jupyter - just to name few. Nearly 200 packages grouped together to make your life easier. To get list of the packages execute this command: <code class="highlighter-rouge">conda list | wc -l</code>. Anyway lets continue with installation…</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">PREFIX</span><span class="o">=</span>/home/mdyzma/anaconda3
+installing: python-3.6.0-0 ...
+
+Python 3.6.0 :: Continuum Analytics, Inc.
+creating default environment...
+installation finished.
+Do you wish the installer to prepend the Anaconda3 install location
+to PATH <span class="k">in </span>your /home/mdyzma/.bashrc ? <span class="o">[</span>yes|no]
+&gt;&gt;&gt;yes
+
+Prepending <span class="nv">PATH</span><span class="o">=</span>/home/mdyzma/anaconda3/bin to PATH <span class="k">in</span> /home/mdyzma/.bashrc</code></pre></figure>
+
+<p>Answering <code class="highlighter-rouge">yes</code> will make Anaconda’s python your default interpreter. Sometimes installer may be a little bit outdated. Restart terminal, or source <code class="highlighter-rouge">.bashrc</code> and upgrade Python. You can do it with all installed packages using single command: <code class="highlighter-rouge">conda update --all</code>; or just interpreter itself: <code class="highlighter-rouge">conda update python</code>.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox mdyzma]<span class="nv">$ </span>conda update python
+Fetching package metadata .........
+Solving package specifications: .
+
+Package plan <span class="k">for </span>installation <span class="k">in </span>environment /home/mdyzma/anaconda3:
+
+The following packages will be UPDATED:
+
+    anaconda: 4.3.1-np111py36_0 --&gt; custom-py36_0
+    conda:    4.3.14-py36_0     --&gt; 4.3.17-py36_0
+    python:   3.6.0-0           --&gt; 3.6.1-0
+
+Proceed <span class="o">([</span>y]/n<span class="o">)</span>? y</code></pre></figure>
+
+<p>After that you should have brand new Python 3.6.1 as your main system interpreter. To confirm it type <code class="highlighter-rouge">conda info</code> or simply try to run python interpreter in your terminal.</p>
+
+<p>Conda command should result in displaying detailed information about current Anaconda installation:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox mdyzma]<span class="nv">$ </span>conda info
+    Current conda install:
+
+                   platform : linux-64
+              conda version : 4.3.17
+           conda is private : False
+          conda-env version : 4.3.17
+        conda-build version : not installed
+             python version : 3.6.1.final.0
+           requests version : 2.12.4
+           root environment : /home/mdyzma/anaconda3  <span class="o">(</span>writable<span class="o">)</span>
+        default environment : /home/mdyzma/anaconda3
+           envs directories : /home/mdyzma/anaconda3/envs
+                          /home/mdyzma/.conda/envs
+              package cache : /home/mdyzma/anaconda3/pkgs
+                          /home/mdyzma/.conda/pkgs
+               channel URLs : https://repo.continuum.io/pkgs/free/linux-64
+                          https://repo.continuum.io/pkgs/free/noarch
+                          https://repo.continuum.io/pkgs/r/linux-64
+                          https://repo.continuum.io/pkgs/r/noarch
+                          https://repo.continuum.io/pkgs/pro/linux-64
+                          https://repo.continuum.io/pkgs/pro/noarch
+                config file : None
+               offline mode : False
+                 user-agent : conda/4.3.17 requests/2.12.4 CPython/3.6.1 Linux/4.9.27-moby Fedora/25 glibc/2.24
+                    UID:GID : 0:0</code></pre></figure>
+
+<p>Running python should expose interpreters REPL:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@0devbox mdyzma]<span class="nv">$ </span>python
+Python 3.6.1 |Anaconda custom <span class="o">(</span>64-bit<span class="o">)</span>| <span class="o">(</span>default, May 11 2017, 13:09:58<span class="o">)</span>
+<span class="o">[</span>GCC 4.4.7 20120313 <span class="o">(</span>Red Hat 4.4.7-1<span class="o">)]</span> on Linux
+Type <span class="s2">"help"</span>, <span class="s2">"copyright"</span>, <span class="s2">"credits"</span> or <span class="s2">"license"</span> <span class="k">for </span>more information.
+&gt;&gt;&gt;</code></pre></figure>
+
+<p>Windows users have to follow simple next,next installer prepared by Continuum. It can be downloaded <a href="https://www.continuum.io/DOWNLOADS">here</a>.</p>
+
+<p><a name="r_lang"></a></p>
+
+<h2 id="r-language">R language</h2>
+
+<p>Fedora users can install <code class="highlighter-rouge">R</code> from the standard Fedora repository using:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox mdyzma]<span class="nv">$ </span>sudo dnf install R</code></pre></figure>
+
+<p>The RPM of <code class="highlighter-rouge">R</code> is a meta package, which will install following components:</p>
+
+<ul>
+  <li>R-core         User RPM</li>
+  <li>R-core-devel   Developer RPM containing header files</li>
+  <li>R-java         RPM to ensure that R is configured for use with Java</li>
+  <li>libRmath       Standalone R math library</li>
+  <li>libRmath-devel Header file for the standalone R math library</li>
+</ul>
+
+<p>According to CRAN manual Fedora will also require developer versions, which contain header files necessary to properly install other R packages and to compile them from the source. Windows users have simple <a href="https://cloud.r-project.org/bin/windows/base/">installer</a> at their disposal.</p>
+
+<p><a name="julia_compiler"></a></p>
+
+<h2 id="julia-compiler">Julia compiler</h2>
+
+<p>A <a href="https://copr.fedorainfracloud.org/coprs/nalimilan/julia/">Copr repository</a> is provided for Fedora users. To install Julia just run:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox mdyzma]<span class="nv">$ </span>sudo dnf copr <span class="nb">enable </span>nalimilan/julia</code></pre></figure>
+
+<p>Bleeding edge version of Julia is held in separate repository, which can be added with this command: <code class="highlighter-rouge">sudo dnf copr enable nalimilan/julia-nightlies</code>. I decided to install nightly Julia release. Adding any of mentioned above results in:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox mdyzma]# dnf copr <span class="nb">enable </span>nalimilan/julia-nightlies
+
+You are about to <span class="nb">enable </span>a Copr repository. Please note that this
+repository is not part of the main Fedora distribution, and quality
+may vary.
+
+The Fedora Project does not exercise any power over the contents of
+this repository beyond the rules outlined <span class="k">in </span>the Copr FAQ at
+&lt;https://fedorahosted.org/copr/wiki/UserDocs#WhatIcanbuildinCopr&gt;, and
+packages are not held to any quality or security level.
+
+Please <span class="k">do </span>not file bug reports about these packages <span class="k">in </span>Fedora
+Bugzilla. In <span class="k">case</span> of problems, contact the owner of this repository.
+
+Do you want to <span class="k">continue</span>? <span class="o">[</span>y/N]: y
+Repository successfully enabled.</code></pre></figure>
+
+<p>After that you can easily install specific build of Julia compiler:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox mdyzma]<span class="nv">$ </span>sudo dnf install julia
+Password:
+
+Copr repo <span class="k">for </span>julia-nightlies owned by nalimilan                                                                                                              53 kB/s |  67 kB     00:01
+Dependencies resolved.
+<span class="o">=========================</span>
+... List of packages ...
+
+Transaction Summary
+<span class="o">=========================</span>
+Install  59 Packages
+
+Total download size: 60 M
+Installed size: 260 M</code></pre></figure>
+
+<p>To verify either type <code class="highlighter-rouge">julia --version</code> or simply try to run Julia REPL:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox mdyzma]<span class="nv">$ </span>julia
+   _       _ _<span class="o">(</span>_<span class="o">)</span>_     |  A fresh approach to technical computing
+  <span class="o">(</span>_<span class="o">)</span>     | <span class="o">(</span>_<span class="o">)</span> <span class="o">(</span>_<span class="o">)</span>    |  Documentation: https://docs.julialang.org
+   _ _   _| |_  __ _   |  Type <span class="s2">"?help"</span> <span class="k">for </span>help.
+  | | | | | | |/ _<span class="sb">`</span> |  |
+  | | |_| | | | <span class="o">(</span>_| |  |  Version 0.7.0-DEV.401 <span class="o">(</span>2017-05-30 17:07 UTC<span class="o">)</span>
+ _/ |<span class="se">\_</span>_<span class="s1">'_|_|_|\__'</span>_|  |  Commit e3794ee<span class="k">*</span> <span class="o">(</span>2 days old master<span class="o">)</span>
+|__/                   |  x86_64-redhat-linux
+
+julia&gt;
+
+<span class="gp">julia&gt; </span>2+2
+4
+
+julia&gt;</code></pre></figure>
+
+<p><a name="scala_compiler"></a></p>
+
+<h2 id="scala--sbt">Scala / sbt</h2>
+
+<p>Scala compiles to Java byte-code using <strong>Java Virtual Machine</strong>. Therefore before using it, JRE or JDK must be installed in the system.</p>
+
+<h4 id="install-oracle-java-jdkjre">Install Oracle Java JDK/JRE</h4>
+
+<p>Download JRE or JDK from Oracle <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">www</a>. Select one of the available options (i.e. download JRE -&gt; <code class="highlighter-rouge">jre-8u131-linux-x64.rpm</code> or download JDK -&gt; <code class="highlighter-rouge">jdk-8u131-linux-x64.rpm</code>). What is the difference? JRE stands for <strong>Java Runtime Environment</strong> , which covers all end-users needs if it comes to run software written in Java. JDK is developers environment (<strong>Java Developers Kit</strong>) containing JRE with additional tools supporting Java programs development and debugging. Installation must be done with administrator privileges.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox mdyzma]<span class="nv">$ </span>su -
+Password: 
+
+<span class="o">[</span>root@devbox mdyzma]# rpm -Uvh /home/mdyzma/jdk-8u131-linux-x64.rpm</code></pre></figure>
+
+<p>… or:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox mdyzma]<span class="nv">$ </span>su -
+Password: 
+
+<span class="o">[</span>root@devbox mdyzma]# rpm -Uvh /home/mdyzma/jre-8u131-linux-x64.rpm</code></pre></figure>
+
+<p>Please remember to change paths to downloaded files. Windows users should choose <code class="highlighter-rouge">msi</code> installer and follow <a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">java installer</a> instructions.</p>
+
+<p>This step may be skipped for “nix” operating systems, since <code class="highlighter-rouge">dnf</code> or <code class="highlighter-rouge">apt</code> will manage dependences for you and install appropriate openJDK environment during Scala installation.</p>
+
+<h4 id="install-scala">Install Scala</h4>
+
+<p>Installing Scala is straight forward. Windows users have typical <a href="https://www.scala-lang.org/download/">installer</a>. On fedora and other “nix” systems Scala is part of official repository and can be installed with single command:</p>
+
+<blockquote>
+  <p>Scala compiles to Java byte-code</p>
+</blockquote>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox mdyzma]<span class="nv">$ </span>dnf install scala</code></pre></figure>
+
+<p>When process is finished you can check your installation simply by trying to use Scala REPL:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox mdyzma]<span class="nv">$ </span>scala
+Welcome to Scala version 2.10.4 <span class="o">(</span>OpenJDK 64-Bit Server VM, Java 1.8.0_131<span class="o">)</span>.
+Type <span class="k">in </span>expressions to have them evaluated.
+Type :help <span class="k">for </span>more information.
+
+<span class="gp">scala&gt; </span>2+2
+res0: Int <span class="o">=</span> 4</code></pre></figure>
+
+<p>It works! Perfect!</p>
+
+<p>You may notice, that scala from this repo is little bit outdated. Don’t worry. It will be updated when used with sbt build-tool.</p>
+
+<p>When you write small programs which consist of only one, or just two source files, then it’s easy enough to compile those source files by typing <code class="highlighter-rouge">scalac MyProgram.scala</code> in the terminal. Scalac is name of Scala compiler program. But when project gets bigger, with dozens or maybe even hundreds of source files, then it becomes too tedious to compile all those source files manually. You start to think: <em>“There must be a better way.”</em></p>
+
+<p>C/C++ programmers use <code class="highlighter-rouge">make</code> tool. For programs compiling to Java byte-code there is <code class="highlighter-rouge">sbt</code>.  It is a general purpose build tool written in Scala. In the next section I will describe its installation.</p>
+
+<h4 id="install-sbt">Install sbt</h4>
+
+<p>As I mentioned before manual compilation of complex project with hundreds of files is nearly impossible. Not mentioning managing all dependencies required by hundreds of files. Build-tools, such as <code class="highlighter-rouge">sbt</code> (<em>Simple Build Tool</em>),  can automate this time consuming and tedious process.  It will manage compiling all source files and dependencies for you.  This means that if you need to use some libraries written by others, sbt can automatically download the right versions of those libraries and include them in your project. Moreover you can compose automatic unit-tests which can also be run by build-tool. Sbt will also provide some boilerplate code to automate starting new projects in Scala.</p>
+
+<p>As usual Windows users will use <a href="http://www.scala-sbt.org/download.html">sbt installer</a>. “Nix” users will have to add official repository to their system. Sbt binaries are published to Bintray repository, and conveniently Bintray provides an RPM variant for Fedora. Super user privileges are required.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox mdyzma]<span class="nv">$ </span>su -
+Password: 
+
+<span class="o">[</span>root@devbox mdyzma]# curl https://bintray.com/sbt/rpm/rpm | tee /etc/yum.repos.d/bintray-sbt-rpm.repo
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   162    0   162    0     0    183      0 --:--:-- --:--:-- --:--:--   186
+<span class="c">#bintray--sbt-rpm - packages by  from Bintray</span>
+<span class="o">[</span>bintray--sbt-rpm]
+<span class="nv">name</span><span class="o">=</span>bintray--sbt-rpm
+<span class="nv">baseurl</span><span class="o">=</span>http://dl.bintray.com/sbt/rpm
+<span class="nv">gpgcheck</span><span class="o">=</span>0
+<span class="nv">repo_gpgcheck</span><span class="o">=</span>0
+<span class="nv">enabled</span><span class="o">=</span>1</code></pre></figure>
+
+<p>Once Bintray repository is added you can install latest <code class="highlighter-rouge">sbt</code> using package manager:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>root@devbox mdyzma]# dnf install sbt</code></pre></figure>
+
+<p>Sbt is a tool that runs from the project folder. When it starts it will try to read <code class="highlighter-rouge">build.sbt</code> file which should contain information about project. You can also use sbt creator to start new project. To test sbt I will create test directory and run project creator:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox mdyzma]<span class="nv">$ </span>mkdir <span class="nb">test</span>
+<span class="o">[</span>mdyzma@devbox mdyzma]<span class="nv">$ </span><span class="nb">cd test</span>/ <span class="o">&amp;&amp;</span> sbt new sbt/scala-seed.g8
+WARN: No sbt.version <span class="nb">set </span><span class="k">in </span>project/build.properties, base directory: /home/mdyzma/test
+<span class="o">[</span>warn] Executing <span class="k">in </span>batch mode.
+<span class="o">[</span>warn]   For better performance, hit <span class="o">[</span>ENTER] to switch to interactive mode, or
+<span class="o">[</span>warn]   consider launching sbt without any commands, or explicitly passing <span class="s1">'shell'</span>
+<span class="o">[</span>info] Set current project to <span class="nb">test</span> <span class="o">(</span><span class="k">in </span>build file:/home/mdyzma/test/<span class="o">)</span>
+
+Minimum Scala build.
+
+name <span class="o">[</span>My Something Project]: hello
+
+Template applied <span class="k">in</span> ./hello
+
+<span class="o">[</span>mdyzma@devbox <span class="nb">test</span><span class="o">]</span><span class="nv">$ </span><span class="nb">cd</span> .. <span class="o">&amp;&amp;</span> tree <span class="nb">test</span>/
+<span class="nb">test</span>/
+|-- hello
+|   |-- build.sbt
+|   |-- project
+|   |   |-- Dependencies.scala
+|   |   <span class="sb">`</span>-- build.properties
+|   <span class="sb">`</span>-- src
+|       |-- main
+|       |   <span class="sb">`</span>-- scala
+|       |       <span class="sb">`</span>-- example
+|       |           <span class="sb">`</span>-- Hello.scala
+|       <span class="sb">`</span>-- <span class="nb">test</span>
+|           <span class="sb">`</span>-- scala
+|               <span class="sb">`</span>-- example
+|                   <span class="sb">`</span>-- HelloSpec.scala
+<span class="sb">`</span>-- target
+    <span class="sb">`</span>-- streams
+        <span class="sb">`</span>-- <span class="nv">$global</span>
+            |-- ivyConfiguration
+            |   <span class="sb">`</span>-- <span class="nv">$global</span>
+            |       <span class="sb">`</span>-- streams
+            |           <span class="sb">`</span>-- out
+            <span class="sb">`</span>-- projectDescriptors
+                <span class="sb">`</span>-- <span class="nv">$global</span>
+                    <span class="sb">`</span>-- streams
+                        <span class="sb">`</span>-- out</code></pre></figure>
+
+<p>Sbt created nice basic project structure and filled it with boilerplate code. Main project folder is <code class="highlighter-rouge">hello</code> and contains two important pieces: <code class="highlighter-rouge">build.sbt</code> file and <code class="highlighter-rouge">src/</code> folder with your Scala program. If you enter the folder and run sbt from it, you should be directed to sbt shell, which will allow you to compile, run or test your code.</p>
+
+<p><code class="highlighter-rouge">&gt;</code> sign is sbt shell prompt. You can run scala from it simply by typing <code class="highlighter-rouge">console</code>:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox mdyzma]<span class="nv">$ </span><span class="nb">cd test</span>/hello/
+<span class="o">[</span>mdyzma@devbox hello]<span class="nv">$ </span>sbt
+<span class="o">[</span>info] Loading project definition from /home/mdyzma/test/hello/project
+<span class="o">[</span>info] Updating <span class="o">{</span>file:/home/mdyzma/test/hello/project/<span class="o">}</span>hello-build...
+<span class="o">[</span>info] Resolving org.fusesource.jansi#jansi;1.4 ...
+<span class="o">[</span>info] Done updating.
+<span class="o">[</span>info] Compiling 1 Scala <span class="nb">source </span>to /home/mdyzma/test/hello/project/target/scala-2.10/sbt-0.13/classes...
+<span class="o">[</span>info] Set current project to Hello <span class="o">(</span><span class="k">in </span>build file:/home/mdyzma/test/hello/<span class="o">)</span>
+<span class="gp">&gt; </span>console
+<span class="o">[</span>info] Starting scala interpreter...
+<span class="o">[</span>info]
+Welcome to Scala 2.12.1 <span class="o">(</span>OpenJDK 64-Bit Server VM, Java 1.8.0_131<span class="o">)</span>.
+Type <span class="k">in </span>expressions <span class="k">for </span>evaluation. Or try :help.
+
+<span class="gp">scala&gt; </span>2+2
+res0: Int <span class="o">=</span> 4
+
+scala&gt;</code></pre></figure>
+
+<p>Type <code class="highlighter-rouge">Ctrl+D</code> (<code class="highlighter-rouge">Ctrl+Z</code> on Windows) to exit scala REPL and go back to the sbt shell.</p>
+
+<p>It is also possible to  <code class="highlighter-rouge">run</code> and <code class="highlighter-rouge">test</code> your code:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">&gt; </span>run
+<span class="o">[</span>info] Updating <span class="o">{</span>file:/home/mdyzma/test/hello/<span class="o">}</span>root...
+<span class="o">[</span>info] Resolving jline#jline;2.14.1 ...
+<span class="o">[</span>info] Done updating.
+<span class="o">[</span>info] Compiling 1 Scala <span class="nb">source </span>to /home/mdyzma/test/hello/target/scala-2.12/classes...
+<span class="o">[</span>info] Running example.Hello
+hello
+<span class="o">[</span>success] Total <span class="nb">time</span>: 5 s, completed April 23, 2017 6:53:19 PM
+<span class="gp">&gt; </span><span class="nb">test</span>
+<span class="o">[</span>info] Compiling 1 Scala <span class="nb">source </span>to /home/mdyzma/test/hello/target/scala-2.12/test-classes...
+<span class="o">[</span>info] HelloSpec:
+<span class="o">[</span>info] The Hello object
+<span class="o">[</span>info] - should say hello
+<span class="o">[</span>info] Run completed <span class="k">in </span>283 milliseconds.
+<span class="o">[</span>info] Total number of tests run: 1
+<span class="o">[</span>info] Suites: completed 1, aborted 0
+<span class="o">[</span>info] Tests: succeeded 1, failed 0, canceled 0, ignored 0, pending 0
+<span class="o">[</span>info] All tests passed.
+<span class="o">[</span>success] Total <span class="nb">time</span>: 3 s, completed April 23, 2017 6:53:40 PM</code></pre></figure>
+
+<h2 id="kernels-installation">Kernels installation</h2>
+
+<p>Jupyter notebook is a fantastic tool, that allows my favorite programming style: Prototype driven development. Existence of REPL (Read, Evaluate, Print Loop) in all installed languages can be used to instantaneously test our code. We can also test our tests. This makes commits cleaner and faster. After all -  it is much easier to control very small chunks of the code and work on it interactively. First IPython  notebook made it possible with python, but later Jupyter project began to live own life and extended functionality by adding more languages it could “manage”. It is done by specific middle-ware called “kernel”. There is nearly 100 different kernels now(see <a href="https://github.com/jupyter/jupyter/wiki/Jupyter-kernels">here</a>). Lets get Big Four.</p>
+
+<p><a name="ipykernel"></a></p>
+
+<h4 id="ipykernel-additional-python">Ipykernel (additional python)</h4>
+
+<p>In many Linux distributions python 3.x is accessible from <code class="highlighter-rouge">python3</code> command, but it is cumbersome to manage both python versions and their dependencies by calling specific pip/pip3 or python/python3 from the system level. Managing versions, as well as third party dependencies and environmental variables is very, very confusing. Unless one uses correct tool. Anaconda has such tool out of the box and it is called <code class="highlighter-rouge">conda</code>. It is able to manage packages and virtual environments. With minimal effort one can create and delete entire environments with specific python and packages configuration. Other, very popular environment manager is <code class="highlighter-rouge">virtualenv</code> especially with additional package <code class="highlighter-rouge">virtualenvwrapper</code>. I will use manager built in conda. More about conda virtual env capabilities <a href="https://conda.io/docs/using/envs.html#">here</a> or in built in help system <code class="highlighter-rouge">conda env --help</code>.</p>
+
+<p>So…. I have Anaconda 3 with Python 3.6.1 on my Fedora machine. Let’s say I want to install additional python interpreter from 2.7 branch (last 2.x branch supported by Python Foundation). In order to create environment with specific python version, run this command:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox mdyzma]<span class="nv">$ </span>conda create --name py27 <span class="nv">python</span><span class="o">=</span>2 ipykernel
+
+Fetching package metadata .........
+Solving package specifications: .
+
+Package plan <span class="k">for </span>installation <span class="k">in </span>environment /opt/conda/envs/py27:
+
+The following NEW packages will be INSTALLED:
+...
+
+Proceed <span class="o">([</span>y]/n<span class="o">)</span>? y
+...
+
+<span class="c">#</span>
+<span class="c"># To activate this environment, use:</span>
+<span class="c"># &gt; source activate py27</span>
+<span class="c">#</span>
+<span class="c"># To deactivate this environment, use:</span>
+<span class="c"># &gt; source deactivate py27</span>
+<span class="c">#</span></code></pre></figure>
+
+<p>This should install bunch of packages, including latest python 2 version with basic tools to manage packages in new environment. I also specified, that I want <code class="highlighter-rouge">ipykernel</code> package to be installed as well.  Now I have to activate new environment following conda help from the screen:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox mdyzma]<span class="nv">$ </span><span class="nb">source </span>activate py27
+
+<span class="o">(</span>py27<span class="o">)</span> <span class="o">[</span>mdyzma@devbox mdyzma]<span class="err">$</span></code></pre></figure>
+
+<p>Prompt changed, indicating that I am now in py27 environment with its packages. Quick <code class="highlighter-rouge">pip list</code> reveals, that only handful of basic packages (including ipykernel and its dependencies) were installed :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox mdyzma]<span class="nv">$ </span>pip list
+DEPRECATION: The default format will switch to columns <span class="k">in </span>the future. You can use --format<span class="o">=(</span>legacy|columns<span class="o">)</span> <span class="o">(</span>or define a <span class="nv">format</span><span class="o">=(</span>legacy|columns<span class="o">)</span> <span class="k">in </span>your pip.conf under the <span class="o">[</span>list] section<span class="o">)</span> to disable this warning.
+decorator <span class="o">(</span>4.0.11<span class="o">)</span>
+ipykernel <span class="o">(</span>4.6.1<span class="o">)</span>
+ipython <span class="o">(</span>6.0.0<span class="o">)</span>
+ipython-genutils <span class="o">(</span>0.2.0<span class="o">)</span>
+jedi <span class="o">(</span>0.10.2<span class="o">)</span>
+jupyter-client <span class="o">(</span>5.0.1<span class="o">)</span>
+jupyter-core <span class="o">(</span>4.3.0<span class="o">)</span>
+pexpect <span class="o">(</span>4.2.1<span class="o">)</span>
+pickleshare <span class="o">(</span>0.7.4<span class="o">)</span>
+pip <span class="o">(</span>9.0.1<span class="o">)</span>
+prompt-toolkit <span class="o">(</span>1.0.14<span class="o">)</span>
+ptyprocess <span class="o">(</span>0.5.1<span class="o">)</span>
+Pygments <span class="o">(</span>2.2.0<span class="o">)</span>
+python-dateutil <span class="o">(</span>2.6.0<span class="o">)</span>
+pyzmq <span class="o">(</span>16.0.2<span class="o">)</span>
+setuptools <span class="o">(</span>27.2.0<span class="o">)</span>
+simplegeneric <span class="o">(</span>0.8.1<span class="o">)</span>
+six <span class="o">(</span>1.10.0<span class="o">)</span>
+tornado <span class="o">(</span>4.5.1<span class="o">)</span>
+traitlets <span class="o">(</span>4.3.2<span class="o">)</span>
+wcwidth <span class="o">(</span>0.1.7<span class="o">)</span>
+wheel <span class="o">(</span>0.29.0<span class="o">)</span>
+<span class="o">(</span>py27<span class="o">)</span> root@fc954edb0a6d:/#</code></pre></figure>
+
+<p>After activation I have to add this kernel to the global list of kernels managed by Jupyter package from main Anaconda installation. To register this kernel I have to enter: <code class="highlighter-rouge">python -m ipykernel install --user</code> in the terminal with this kernel activated:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">(</span>py27<span class="o">)</span> <span class="o">[</span>mdyzma@devbox mdyzma]<span class="nv">$ </span>python -m ipykernel install --user
+Installed kernelspec python2 <span class="k">in</span> /home/mdyzma/.local/share/jupyter/kernels/python2</code></pre></figure>
+
+<p>Done.I should have both kernels accessible when I run my Jupyter Notebook:</p>
+
+<p><img src="/assets/23-04-2017-two-kernels.png" alt="bothkernels" /></p>
+
+<p><a name="irkernel_py"></a></p>
+
+<h4 id="irkernel-with-conda">IRkernel with conda</h4>
+
+<p>Continuum Analytics did great job making R language available almost out of the box. Conda can access different repositories by specifying <code class="highlighter-rouge">--chanel</code> or <code class="highlighter-rouge">-c</code> flag when calling install option. Continuum is maintaining repository with most popular R packages ported, so they can be used as python packages. To install R packages for conda enter:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">conda install --channel r r-essentials</code></pre></figure>
+
+<p>This command should install dozens of R packages and will make R kernel available to you when you run Jupyter Notebook.  For more information go to <a href="https://conda.io/docs/r-with-conda.html">R with conda</a>.</p>
+
+<p>Simple and efficient. To run R code in Jupyter notebook simply choose R kernel from the drop-down list:</p>
+
+<p><img src="/assets/23-04-2017-r-kernel.png" alt="withrkernel" /></p>
+
+<p>Con of this method is that you have to install nearly 160 packages, taking few gigs of space. On the other hand I will have nice and ready to go R environment in my python after typing just five words. Awesome!</p>
+
+<p>If you want to see alternative way (much less space hungry) check next section.</p>
+
+<p><a name="irkernel_r"></a></p>
+
+<h4 id="irkernel-from-r">IRkernel from R</h4>
+
+<p>We will soon submit the IRkernel package to CRAN. Until then, you can install it via the devtools package:</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">install.packages</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s1">'repr'</span><span class="p">,</span><span class="w"> </span><span class="s1">'IRdisplay'</span><span class="p">,</span><span class="w"> </span><span class="s1">'crayon'</span><span class="p">,</span><span class="w"> </span><span class="s1">'pbdZMQ'</span><span class="p">,</span><span class="w"> </span><span class="s1">'devtools'</span><span class="p">,</span><span class="w"> </span><span class="s1">'stringr'</span><span class="p">))</span><span class="w">
+</span><span class="n">devtools</span><span class="o">::</span><span class="n">install_github</span><span class="p">(</span><span class="s1">'IRkernel/IRkernel'</span><span class="p">)</span><span class="w">
+</span><span class="n">IRkernel</span><span class="o">::</span><span class="n">installspec</span><span class="p">()</span><span class="w">  </span><span class="err">#</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">register</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">kernel</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">current</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="n">installation</span></code></pre></figure>
+
+<p>Effect is identical to the one R will install requested packages</p>
+
+<p><a name="ijulia"></a></p>
+
+<h4 id="ijulia-kernel">IJulia kernel</h4>
+
+<p>Once you have <strong>Julia</strong> installed on your machine, run Julia app  (you will see fancy prompt by <code class="highlighter-rouge">julia&gt;</code>), then type:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>julia&gt; Pkg.add("IJulia")
+INFO: Initializing package repository /home/mdyzma/.julia/v0.7
+INFO: Cloning METADATA from https://github.com/JuliaLang/METADATA.jl
+INFO: Cloning ...
+INFO: Installing ...
+INFO: Building ...
+</code></pre>
+</div>
+
+<p>Julia package manager will take care of dependencies and download requested software. Specifically it will download and install basic python environment based on <a href="https://conda.io/miniconda.html">Miniconda</a>, which will be local for Julia, and accessible only by Julia. Thanks to that you don’t really need any python installed in your system to run Julia Notebook. In that case only one kernel will be available. Julia will use its private python interpreter and minimal Jupyter installation to run notebook with it’s kernel. You can run it at any time typing in Julia REPL:</p>
+
+<figure class="highlight"><pre><code class="language-julia" data-lang="julia"><span class="n">julia</span><span class="o">&gt;</span> <span class="n">using</span> <span class="n">IJulia</span>
+<span class="n">INFO</span><span class="x">:</span> <span class="n">Precompiling</span> <span class="k">module</span> <span class="n">IJulia</span><span class="o">.</span>
+
+<span class="n">julia</span><span class="o">&gt;</span> <span class="n">notebook</span><span class="x">()</span></code></pre></figure>
+
+<p>Since I already had two additional kernels installed (python 2,  and R), IJulia will be added to the collection.</p>
+
+<p><img src="/assets/23-04-2017-julia-kernel.png" alt="julia-kernel" /></p>
+
+<div class="alert alert-info" role="alert" style="text-align: justify; vertical-align:middle;">
+In the meantime I updated entire Anaconda bundle (<code class="highlighter-rouge">conda update --all</code>), including Jupyter notebook, which changed little bit its UI. You may notice that list of kernels is displayed first. Opposite to previous screen-shots.
+</div>
+
+<p>In Julia language <code class="highlighter-rouge">using &lt;package Name&gt;</code> is an <strong>import statement</strong>, which pre-compiles and gets ready to work module/program denoted in the statement. Next line calls this programs subroutine called <code class="highlighter-rouge">notebook</code>. If you use some arguments, you can modify notebooks behavior. For example <code class="highlighter-rouge">notebook(detached=true)</code>, Julia will run notebook server in the background and you will be able to use or exit REPL without closing the notebook.</p>
+
+<p>By default, the notebook “dashboard” opens in your home directory, but you can open the dashboard in a different directory with <code class="highlighter-rouge">notebook(dir="/some/path")</code>.</p>
+
+<p>But we want to add IJulia kernel to existing Jupyter installation. to do that you need to set environmental variable <code class="highlighter-rouge">JUPYTER</code> to the value of your current jupyer program path before running <code class="highlighter-rouge">Pkg.add("IJulia")</code>.</p>
+
+<p><a name="iscala"></a></p>
+
+<h4 id="iscala-kernel">IScala kernel</h4>
+
+<p>https://datasciencevademecum.wordpress.com/2016/01/28/6-points-to-compare-python-and-scala-for-data-science-using-apache-spark/</p>
+
+<p>Scala programs compile to JVM bytecodes. Their
+run-time performance is usually on par with Java programs. Scala code can
+call Java methods, access Java fields, inherit from Java classes, and implement Java interfaces.</p>
+
+<h2 id="using-all-kernels">Using all kernels</h2>
+
+<p>Jupyter notebook is language agnostic platform. It is able to support nearly 100 different languages (check <a href="https://github.com/jupyter/jupyter/wiki/Jupyter-kernels">here</a>) via kernels, which provide is kernel is execution backend for Jupyter to invoke specifics language commands and direct response back to the browser. By default only ipython kernel is installed and runs out of the box. Other kernels must be installed and activated by user. By default installing Jupyter also installs <code class="highlighter-rouge">ipykernel</code> appropriate to your interpreter version.</p>
+
+<p>https://jupyter-client.readthedocs.io/en/latest/kernels.html#kernelspecs</p>
+
+<p>https://ipython.readthedocs.io/en/latest/install/kernel_install.html</p>
+
+<h2 id="one-to-rule-them-all">One to rule them all…</h2>
+
+<p>Once all kernels are installed, you can print all available kernels using Jupyter function:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox mdyzma]<span class="nv">$ </span>jupyter kernelspec list
+Available kernels:
+    julia-0.5    /home/mdyzma/.jupyter/kernels/julia-0.7
+    python2      /home/mdyzma/.jupyter/kernels/python2
+    python3      /home/mdyzma/.jupyter/kernels/python3
+    ir           /home/mdyzma/.jupyter/kernels/ir</code></pre></figure>
+
+<h2 id="summary">Summary</h2>
+
+<p>There we are. Versatile, multi-language prototyping environment in the browser.</p>
+
+<p>If you struggle between using python Julia, Scala or R, don’t! Use all of them! At the same time in the same notebook, passing data structures between languages and perform analysis with the best tools they can offer. With Jupyter notebook it is all possible. It is possible to add even more players to the game. Julia, Haskel, Lua, bash, Octave… Pick whatever you can… Currently Jupyter supports nearly 100 different kernels (check <a href="https://github.com/jupyter/jupyter/wiki/Jupyter-kernels">here</a>).</p>
+
+<!-- Links -->
+<!-- www -->
+
+<!-- Images -->
+
+
+  </div>
+<div class="container">
+    <div class="row ">
+        <div class="col-xs-2"></div>
+        <div class="col-xs-8">
+
+        <!-- Twitter -->
+        <a href="https://twitter.com/share" class="twitter-share-button" data-via="MichalDyzma">Tweet</a>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+        <!-- Google + -->
+        <div class="g-plus" data-action="share" data-annotation="bubble"></div>
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+        <!-- Facebook -->
+        <div class="fb-share-button" data-href="http://localhost:4000/2017/04/23/python-r-scala-julia-in-one-notebook/" data-layout="button_count" data-size="small" data-mobile-iframe="true" style="position: relative; top: -8px;"></div>
+
+
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/pl_PL/sdk.js#xfbml=1&version=v2.9&appId=422251294815916";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+
+    </div>
+    </div>
+    <div class="col-xs-2"></div>
+</div>
+
+
+<div id="disqus_thread"></div>
+    <script type="text/javascript">
+
+        var disqus_config = function () {
+            this.page.url = "http://localhost:4000/2017/04/23/python-r-scala-julia-in-one-notebook/";
+            this.page.identifier = "/2017/04/23/python-r-scala-julia-in-one-notebook";
+        };
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'md-blog';
+        var disqus_developer = 1; // Comment out when the site is live
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var d = document, s = d.createElement('script');
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript"></noscript>
+
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy; Michal Dyzma - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://localhost:4000/feed.xml">RSS</a>
+
+
+<!-- mathjax -->
+
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <!-- Begin Jekyll SEO tag v2.2.0 -->
+<title>Part 1: Application design | Consider Python</title>
+<meta property="og:title" content="Part 1: Application design" />
+<meta name="author" content="Michal Dyzma" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="In Part 1 I will present process of application design. From collecting requirements to low level design describing specific algorithms and implementations. Final result should give something in form of Software Design Document that can be easily transformed to professional SSD template which can be used for other projects." />
+<meta property="og:description" content="In Part 1 I will present process of application design. From collecting requirements to low level design describing specific algorithms and implementations. Final result should give something in form of Software Design Document that can be easily transformed to professional SSD template which can be used for other projects." />
+<link rel="canonical" href="http://localhost:4000/2017/03/26/part1-biostudio-application-design/" />
+<meta property="og:url" content="http://localhost:4000/2017/03/26/part1-biostudio-application-design/" />
+<meta property="og:site_name" content="Consider Python" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-03-26T13:18:53+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@MichalDyzma" />
+<meta name="twitter:creator" content="@Michal Dyzma" />
+<meta property="fb:admins" content="mdyzma" />
+<meta property="article:publisher" content="mdyzma" />
+<meta property="fb:app_id" content="422251294815916" />
+<script type="application/ld+json">
+{"@context": "http://schema.org",
+"@type": "BlogPosting",
+"headline": "Part 1: Application design",
+"author": {"@type": "Person",
+"name": "Michal Dyzma"},
+"datePublished": "2017-03-26T13:18:53+02:00",
+"description": "In Part 1 I will present process of application design. From collecting requirements to low level design describing specific algorithms and implementations. Final result should give something in form of Software Design Document that can be easily transformed to professional SSD template which can be used for other projects.",
+"publisher": {"@type": "Organization",
+"name": "Michal Dyzma",
+"logo": {"@type": "ImageObject",
+"url": "http://localhost:4000/assets/md-logo.png"}},
+"mainEntityOfPage": {"@type": "WebPage",
+"@id": "http://localhost:4000/2017/03/26/part1-biostudio-application-design/"},
+"url": "http://localhost:4000/2017/03/26/part1-biostudio-application-design/"}</script>
+<!-- End Jekyll SEO tag -->
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>Part 1: Application design</title>
+  <meta name="description" content="In Part 1 I will present process of application design. From collecting requirements to low level design describing specific algorithms and implementations. Final result should give something in form of Software Design Document that can be easily transformed to professional SSD template which can be used for other projects.">
+  <meta name="keywords" content="biostudio, software-design, agile, python">
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://localhost:4000/2017/03/26/part1-biostudio-application-design/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="Consider Python" href="http://localhost:4000/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="MichalDyzma">
+  <meta name="twitter:title" content="Part 1: Application design">
+  <meta name="twitter:description" content="In Part 1 I will present process of application design. From collecting requirements to low level design describing specific algorithms and implementations. Final result should give something in fo...">
+  
+    <meta name="twitter:creator" content="MichalDyzma">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+<!-- Font awesome -->
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  
+  <!-- Google Analytics -->
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-97434888-1', 'auto');
+    ga('send', 'pageview');
+
+  </script>
+
+
+  
+  <!-- Google Adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: ca-pub-4566255347044004,
+    enable_page_level_ads: true
+  });
+</script>
+
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">Consider Python</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="/">Home</a>
+      
+        
+        <a class="page-link" href="/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="/about/">About</a>
+      
+        
+        <a class="page-link" href="https://github.com/mdyzma/mdyzma.github.io">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <h1 class="post-title" itemprop="name headline">Part 1: Application design</h1>
+    
+    <p class="post-meta"><time datetime="2017-03-26T13:18:53+02:00" itemprop="datePublished">Mar 26, 2017</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Michal Dyzma</span></span> • 
+  
+  
+    
+      <a href="/categories/biostudio/">biostudio</a>,
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+  
+    
+  
+    
+      <a href="/categories/software-engineering/">software-engineering</a>,
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+      <a href="/categories/python/">python</a>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+</p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>In <strong>Part 1</strong> I will present process of application design. From collecting requirements to low level design describing specific algorithms and implementations. Final result should give something in form of <em>Software Design Document</em>  that can be easily transformed to professional SSD template which can be used for other projects.</p>
+
+<h4 id="about-biostudio-project">About biostudio project</h4>
+
+<p>This is part of  what should develop to a series of articles on development process of <em>Biostudio</em> - python GUI app. I will include best practices and solutions used in corporate projects. From preparing  software specifications to fully functional software deployed to the PyPI repository. Final product will be GUI application for Protein Data Bank <code class="highlighter-rouge">.pdb</code> files editor, which carry information about 3D structure of biological macro-molecules.</p>
+
+<hr />
+<p><em>Series consists of:</em></p>
+
+<ul>
+  <li><a href="http://localhost:4000/2017/03/26/part1-biostudio-application-design/">Part 1: Application designs</a></li>
+  <li><a href="http://localhost:4000/2017/05/28/part2-biostudio-setting-up-environment/">Part 2: Setting up work environment</a></li>
+</ul>
+
+<!-- 
+* [Part 3: Test Driven Development](http://localhost:4000/2017/04/14/part3-biostudio-design-implementation-tdd/)
+* [Part 4: Low Level Design implementation](http://localhost:4000/2017/04/15/part4-biostudio-design-implementation-continue/)
+* [Part 5: Debugging and profiling](http://localhost:4000/2017/04/16/part5-biostudio-debugging-and-profiling/)
+* [Part 6: Application deployment](http://localhost:4000/2017/04/17/part6-biostudio-application-deployment/)
+* [Part 7: Application life cycle](http://localhost:4000/2017/04/18/part7-biostudio-application-lifecycle/)
+* [Part 8: Code metrics](http://localhost:4000/2017/04/19/part8-biostudio-code-metrics/) -->
+
+<h4 id="basic-configuration">Basic configuration</h4>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Platform</td>
+      <td> </td>
+      <td><strong>Linux 64 bit</strong></td>
+    </tr>
+    <tr>
+      <td>Python</td>
+      <td> </td>
+      <td><strong>3.6.1</strong></td>
+    </tr>
+    <tr>
+      <td>Source</td>
+      <td> </td>
+      <td><a href="https://gitlab.com/mdyzma/biostudio">link</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><br /></p>
+<div class="alert alert-info" role="alert" style="text-align: justify; vertical-align:middle;">
+I will run the code using docker virtualization technology or spin new VirtualBox Fedora or Ubuntu, to test how it works freshly out of the box. So I can be sure every piece of code was properly tested. Outputs from my tests will be pasted here, unless they are ridiculous long (hundreds of lines). Then I will truncate output to the bare minimum necessary to understand what is going on.
+</div>
+
+<hr />
+
+<h2 id="introduction">Introduction</h2>
+
+<p>Simple fact is that it is not important what kind of methodology you use, as long as it allows you to deliver high quality software at the end of each development cycle (on time and on budget). Most of the small open-source projects is born as an idea in the head of one person, without any design documentation, requirements, with rudimentary diagrams drawn on the napkin. The only automated task used from day one is usually source code control. This works at the beginning, in projects infancy, when single developer handles all the tasks. Unfortunately it fails miserably when project gains popularity or grows bigger and requires more team members, who’s work must be coordinated.</p>
+
+<p>Maintaining project written by team of developers without any specs, design, common goal, and automatic delivery is a horrible idea, and should not happen at all, ever! It can be easily avoided, just by following already tested solutions, which offer some decent control over the project. If you run company and try to sell product It is a MUST. It also allows to promise regular delivery of the  software, that will satisfy customer.</p>
+
+<p>In corporate projects one of the most important part of the project is documentation. From the very beginning i.e software specification, to the final version of user’s manual. Documentation must be maintained and updated. Period. Because it is time-consuming, dull and requires collaboration between many team members, writing documentation/comments is usually assigned to new team members as a part of <em>getting familiar with the project</em>. It is a mistake in my humble opinion Due to this reasons documentation is generally incomplete or out-of-date at any given time. There is one solution - writing documentation must be automatic process, triggered by code staging or release. Therefore one should try to write self-documenting code and keep specific branch in your delivery pipeline devoted to proper documentation production, which will guarantee that produced documentation reflects at least doc-strings in the code. I will deal with this problem in Part 2 and Part 3. In this article I will prepare <em>Software Design Document</em> for the project I called <strong>Biostudio</strong>.</p>
+
+<h2 id="go-agile">Go Agile</h2>
+
+<p>In this tutorial I will adopt elements of agile software development techniques with some necessary adjustments, which in fact resembles extreme programing paradigm. Obviously I will have to play roles of all partners involved in agile process. The client communicating requirements and making changes to the project, developers team responsible for preparing documentation and proper implementation, as well as project manager contacting assigning/managing tasks, software evolution and releases. There will be no budget constrains and budget planning. No effort or time estimation. No stand-up meetings etc…</p>
+
+<p>I will do my best to follow good practices and guidelines in order to prepare best quality code, tests and documentation. I will put extra effort in preparing modern development environment automating several activities like testing, documentation generation and finally - deployment. Knowledge of this techniques will help you increase efficiency and stability of your own development process, reduce development time and make easier to include new team members in the project.</p>
+
+<p>Employed technologies will also help to automate some management tasks like overall progress tracking, single tasks progress tracking, code metrics and end users feedback/bugs tracking.</p>
+
+<p>Since it is agile methodology, each iteration will result in deploying new version of functional software, which should meet client criteria.</p>
+
+<h2 id="initial-requirements">Initial requirements</h2>
+
+<p>The purpose of this project is to build a GUI desktop app responsible for reading, viewing and changing Protein Data Bank fies, holding information about proteins 3D structure. Application should work on Windows, Linux and/or MacOS operating system. Actually in the first sentence I have envisioned at least six requirements, which describe general features my app should have:</p>
+
+<ol>
+  <li>GUI interface running on Windows and Linux OS</li>
+  <li>read <code class="highlighter-rouge">pdb</code> files</li>
+  <li>display file’s content in table view</li>
+  <li>edit/change</li>
+  <li>save changes</li>
+</ol>
+
+<p>This initial requirements for <em>Biostudio</em>, in the form of user stories may be presented as follows:</p>
+
+<ol>
+  <li>User can work with pdb files using window interface.</li>
+  <li>User opens pdb files from location on hardrive</li>
+  <li>User can change pdb file and save changes</li>
+</ol>
+
+<p>This should suffice for start.</p>
+
+<h2 id="high-level-design">High Level Design</h2>
+
+<p>High-level design (HLD) explains the architecture of a software product in nontechnical to mildly technical terms.
+A high-level design document or HLDD adds the necessary details to the current project description to represent a suitable model for coding. This document includes a high-level architecture diagram depicting the structure of the system, such as the database architecture, application architecture (layers), application flow (navigation), security architecture and technology architecture.</p>
+
+<p>A high-level design provides an overview of a solution, platform, system, product, service or process.
+Such an overview is important in a multi-project development to make sure that each supporting component design will be compatible with its neighboring designs and with the big picture.
+The highest-level solution design should briefly describe all platforms, systems, products, services and processes that it depends on and include any important changes that need to be made to them.
+In addition, there should be brief consideration of all significant commercial, legal, environmental, security, safety and technical risks, issues and assumptions.
+The idea is to mention every work area briefly, clearly delegating the ownership of more detailed design activity whilst also encouraging effective collaboration between the various project teams.
+Today, most high-level designs require contributions from a number of experts, representing many distinct professional disciplines.
+Finally, every type of end-user should be identified in the high-level design and each contributing design should give due consideration to customer experience.</p>
+
+<h2 id="low-level-design">Low Level Design</h2>
+
+<p>Low-level design (LLD) is a component-level design process that follows a step-by-step refinement process. This process can be used for designing data structures, required software architecture, source code and ultimately, performance algorithms. Overall, the data organization may be defined during requirement analysis and then refined during data design work. Post-build, each component is specified in detail.[1]
+The LLD phase is the stage where the actual software components are designed.
+During the detailed phase the logical and functional design is done and the design of application structure is developed during the high-level design phase.</p>
+
+<p>A design is the order of a system that connects individual components. Often, it can interact with other systems. Design is important to achieve high reliability, low cost, and good maintain-ability.[2] We can distinguish two types of program design phases:
+Architectural or high-level design
+Detailed or low-level design
+Structured flow charts and HIPO diagrams typify the class of software design tools and these provide a high-level overview of a program. The advantages of such a design tool is that it yields a design specification that is understandable to non-programmers and it provides a good pictorial display of the module dependencies.
+A disadvantage is that it may be difficult for software developers to go from graphic-oriented representation of software design to implementation. Therefore, it is necessary to provide little insight into the algorithmic structure describing procedural steps to facilitate the early stages of software development (generally using PDLs).[3]</p>
+
+<p>The goal of LLD or a low-level design document (LLDD) is to give the internal logical design of the actual program code. High-level design is created based on the low-level design. LLD describes the class diagrams with the methods and relations between classes and program specs. It describes the modules so that the programmer can directly code the program from the document.
+A good low-level design document makes the program easy to develop when proper analysis is utilized to create a low-level design document. The code can then be developed directly from the low-level design document with minimal debugging and testing. Other advantages include lower cost and easier maintenance.</p>
+
+<h2 id="from-requirements-to-low-level-design">From requirements to low-level-design</h2>
+
+<p>In contrast, low-level design further exposes the logical detailed design of each of these elements for programmers.</p>
+
+<p>System 
+language
+technologies</p>
+
+<p>To get UML graphs we wll use www.draw.io service.</p>
+
+<p>The SDD usually contains the following information:
+The data design describes structures that reside within the software. Attributes and relationships between data objects dictate the choice of data structures.
+The architecture design uses information flowing characteristics, and maps them into the program structure. The transformation mapping method is applied to exhibit distinct boundaries between incoming and outgoing data. The data flow diagrams allocate control input, processing and output along three separate modules.
+The interface design describes internal and external program interfaces, as well as the design of human interface. Internal and external interface designs are based on the information obtained from the analysis model.
+The procedural design describes structured programming concepts using graphical, tabular and textual notations. These design mediums enable the designer to represent procedural detail, that facilitates translation to code. This blueprint for implementation forms the basis for all subsequent software engineering work.</p>
+
+<h3>#</h3>
+<h2 id="sdd-elements-pushed-to-project-documentation">SDD elements pushed to project documentation</h2>
+
+<h3 id="requierements">Requierements</h3>
+<h3 id="structurl-design-component-class-diagram--are-born">Structurl design (component, class diagram,  are born</h3>
+
+<p>Assumptions and Dependencies</p>
+
+<p>Describe any assumptions or dependencies regarding the software and its use. These may concern such issues as:</p>
+
+<p>Related software or hardware
+Operating systems
+End-user characteristics
+Possible and/or probable changes in functionality
+General Constraints</p>
+
+<p>Describe any global limitations or constraints that have a significant impact on the design of the system’s software (and describe the associated impact). Such constraints may be imposed by any of the following (the list is not exhaustive):</p>
+
+<p>Hardware or software environment
+End-user environment
+Availability or volatility of resources
+Standards compliance
+Interoperability requirements
+Interface/protocol requirements
+Data repository and distribution requirements
+Security requirements (or other such regulations)
+Memory and other capacity limitations
+Performance requirements
+Network communications
+Verification and validation requirements (testing)
+Other means of addressing quality goals
+Other requirements described in the requirements specification
+Goals and Guidelines</p>
+
+<p>Describe any goals, guidelines, principles, or priorities which dominate or embody the design of the system’s software. Such goals might be:</p>
+
+<p>Emphasis on speed versus memory use
+working, looking, or “feeling” like an existing product</p>
+
+<h4 id="good-practices">Good practices</h4>
+
+<p>The KISS principle (“Keep it simple stupid!”)
+THE DRY
+YAGNI</p>
+
+<h4 id="1-do-not-systematically-include-the-blog-name-in-the-title-tag">1) Do not systematically include the blog name in the title tag</h4>
+
+<p>source : <a href="http://sixrevisions.com/content-strategy/5-common-seo-mistakes-with-web-page-titles/">5 Common SEO Mistakes with Web Page Titles</a></p>
+
+<p>The clean blog template include the blog name in every post title, which is bad :</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;title&gt;</span>{% if page.title %}{{ page.title }} - {{ site.title }}{% else %}{{ site.title }}{% endif %}<span class="nt">&lt;/title&gt;</span></code></pre></figure>
+
+<p>To continue check:</p>
+
+<p><a href="http://localhost:4000/2017/05/28/part2-biostudio-setting-up-environment/">Part 2: Setting up work environment</a></p>
+
+<p><strong>If you have any comments, or ideas how to improve this tutorial, please let me know by leaving a post below, or contacting me via email.</strong></p>
+
+  </div>
+<div class="container">
+    <div class="row ">
+        <div class="col-xs-2"></div>
+        <div class="col-xs-8">
+
+        <!-- Twitter -->
+        <a href="https://twitter.com/share" class="twitter-share-button" data-via="MichalDyzma">Tweet</a>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+        <!-- Google + -->
+        <div class="g-plus" data-action="share" data-annotation="bubble"></div>
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+        <!-- Facebook -->
+        <div class="fb-share-button" data-href="http://localhost:4000/2017/03/26/part1-biostudio-application-design/" data-layout="button_count" data-size="small" data-mobile-iframe="true" style="position: relative; top: -8px;"></div>
+
+
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/pl_PL/sdk.js#xfbml=1&version=v2.9&appId=422251294815916";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+
+    </div>
+    </div>
+    <div class="col-xs-2"></div>
+</div>
+
+
+<div id="disqus_thread"></div>
+    <script type="text/javascript">
+
+        var disqus_config = function () {
+            this.page.url = "http://localhost:4000/2017/03/26/part1-biostudio-application-design/";
+            this.page.identifier = "/2017/03/26/part1-biostudio-application-design";
+        };
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'md-blog';
+        var disqus_developer = 1; // Comment out when the site is live
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var d = document, s = d.createElement('script');
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript"></noscript>
+
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy; Michal Dyzma - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://localhost:4000/feed.xml">RSS</a>
+
+
+<!-- mathjax -->
+
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

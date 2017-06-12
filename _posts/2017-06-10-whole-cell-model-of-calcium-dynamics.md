@@ -27,13 +27,13 @@ Eukaryotic cells maintain over 2000 fold difference of calcium ions concentratio
 
 ### Whole cell models
 
-Creating a cellular model has been a particularly challenging task of systems biology and mathematical biology. It involves developing efficient algorithms, data structures, visualization and communication tools to orchestrate the integration of large quantities of biological data with the goal of computer modeling. I would like to quote famous aphorism by statistician George Box:
+Creating a cellular model is particularly challenging task. It involves the use of computer simulations of the many subsystems such as cellular compartments, to track concentrations of signal transduction pathways, gene regulatory networks and sometimes metabolites and enzymes. Complex nature of to both analyze and visualize the complex connections of these cellular processes.developing efficient algorithms, data structures, visualization and communication tools to orchestrate the integration of large quantities of biological data with the goal of computer modeling. I would like to quote famous aphorism by statistician George Box:
 
 > All models are wrong, but some of them are useful.
 
 It is also directly associated with bioinformatics, computational biology and Artificial life.
 
-It involves the use of computer simulations of the many cellular subsystems such as the networks of metabolites and enzymes which comprise metabolism, signal transduction pathways and gene regulatory networks to both analyze and visualize the complex connections of these cellular processes.
+It involves 
 
 The complex network of biochemical reaction/transport processes and their spatial organization make the development of a predictive model of a living cell a grand challenge for the 21st century.
 

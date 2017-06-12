@@ -1,0 +1,1939 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <generator uri="http://jekyllrb.com" version="3.4.3">Jekyll</generator>
+  
+  
+  <link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="http://localhost:4000/" rel="alternate" type="text/html" />
+  <updated>2017-06-12T21:19:10+02:00</updated>
+  <id>http://localhost:4000//</id>
+
+  
+    <title type="html">Consider Python</title>
+  
+
+  
+    <subtitle>Blog dedicated to promote python/R/Julia as &quot;core data science&quot; tools.
+</subtitle>
+  
+
+  
+    <author>
+        <name>Michal Dyzma</name>
+      
+      
+    </author>
+  
+
+  
+  
+    <entry>
+      
+      <title type="html">Calcium dynamics in the cell</title>
+      
+      <link href="http://localhost:4000/2017/06/10/whole-cell-model-of-calcium-dynamics/" rel="alternate" type="text/html" title="Calcium dynamics in the cell" />
+      <published>2017-06-10T11:47:13+02:00</published>
+      <updated>2017-06-10T11:47:13+02:00</updated>
+      <id>http://localhost:4000/2017/06/10/whole-cell-model-of-calcium-dynamics</id>
+      <content type="html" xml:base="http://localhost:4000/2017/06/10/whole-cell-model-of-calcium-dynamics/">&lt;p&gt;Calcium not only builds our bones and teeth. It is also a very important signaling molecule, which is involved in nearly every aspect of the life. It coordinates spectrum of cellular responses, including very well known muscle contraction,  to some mysterious, but equally important like blood clotting, the transmission of nerve impulses, apoptosis or G-potein signal transduction. It acts on the most basic level of life, controlling proteins shape, enzyme activity and cellular organelles behavior. Its tracking in real time is very hard and sometimes impossible. Hence mathematical models, which try to explain parts impossible to explain with “normal experiment”. I will explain specific model of calcium dynamics in cells with nucleus (eukaryotic), which I created during my PhD. Numerical analysis was done in Matlab. Unfortunately I do not have access to this package anymore, therefore I will implement and perform all numerical analysis in Python.&lt;/p&gt;
+
+&lt;h2 id=&quot;why-is-calcium-so-important&quot;&gt;Why is calcium so important?&lt;/h2&gt;
+
+&lt;p&gt;Eukaryotic cells maintain over 2000 fold difference of calcium ions concentration between cytosol and intracellular space. It means that for every atom of Ca&lt;sup&gt;2+&lt;/sup&gt; in the cytosol (Cyt), there is 2000 calcium atoms outside of the cell. Also inside the cell calcium ions are stored in specific structures like endoplasmic reticulum (ER) or mitochondria (Mit). Nearly half of the energy produced by the cell is spend to maintain steep calcium gradient between inner and outer-cell environment.&lt;/p&gt;
+
+&lt;h2 id=&quot;how-to-study-it&quot;&gt;How to study it?&lt;/h2&gt;
+
+&lt;h3 id=&quot;microscopic-observation&quot;&gt;Microscopic observation&lt;/h3&gt;
+
+&lt;h3 id=&quot;whole-cell-models&quot;&gt;Whole cell models&lt;/h3&gt;
+
+&lt;p&gt;Creating a cellular model is particularly challenging task. It involves the use of computer simulations of the many subsystems such as cellular compartments, to track concentrations of signal transduction pathways, gene regulatory networks and sometimes metabolites and enzymes. Complex nature of to both analyze and visualize the complex connections of these cellular processes.developing efficient algorithms, data structures, visualization and communication tools to orchestrate the integration of large quantities of biological data with the goal of computer modeling. I would like to quote famous aphorism by statistician George Box:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;All models are wrong, but some of them are useful.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;It is also directly associated with bioinformatics, computational biology and Artificial life.&lt;/p&gt;
+
+&lt;p&gt;It involves&lt;/p&gt;
+
+&lt;p&gt;The complex network of biochemical reaction/transport processes and their spatial organization make the development of a predictive model of a living cell a grand challenge for the 21st century.&lt;/p&gt;
+
+&lt;p&gt;By means of a system of ordinary differential equations these models show the change in time (dynamical system) of the protein inside a single typical cell; this type of model is called a deterministic process (whereas a model describing a statistical distribution of protein concentrations in a population of cells is called a stochastic process).
+To obtain these equations an iterative series of steps must be done: first the several models and observations are combined to form a consensus diagram and the appropriate kinetic laws are chosen to write the differential equations, such as rate kinetics for stoichiometric reactions, Michaelis-Menten kinetics for enzyme substrate reactions and Goldbeter–Koshland kinetics for ultrasensitive transcription factors, afterwards the parameters of the equations (rate constants, enzyme efficiency coefficients and Michaelis constants) must be fitted to match observations; when they cannot be fitted the kinetic equation is revised and when that is not possible the wiring diagram is modified. The parameters are fitted and validated using observations of both wild type and mutants, such as protein half-life and cell size.&lt;/p&gt;
+
+&lt;h2 id=&quot;what-is-mam&quot;&gt;What is MAM?&lt;/h2&gt;
+
+&lt;p&gt;It is an acronym from Mitochondria-associated endoplasmic reticulum
+complexes or microdomains. Still it is hard to imagine.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/10-06-2017-MAM.png&quot; alt=&quot;mam&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;mam-model&quot;&gt;MAM Model&lt;/h2&gt;
+
+&lt;h3 id=&quot;heuristic-model&quot;&gt;Heuristic model&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/10-06-2017-scheme.png&quot; alt=&quot;scheme&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;system-of-odes&quot;&gt;System of ODEs&lt;/h3&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\frac{dCa_{Cyt}}{dt} = J_{ch}+J_{leak}-J_{pump}+J_{out}-J_{in} + k_-CaPr-k_+Ca_{Cyt}Pr\\
+\frac{dCa_{ER}}{dt} = \frac{\beta_{ER}}{\rho_{ER}}\left(J_{pump}-J_{ch}
+            -J_{leak} -J_{MAM}\right), \label{eq:2}\\
+\frac{dCa_{Mit}}{dt} = \frac{\beta_{Mit}}{\rho_{Mit}}\left(J_{in}+J_{MAM}
+            -J_{out}\right)\\
+\frac{dCaPr}{dt} = k_+ Ca_{Cyt}Pr - k_-CaPr\\
+\frac{dPr}{dt} = -k_+ Ca_{Cyt}Pr + k_-CaPr&lt;/script&gt;
+
+&lt;h3 id=&quot;scaling-factors&quot;&gt;Scaling factors&lt;/h3&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\rho_i = \dfrac{V_{i}}{V_{Cyt}}&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\beta_i = \dfrac{Ca_{i}}{Ca_i + Ca_iPr}&lt;/script&gt;
+
+&lt;h3 id=&quot;fluxes-definition&quot;&gt;Fluxes definition&lt;/h3&gt;
+
+&lt;h2 id=&quot;what-does-it-mean&quot;&gt;What does it mean?&lt;/h2&gt;
+
+&lt;!-- Images --&gt;</content>
+
+      
+      
+      
+      
+      
+
+      
+        <author>
+            <name>Michal Dyzma</name>
+          
+          
+        </author>
+      
+
+      
+        <category term="python" />
+      
+        <category term="systems-biology" />
+      
+        <category term="mathematical-modeling" />
+      
+
+      
+
+      
+        <summary type="html">Calcium not only builds our bones and teeth. It is also a very important signaling molecule, which is involved in nearly every aspect of the life. It coordinates spectrum of cellular responses, including very well known muscle contraction, to some mysterious, but equally important like blood clotting, the transmission of nerve impulses, apoptosis or G-potein signal transduction. It acts on the most basic level of life, controlling proteins shape, enzyme activity and cellular organelles behavior. Its tracking in real time is very hard and sometimes impossible. Hence mathematical models, which try to explain parts impossible to explain with “normal experiment”. I will explain specific model of calcium dynamics in cells with nucleus (eukaryotic), which I created during my PhD. Numerical analysis was done in Matlab. Unfortunately I do not have access to this package anymore, therefore I will implement and perform all numerical analysis in Python.</summary>
+      
+
+      
+      
+    </entry>
+  
+  
+  
+    <entry>
+      
+      <title type="html">Part 2: Setting up work environment</title>
+      
+      <link href="http://localhost:4000/2017/05/28/part2-biostudio-setting-up-environment/" rel="alternate" type="text/html" title="Part 2: Setting up work environment" />
+      <published>2017-05-28T03:15:08+02:00</published>
+      <updated>2017-05-28T03:15:08+02:00</updated>
+      <id>http://localhost:4000/2017/05/28/part2-biostudio-setting-up-environment</id>
+      <content type="html" xml:base="http://localhost:4000/2017/05/28/part2-biostudio-setting-up-environment/">&lt;p&gt;In &lt;strong&gt;Part 2&lt;/strong&gt; I will set up and show how to manage virtual environments in python. Initiate version control and software versioning automation. Additionally I will set up continuous integration service using GitLab, which will include automatic testing with pytest and documentation creation. Code will run tests every time update has been pushed to the master branch of the software repository.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h4 id=&quot;about-biostudio-project&quot;&gt;About biostudio project&lt;/h4&gt;
+
+&lt;p&gt;This is part of  what should develop to a series of articles on development process of &lt;em&gt;Biostudio&lt;/em&gt; - python GUI app. I will include best practices and solutions used in corporate projects. From preparing  software specifications to fully functional software deployed to the PyPI repository. Final product will be GUI application for Protein Data Bank &lt;code class=&quot;highlighter-rouge&quot;&gt;.pdb&lt;/code&gt; files editor, which carry information about 3D structure of biological macro-molecules.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Series consists of:&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://localhost:4000/2017/03/26/part1-biostudio-application-design/&quot;&gt;Part 1: Application designs&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://localhost:4000/2017/05/28/part2-biostudio-setting-up-environment/&quot;&gt;Part 2: Setting up work environment&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://localhost:4000/2017/06/24/part3-biostudio-automate-everything/&quot;&gt;Part 3: Automate everything&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;!-- 
+* [Part 4: Low Level Design implementation](http://localhost:4000/2017/04/15/part4-biostudio-design-implementation-continue/)
+* [Part 5: Debugging and profiling](http://localhost:4000/2017/04/16/part5-biostudio-debugging-and-profiling/)
+* [Part 6: Application deployment](http://localhost:4000/2017/04/17/part6-biostudio-application-deployment/)
+* [Part 7: Application life cycle](http://localhost:4000/2017/04/18/part7-biostudio-application-lifecycle/)
+* [Part 8: Code metrics](http://localhost:4000/2017/04/19/part8-biostudio-code-metrics/)
+ --&gt;
+
+&lt;h4 id=&quot;basic-configuration&quot;&gt;Basic configuration&lt;/h4&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Platform&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;Linux 64 bit&lt;/strong&gt; (Fedora or Ubuntu)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Python&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;3.6.1&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Source&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;&lt;a href=&quot;https://gitlab.com/mdyzma/biostudio&quot;&gt;link&lt;/a&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;alert alert-info&quot; role=&quot;alert&quot; style=&quot;text-align: justify; vertical-align:middle;&quot;&gt;
+I will run the code using docker virtualization technology or spin new VirtualBox of Fedora or Ubuntu, to test how it works freshly out of the box. So I can be sure every piece of code was properly tested. Outputs from my tests will be pasted here, unless they are ridiculous long (hundreds of lines). Then I will truncate output to the bare minimum necessary to understand what is going on.
+&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;virtual-environment&quot;&gt;Virtual environment&lt;/h2&gt;
+
+&lt;p&gt;Before I start to write the code I will set up clean environment with Python interpreter. It is a common practice to start new projects with their own Python and packages in a sandbox. Environments are created by &lt;code class=&quot;highlighter-rouge&quot;&gt;virtualenv&lt;/code&gt; package. It will automatically match main system interpreter found on system path, but it is possible to specify other version as well. To do that one has to specify &lt;code class=&quot;highlighter-rouge&quot;&gt;--python&lt;/code&gt; flag and point to the executable of specific python version installed in the system. It is also good to separate program code and virtual environment own directory. The later may grow quite big and it makes no sens to keep all python packages, used during development, under our own project version control. Virtual environment may be anywhere on the disc and what I usually do is to create &lt;code class=&quot;highlighter-rouge&quot;&gt;.envs&lt;/code&gt; folder in home directory and group all environments over there.&lt;/p&gt;
+
+&lt;p&gt;Call &lt;code class=&quot;highlighter-rouge&quot;&gt;virtualenv&lt;/code&gt; and specify Python interpreter using &lt;code class=&quot;highlighter-rouge&quot;&gt;--python=/path/to/your/python&lt;/code&gt;. I do not do this, because I use default Python present in the system:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;mdyzma@devbox:~/.envs$ &lt;/span&gt;virtualenv biostudio &lt;span class=&quot;c&quot;&gt;# optionally --python=path/to/other/python/interpreter/python&lt;/span&gt;
+    
+Using base prefix &lt;span class=&quot;s1&quot;&gt;'/home/mdyzma/anaconda3'&lt;/span&gt;
+New python executable &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; /home/mdyzma/.envs/biostudio/bin/python
+copying /home/mdyzma/anaconda3/bin/python &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&amp;gt; /home/mdyzma/.envs/biostudio/bin/python
+Installing setuptools, pip, wheel...done.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;All basic tools, which allow packages control (install, remove, update and create), were installed automatically. To start work in new environment, I need to activate it:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;mdyzma@devbox:~/.envs$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;source &lt;/span&gt;activate biostudio
+&lt;span class=&quot;c&quot;&gt;#list packages in new environment&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~/.envs&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pip list
+appdirs &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1.4.3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+packaging &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;16.8&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+pip &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;9.0.1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+pyparsing &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2.2.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+setuptools &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;35.0.2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+six &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1.10.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+wheel &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.29.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now I can install a different Python packages into specific virtualenv, eliminating the conflict with system Python. It is time to create basic development infrastructure.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Folders &amp;amp; files&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Dependencies&lt;/strong&gt;:
+    &lt;ul&gt;
+      &lt;li&gt;&lt;strong&gt;coverage&lt;/strong&gt; - &lt;em&gt;tests coverage metrics&lt;/em&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;Sphinx&lt;/strong&gt; - &lt;em&gt;documentation&lt;/em&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;sphinx-autobuild&lt;/strong&gt; - &lt;em&gt;running docs live preview&lt;/em&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;numpydoc&lt;/strong&gt; - &lt;em&gt;convenient docstring style&lt;/em&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;bumpversion&lt;/strong&gt; - &lt;em&gt;control software version&lt;/em&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;pylint&lt;/strong&gt; - &lt;em&gt;code metrics and PEP8 coding standards&lt;/em&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;pytest&lt;/strong&gt; and plug-ins - &lt;em&gt;unit tests&lt;/em&gt;:
+        &lt;ul&gt;
+          &lt;li&gt;&lt;strong&gt;pytest-runner&lt;/strong&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;strong&gt;pytest-cov&lt;/strong&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;tox&lt;/strong&gt; - &lt;em&gt;generic virtualenv manager&lt;/em&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;folders-and-files&quot;&gt;Folders and files&lt;/h4&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~/.envs&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;mkdir -p biostudio/&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;docs,src/&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;common,fileandler/pdb,functional&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;,tests/&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;common,filehandler/pdb,functional&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;,uml&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;biostudio/ &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;  touch README.md LICENSE setup.py setup.cfg tox.ini
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;find src -type d -exec touch &lt;span class=&quot;o&quot;&gt;{}&lt;/span&gt;/__init__.py &lt;span class=&quot;se&quot;&gt;\;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;find tests -type d -exec touch &lt;span class=&quot;o&quot;&gt;{}&lt;/span&gt;/.gitkeep &lt;span class=&quot;se&quot;&gt;\;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~&lt;span class=&quot;nv&quot;&gt;$tree&lt;/span&gt; biostudio
+
+biostudio/
+├── docs
+├── src
+│   ├── common
+│   ├── filehandler
+│   │   └── pdb
+│   └── functional
+├── tests
+│   ├── common
+│   ├── filehandler
+│   │   └── pdb
+│   └── functional
+└── uml
+
+12 directories, 0 files&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Tests folder resembles structure of &lt;code class=&quot;highlighter-rouge&quot;&gt;src/&lt;/code&gt;, which is advised way to write unit tests and separate test files from the source.
+I will add few necessary files to the main folder, which will help to keep things organized and ship it later to the PyPI repo:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;README.md&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;LICENSE&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;MANIFEST.in&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;setup.py&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;setup.cfg&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;tox.ini&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;… and &lt;code class=&quot;highlighter-rouge&quot;&gt;__init__.py&lt;/code&gt; files in each sub-folders of &lt;code class=&quot;highlighter-rouge&quot;&gt;src/&lt;/code&gt; to make python packages out of them. Later more configuration files will be added, to govern some automation pipelines. I also added &lt;code class=&quot;highlighter-rouge&quot;&gt;.gitkeep&lt;/code&gt; hidden files to each empty directory, so Git will not ignore them when I push initial folder structure to version control. Later &lt;code class=&quot;highlighter-rouge&quot;&gt;.gitkeep&lt;/code&gt; will be deleted or appended to &lt;code class=&quot;highlighter-rouge&quot;&gt;.gitignore&lt;/code&gt; file to make them “invisible” (see: &lt;a href=&quot;#vcs&quot;&gt;here&lt;/a&gt;) once folders are no longer empty, they will be included as a part of my “push” to the version control system.&lt;/p&gt;
+
+&lt;p&gt;Finally skeleton of &lt;code class=&quot;highlighter-rouge&quot;&gt;biostudio&lt;/code&gt; project is as follows:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~&lt;span class=&quot;nv&quot;&gt;$tree&lt;/span&gt; biostudio
+biostudio/
+│   LICENSE
+│   MANIFEST.in
+│   README.md
+│   setup.cfg
+│   setup.py
+│   tox.ini
+│
+├───docs
+├───src
+│   │   biostudio.py
+│   │   __init__.py
+│   │
+│   ├───common
+│   │       __init__.py
+│   │
+│   ├───filehandler
+│   │   │   __init__.py
+│   │   │
+│   │   └───pdb
+│   │           __init__.py
+│   │
+│   └───functional
+│           __init__.py
+│
+├───tests
+│   │   test_biostudio.py
+│   │
+│   ├───common
+│   ├───filehandler
+│   │   └───pdb
+│   └───functional
+└───uml
+&lt;span class=&quot;c&quot;&gt;# this listing does not show .gitkeep files, which are irrelevant for python app&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;If you work on legacy project entire structure will be given to you and all this can be substituted with simple &lt;code class=&quot;highlighter-rouge&quot;&gt;git clone&lt;/code&gt; statement. For &lt;em&gt;Biostudio&lt;/em&gt; it might look like this:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;git clone git@gitlab.com:mdyzma/biostudio.git &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;For more details about remote repository and its access see [this section][#remote]&lt;/p&gt;
+
+&lt;h4 id=&quot;dependencies-with-pip-and-requirementstxt&quot;&gt;Dependencies with pip and requirements.txt&lt;/h4&gt;
+
+&lt;p&gt;It’s easy to get a Python project off the ground simply by using pip to install dependent packages as you go. This works fine as long as you’re the only one working on the project. As soon as someone else wants to run your code, they’ll need to go through the process of figuring which dependencies the project needs and installing them all by hand. It is problem prone and can lead to some very hard to spot program misbehavior. To prevent this, I will define a &lt;code class=&quot;highlighter-rouge&quot;&gt;requirements.txt&lt;/code&gt; file that stores all of my project’s dependencies. My current requirements file looks like this:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;# requiremnts.txt&lt;/span&gt;
+Sphinx
+sphinx-autobuild
+numpydoc
+bumpversion
+coverage
+pytest
+pytest-runner
+pytest-cov
+tox&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I do not include packages versions, therefore latest will be downloaded and installed by pip (including their dependencies).&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pip install -r requirements.txt&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;It may take some time, since pip manages all the dependencies for each package and their dependencies as well. As I mentioned before, it was not necessary to specify version for every package. Pip downloaded latest available from PyPI. In new projects, created from the scratch it may work, but only in initial stages of project development. When dealing with legacy code, one  have to put more constrains and specify versions for each package, so that there would be no ambiguity and development environment will reflect exactly the one used during program creation, or specified in the SDD. Now I will create such file for future me or other dev team:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pip freeze &amp;gt; requirements.txt
+&lt;span class=&quot;c&quot;&gt;# Listing created file&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~/biostudio&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;cat requirements.txt 
+&lt;span class=&quot;nv&quot;&gt;alabaster&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;0.7.10
+&lt;span class=&quot;nv&quot;&gt;appdirs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;1.4.3
+&lt;span class=&quot;nv&quot;&gt;argh&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;0.26.2
+&lt;span class=&quot;nv&quot;&gt;astroid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;1.5.2
+&lt;span class=&quot;nv&quot;&gt;Babel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;2.4.0
+&lt;span class=&quot;nv&quot;&gt;bumpversion&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;0.5.3
+&lt;span class=&quot;nv&quot;&gt;certifi&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;2017.4.17
+&lt;span class=&quot;nv&quot;&gt;chardet&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;3.0.3
+&lt;span class=&quot;nv&quot;&gt;coverage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;4.4.1
+&lt;span class=&quot;nv&quot;&gt;docutils&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;0.13.1
+&lt;span class=&quot;nv&quot;&gt;idna&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;2.5
+&lt;span class=&quot;nv&quot;&gt;imagesize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;0.7.1
+&lt;span class=&quot;nv&quot;&gt;isort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;4.2.5
+&lt;span class=&quot;nv&quot;&gt;Jinja2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;2.9.6
+lazy-object-proxy&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;1.3.1
+&lt;span class=&quot;nv&quot;&gt;livereload&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;2.5.1
+&lt;span class=&quot;nv&quot;&gt;MarkupSafe&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;1.0
+&lt;span class=&quot;nv&quot;&gt;mccabe&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;0.6.1
+&lt;span class=&quot;nv&quot;&gt;numpydoc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;0.6.0
+&lt;span class=&quot;nv&quot;&gt;packaging&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;16.8
+&lt;span class=&quot;nv&quot;&gt;pathtools&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;0.1.2
+&lt;span class=&quot;nv&quot;&gt;pluggy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;0.4.0
+port-for&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;0.3.1
+&lt;span class=&quot;nv&quot;&gt;py&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;1.4.33
+&lt;span class=&quot;nv&quot;&gt;Pygments&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;2.2.0
+&lt;span class=&quot;nv&quot;&gt;pylint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;1.7.1
+&lt;span class=&quot;nv&quot;&gt;pyparsing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;2.2.0
+&lt;span class=&quot;nv&quot;&gt;pytest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;3.1.0
+pytest-cov&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;2.5.1
+pytest-runner&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;2.11.1
+&lt;span class=&quot;nv&quot;&gt;pytz&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;2017.2
+&lt;span class=&quot;nv&quot;&gt;PyYAML&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;3.12
+&lt;span class=&quot;nv&quot;&gt;requests&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;2.16.0
+&lt;span class=&quot;nv&quot;&gt;six&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;1.10.0
+&lt;span class=&quot;nv&quot;&gt;snowballstemmer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;1.2.1
+&lt;span class=&quot;nv&quot;&gt;Sphinx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;1.6.1
+sphinx-autobuild&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;0.6.0
+sphinxcontrib-websupport&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;1.0.1
+&lt;span class=&quot;nv&quot;&gt;tornado&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;4.5.1
+&lt;span class=&quot;nv&quot;&gt;tox&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;2.7.0
+&lt;span class=&quot;nv&quot;&gt;typing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;3.6.1
+&lt;span class=&quot;nv&quot;&gt;urllib3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;1.21.1
+&lt;span class=&quot;nv&quot;&gt;virtualenv&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;15.1.0
+&lt;span class=&quot;nv&quot;&gt;watchdog&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;0.8.3
+&lt;span class=&quot;nv&quot;&gt;wrapt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;1.10.10&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;div class=&quot;alert alert-info&quot; role=&quot;alert&quot; style=&quot;text-align: justify; vertical-align:middle;&quot;&gt;
+To reduce memory usage it is possible to add &lt;code class=&quot;highlighter-rouge&quot;&gt;--no-cache-dir&lt;/code&gt; flag during dependencies installation. This way pip will not store downloaded packages in local cache directory for future use.
+&lt;/div&gt;
+
+&lt;p&gt;Lots of this packages are dependencies from the first list of requirements. This list does not contain all packages from environment, some of them are by default present in the system, therefore were not included in freeze. I could delete all other and leave only few initial, which will install their own dependencies anyway, but it would be a lot of unnecessary work. Simply typing &lt;code class=&quot;highlighter-rouge&quot;&gt;pip freeze&lt;/code&gt; is all I need to create list of dependencies for my project. Less work, the better.&lt;/p&gt;
+
+&lt;p&gt;For more on pip requirements refer to this pep documentation &lt;a href=&quot;https://pip.pypa.io/en/stable/user_guide/#requirements-files&quot;&gt;section&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;documentation&quot;&gt;Documentation&lt;/h2&gt;
+
+&lt;p&gt;Another vital aspect of application development is documentation. There are three levels of documentation I will write:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;project- or distribution-level documentation&lt;/li&gt;
+  &lt;li&gt;API documentation&lt;/li&gt;
+  &lt;li&gt;code comments&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;First one is usually written separately from the code (in &lt;code class=&quot;highlighter-rouge&quot;&gt;docs/&lt;/code&gt;). It is intended to give high-level information on a project, such as installation instructions, examples, and so on. The second,  API-level documentation, summarizes how functions, methods, classes, or modules should be used. It is usually prepared along with the code using Python docstrings. The third level of documentation is in the form of code comments. Such comments help explain how a piece of code works. In this part I will focus on automation of tedious process of &lt;strong&gt;project documentation&lt;/strong&gt; and &lt;strong&gt;API documentation&lt;/strong&gt; production. This usually goes to the client. Comments are vital part of the project, but I usually treat them as “internal use only”. Unless I publish source as well, as in case of this open-source project.&lt;/p&gt;
+
+&lt;h4 id=&quot;sphinx&quot;&gt;Sphinx&lt;/h4&gt;
+
+&lt;p&gt;I am using Sphinx package to create quality documentation, based on easy to write markup language called &lt;em&gt;reStructuredText&lt;/em&gt;. &lt;code class=&quot;highlighter-rouge&quot;&gt;.rst&lt;/code&gt; files will be used to create static website documentation (the same way this blog is created with ruby and jekyll and posts written in markdown). To start documentation I need to run Sphinx creator, which will guide me through setup process:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:/docs&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;sphinx-quickstart
+
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;sphinx-quickstart
+Welcome to the Sphinx 1.5.1 quickstart utility.
+
+Please enter values &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;the following settings &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;just press Enter to
+accept a default value, &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;one is given &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;brackets&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+
+Enter the root path &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;documentation.
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;Root path &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;the documentation &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;.]:
+
+You have two options &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;placing the build directory &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Sphinx output.
+Either, you use a directory &lt;span class=&quot;s2&quot;&gt;&quot;_build&quot;&lt;/span&gt; within the root path, or you separate
+&lt;span class=&quot;s2&quot;&gt;&quot;source&quot;&lt;/span&gt; and &lt;span class=&quot;s2&quot;&gt;&quot;build&quot;&lt;/span&gt; directories within the root path.
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;Separate &lt;span class=&quot;nb&quot;&gt;source &lt;/span&gt;and build directories &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y/n&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;n]: y
+
+Inside the root directory, two more directories will be created; &lt;span class=&quot;s2&quot;&gt;&quot;_templates&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;custom HTML templates and &lt;span class=&quot;s2&quot;&gt;&quot;_static&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;custom stylesheets and other static
+files. You can enter another prefix &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;such as &lt;span class=&quot;s2&quot;&gt;&quot;.&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; to replace the underscore.
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;Name prefix &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;templates and static dir &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;_]:
+
+The project name will occur &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;several places &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;the built documentation.
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;Project name: biostudio
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;Author name&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;: Michal Dyzma
+
+Sphinx has the notion of a &lt;span class=&quot;s2&quot;&gt;&quot;version&quot;&lt;/span&gt; and a &lt;span class=&quot;s2&quot;&gt;&quot;release&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;the
+software. Each version can have multiple releases. For example, &lt;span class=&quot;k&quot;&gt;for
+&lt;/span&gt;Python the version is something like 2.5 or 3.0, &lt;span class=&quot;k&quot;&gt;while &lt;/span&gt;the release is
+something like 2.5.1 or 3.0a1.  If you dont need this dual structure,
+just &lt;span class=&quot;nb&quot;&gt;set &lt;/span&gt;both to the same value.
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;Project version &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt;: 0.0.0
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;Project release &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;0.0.0]:
+
+If the documents are to be written &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;a language other than English,
+you can &lt;span class=&quot;k&quot;&gt;select &lt;/span&gt;a language here by its language code. Sphinx will &lt;span class=&quot;k&quot;&gt;then
+&lt;/span&gt;translate text that it generates into that language.
+
+For a list of supported codes, see
+http://sphinx-doc.org/config.html#confval-language.
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;Project language &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;en]:
+
+The file name suffix &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;source &lt;/span&gt;files. Commonly, this is either &lt;span class=&quot;s2&quot;&gt;&quot;.txt&quot;&lt;/span&gt;
+or &lt;span class=&quot;s2&quot;&gt;&quot;.rst&quot;&lt;/span&gt;.  Only files with this suffix are considered documents.
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;Source file suffix &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;.rst]:
+
+One document is special &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;that it is considered the top node of the
+&lt;span class=&quot;s2&quot;&gt;&quot;contents tree&quot;&lt;/span&gt;, that is, it is the root of the hierarchical structure
+of the documents. Normally, this is &lt;span class=&quot;s2&quot;&gt;&quot;index&quot;&lt;/span&gt;, but &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;your &lt;span class=&quot;s2&quot;&gt;&quot;index&quot;&lt;/span&gt;
+document is a custom template, you can also &lt;span class=&quot;nb&quot;&gt;set &lt;/span&gt;this to another filename.
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;Name of your master document &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;without suffix&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;index]:
+
+Sphinx can also add configuration &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;epub output:
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;Do you want to use the epub builder &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y/n&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;n]:
+
+Please indicate &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;you want to use one of the following Sphinx extensions:
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;autodoc: automatically insert docstrings from modules &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y/n&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;n]: y
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;doctest: automatically &lt;span class=&quot;nb&quot;&gt;test &lt;/span&gt;code snippets &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;doctest blocks &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y/n&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;n]:
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;intersphinx: link between Sphinx documentation of different projects &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y/n&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;n]:
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;todo: write &lt;span class=&quot;s2&quot;&gt;&quot;todo&quot;&lt;/span&gt; entries that can be shown or hidden on build &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y/n&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;n]:
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;coverage: checks &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;documentation coverage &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y/n&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;n]:
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;imgmath: include math, rendered as PNG or SVG images &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y/n&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;n]:
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;mathjax: include math, rendered &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;the browser by MathJax &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y/n&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;n]: y
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;ifconfig: conditional inclusion of content based on config values &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y/n&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;n]:
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;viewcode: include links to the &lt;span class=&quot;nb&quot;&gt;source &lt;/span&gt;code of documented Python objects &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y/n&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;n]:
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;githubpages: create .nojekyll file to publish the document on GitHub pages &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y/n&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;n]:
+
+A Makefile and a Windows &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;file can be generated &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;you so that you
+only have to run e.g. make html instead of invoking sphinx-build
+directly.
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;Create Makefile? &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y/n&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;y]:
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;Create Windows &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;file? &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y/n&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;y]:
+
+Creating file ./source/conf.py.
+Creating file ./source/index.rst.
+Creating file ./Makefile.
+Creating file ./make.bat.
+
+Finished: An initial directory structure has been created.
+
+You should now populate your master file ./source/index.rst and create other documentation
+&lt;span class=&quot;nb&quot;&gt;source &lt;/span&gt;files. Use the Makefile to build the docs, like so:
+   make builder
+where &lt;span class=&quot;s2&quot;&gt;&quot;builder&quot;&lt;/span&gt; is one of the supported builders, e.g. html, latex or linkcheck.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;All settings were stored in &lt;code class=&quot;highlighter-rouge&quot;&gt;docs/source/conf.py&lt;/code&gt;. Basic setup is not enough for me. I will modify &lt;code class=&quot;highlighter-rouge&quot;&gt;conf.py&lt;/code&gt; and adjust it to the style I usually use when I am writing docstrings. To generate full actual version of documentation I run makefile generated for me by creator:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:/docs&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;make html
+
+Running Sphinx v1.5.1
+making output directory...
+loading pickled environment... not yet created
+building &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mo]: targets &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;0 po files that are out of date
+building &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;html]: targets &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;11 &lt;span class=&quot;nb&quot;&gt;source &lt;/span&gt;files that are out of date
+updating environment: 11 added, 0 changed, 0 removed
+reading sources... &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;100%] links
+looking &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;now-outdated files... none found
+pickling environment... &lt;span class=&quot;k&quot;&gt;done
+&lt;/span&gt;checking consistency... &lt;span class=&quot;k&quot;&gt;done
+&lt;/span&gt;preparing documents... &lt;span class=&quot;k&quot;&gt;done
+&lt;/span&gt;writing output... &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;100%] links
+generating indices... genindex
+writing additional pages... search
+copying static files... &lt;span class=&quot;k&quot;&gt;done
+&lt;/span&gt;copying extra files... &lt;span class=&quot;k&quot;&gt;done
+&lt;/span&gt;dumping search index &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;English &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;code: en&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; ... &lt;span class=&quot;k&quot;&gt;done
+&lt;/span&gt;dumping object inventory... &lt;span class=&quot;k&quot;&gt;done
+&lt;/span&gt;build succeeded.
+
+Build finished. The HTML pages are &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;build/html.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;software-versioning&quot;&gt;Software versioning&lt;/h2&gt;
+
+&lt;p&gt;In many projects control over software version is done by hand. There is no need to say that there must be a better way. Book keeping is tedious and error prone, especially in teams with more than one person. Here I will use &lt;a href=&quot;https://pypi.python.org/pypi/bumpversion&quot;&gt;bumpversion&lt;/a&gt; package to control software version through out the project files. Also I will use semantic versioning scheme, which  is a recommended versioning convention. The release is represented by three numbers: MAJOR.MINOR.PATCH. The MAJOR number changes with introducing changes to the API, which are not backward compatible. MInor represents some new functionalities, but compatibility is kept. PATCH is incremented, when some bugs are fixed. There is very specific description of versioning and dependency specification in &lt;a href=&quot;https://www.python.org/dev/peps/pep-0440/&quot;&gt;PEP 440&lt;/a&gt; Bumpversion uses &lt;code class=&quot;highlighter-rouge&quot;&gt;setup.cfg&lt;/code&gt; file to keep track of places in the code, where it must be incremented when I change package version.&lt;/p&gt;
+
+&lt;p&gt;Example of bumpversion configuration:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;# setup.cfg file&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;bumpversion]
+current_version &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0.0.0
+commit &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; True
+tag &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; True
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;bumpversion:file:setup.py]
+search &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'{current_version}'&lt;/span&gt;
+replace &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'{new_version}'&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;bumpversion:file:biostudio/__init__.py]
+search &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; __version__ &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{current_version}'&lt;/span&gt;
+replace &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; __version__ &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{new_version}'&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;It will search for sepcific phrases in indicated files and change them automatically and commit code to the version control system. To increment version I have to commit all changes and type:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~/biostudio&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;bumpversion patch &lt;span class=&quot;c&quot;&gt;#or minor / major &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Comment for commit or tag can be added. See &lt;a href=&quot;https://pypi.python.org/pypi/bumpversion&quot;&gt;bumpversion documentation&lt;/a&gt; for details&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&quot;vcs&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;code-management-vcs&quot;&gt;Code management (VCS)&lt;/h2&gt;
+
+&lt;p&gt;having basic folder structure, documentation and few other aspects done, it is time to submit code to version control system (VCS). In this project I will use git.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~/biostudio&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git init
+
+Initialized empty Git repository &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; /home/mdyzma/biostudio/.git/
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~/biostudio&lt;span class=&quot;nv&quot;&gt;$git&lt;/span&gt; status
+On branch master
+
+Initial commit
+
+Untracked files:
+  &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;use &lt;span class=&quot;s2&quot;&gt;&quot;git add &amp;lt;file&amp;gt;...&quot;&lt;/span&gt; to include &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;what will be committed&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+        .gitignore
+        LICENSE
+        MANIFEST.in
+        README.md
+        docs/
+        setup.cfg
+        setup.py
+        src/
+        tests/
+        toc.ini
+        uml/
+
+nothing added to commit but untracked files present &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;use &lt;span class=&quot;s2&quot;&gt;&quot;git add&quot;&lt;/span&gt; to track&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I will do as mighty git says:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~/biostudio&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git add .
+&lt;span class=&quot;c&quot;&gt;# ... and check status again&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~/biostudio&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git status
+On branch master
+
+Initial commit
+
+Changes to be committed:
+  &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;use &lt;span class=&quot;s2&quot;&gt;&quot;git rm --cached &amp;lt;file&amp;gt;...&quot;&lt;/span&gt; to unstage&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+        new file:   .gitignore
+        new file:   LICENSE
+        new file:   MANIFEST.in
+        new file:   README.md
+        new file:   docs/Makefile
+        new file:   docs/make.bat
+        new file:   docs/source/_static/.gitkeep
+        new file:   docs/source/_templates/.gitkeep
+        new file:   docs/source/conf.py
+        new file:   docs/source/index.rst
+        new file:   setup.cfg
+        new file:   setup.py
+        new file:   src/__init__.py
+        new file:   src/biostudio.py
+        new file:   src/common/__init__.py
+        new file:   src/filehandler/__init__.py
+        new file:   src/filehandler/pdb/__init__.py
+        new file:   src/functional/__init__.py
+        new file:   tests/common/.gitkeep
+        new file:   tests/filehandler/.gitkeep
+        new file:   tests/functional/.gitkeep
+        new file:   tests/test_biostudio.py
+        new file:   toc.ini
+        new file:   uml/.gitkeep&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;All changes were staged for commit. I will commit this and tag as &lt;code class=&quot;highlighter-rouge&quot;&gt;v0.0.0&lt;/code&gt; - my very initial version of &lt;em&gt;Biostudio&lt;/em&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~/biostudio&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git commit -m &lt;span class=&quot;s2&quot;&gt;&quot;Initial structure for biostudio&quot;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;master &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;root-commit&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 49cf9ed] Initial structure &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;biostudio
+ 24 files changed, 392 insertions&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;+&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+ create mode 100644 .gitignore
+ create mode 100644 LICENSE
+ create mode 100644 MANIFEST.in
+ create mode 100644 README.md
+ create mode 100644 docs/Makefile
+ create mode 100644 docs/make.bat
+ create mode 100644 docs/source/_static/.gitkeep
+ create mode 100644 docs/source/_templates/.gitkeep
+ create mode 100644 docs/source/conf.py
+ create mode 100644 docs/source/index.rst
+ create mode 100644 setup.cfg
+ create mode 100644 setup.py
+ create mode 100644 src/__init__.py
+ create mode 100644 src/biostudio.py
+ create mode 100644 src/common/__init__.py
+ create mode 100644 src/filehandler/__init__.py
+ create mode 100644 src/filehandler/pdb/__init__.py
+ create mode 100644 src/functional/__init__.py
+ create mode 100644 tests/common/.gitkeep
+ create mode 100644 tests/filehandler/.gitkeep
+ create mode 100644 tests/functional/.gitkeep
+ create mode 100644 tests/test_biostudio.py
+ create mode 100644 toc.ini
+ create mode 100644 uml/.gitkeep
+ create mode 100644 uml/class.puml
+&lt;span class=&quot;c&quot;&gt;# ... and add tag&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~/biostudio&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git tag -a v0.0.0 -m &lt;span class=&quot;s2&quot;&gt;&quot;Version 0: File&amp;amp;folder structure&quot;&lt;/span&gt;
+On branch master&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now if I check git status it will say:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~/biostudio&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git status
+On branch master
+nothing to commit, working tree clean
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~/biostudio&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git tag
+v0.0.0
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~/biostudio&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git log
+commit 49cf9ed6f9d0ca7356ebc134f79cc1672fa3df73
+Author: Michal Dyzma &amp;lt;mdyzma@gmail.com&amp;gt;
+Date:   Sun May 28 09:59:03 2017 +0200
+
+    Initial structure &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;biostudio&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;All worked and files under git version control. Any change to source files will be tracked and may be saved.&lt;/p&gt;
+
+&lt;h4 id=&quot;gitignore&quot;&gt;Gitignore&lt;/h4&gt;
+
+&lt;p&gt;I added &lt;code class=&quot;highlighter-rouge&quot;&gt;.gitignore&lt;/code&gt; file, where I will put all files or folders I do not want to be included in my projects VCS. In fact I use my IDE plug-in to create it for me, with python specific entries added automatically. Currently almost every popular text editors or IDEs have this functionality.&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&quot;remote&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;remote-repository&quot;&gt;Remote repository&lt;/h4&gt;
+
+&lt;p&gt;I intend to keep project on GitLab server, but it is possible to create local repositories with &lt;code class=&quot;highlighter-rouge&quot;&gt;git init --bare&lt;/code&gt;. This kind of directory is used to clone/pull and push changes and is located locally on users system file. GitLab also allows to use its community version for free and set up own GitLab server. I described this process in &lt;a href=&quot;http://localhost:4000/2017/04/15/part4-biostudio-design-implementation-continue/&quot;&gt;separate blog post&lt;/a&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;# adding remote repository named origin&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~/biostudio&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git remote add origin git@gitlab.com:mdyzma/biostudio.git
+
+&lt;span class=&quot;c&quot;&gt;# push local changes from master branch to remote origin repository (automatically named origin/master)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~/biostudio&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git push -u origin master
+git push -u origin master
+Enter passphrase &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;key &lt;span class=&quot;s1&quot;&gt;'/c/Users/Michal/.ssh/id_rsa'&lt;/span&gt;: &lt;span class=&quot;c&quot;&gt;# I use ssh authentication token&lt;/span&gt;
+Counting objects: 19, &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;.
+Delta compression using up to 4 threads.
+Compressing objects: 100% &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;15/15&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;.
+Writing objects: 100% &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;19/19&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, 5.58 KiB | 0 bytes/s, &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;.
+Total 19 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;delta 0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, reused 0 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;delta 0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+To gitlab.com:mdyzma/biostudio.git
+ &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;new branch]      master -&amp;gt; master
+Branch master &lt;span class=&quot;nb&quot;&gt;set &lt;/span&gt;up to track remote branch master from origin.
+
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~/biostudio&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git push -u origin --tags
+Enter passphrase &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;key &lt;span class=&quot;s1&quot;&gt;'/c/Users/Michal/.ssh/id_rsa'&lt;/span&gt;:
+Counting objects: 1, &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;.
+Writing objects: 100% &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1/1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, 182 bytes | 0 bytes/s, &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;.
+Total 1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;delta 0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, reused 0 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;delta 0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+To gitlab.com:mdyzma/biostudio.git
+ &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;new tag]         v0.0.0 -&amp;gt; v0.0.0&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h4 id=&quot;ssh-authentication&quot;&gt;SSH Authentication&lt;/h4&gt;
+
+&lt;p&gt;I mentioned I use SSH authentication token.&lt;/p&gt;
+
+&lt;h2 id=&quot;unit-tests&quot;&gt;Unit tests&lt;/h2&gt;
+
+&lt;p&gt;Application is developed using Test Driven Development (TDD) approach. Tests are grouped in package level folder &lt;code class=&quot;highlighter-rouge&quot;&gt;tests/&lt;/code&gt; and mimics the &lt;code class=&quot;highlighter-rouge&quot;&gt;src/&lt;/code&gt; folder structure. Tests use &lt;code class=&quot;highlighter-rouge&quot;&gt;pytest&lt;/code&gt; module. To run entire suite use:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~/biostudio&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pytest&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h4 id=&quot;coverage&quot;&gt;Coverage&lt;/h4&gt;
+
+&lt;p&gt;Since development employs TDD, test coverage should be high, but this kind of analysis may give some additional insight and help in creating more complete test suit. Coverage will report how ,much code is covered by the unit tests. To get nice html report I use:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~/biostudio&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pytest --cov&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;src tests/&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Writing unit tests will be described in &lt;a href=&quot;http://localhost:4000/2017/04/14/part3-biostudio-design-implementation-tdd/&quot;&gt;Part 3: Test Driven Development&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;code-analysis&quot;&gt;Code analysis&lt;/h2&gt;
+
+&lt;p&gt;Many IDEs come well equipped with code inspection and reformatting tools, bu there are also separate python packages, which will work in terminal and generate text or html reports on quality of the code (mostly Python style guide &lt;a href=&quot;https://pypi.python.org/pypi/pep8&quot;&gt;PEP8&lt;/a&gt; compliment and syntax errors).&lt;/p&gt;
+
+&lt;h4 id=&quot;pylint&quot;&gt;pylint&lt;/h4&gt;
+
+&lt;p&gt;Pylint is a tool that inspects the code for errors and also warns you about coding standard violations. It is integrated with most of currently used IDEs either as a part of the software or available as a plugin. It can be used as a command-line tool as well.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~/biostudio&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pylint src
+&lt;span class=&quot;c&quot;&gt;#or&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~/biostudio&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pylint --output-format&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;html src &amp;gt; pylint_report.html&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;packaging&quot;&gt;Packaging&lt;/h2&gt;
+
+&lt;p&gt;Hearth of the packaging is in &lt;code class=&quot;highlighter-rouge&quot;&gt;setup.py&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;setup.cfg&lt;/code&gt; files. It contains all info regarding application like name, version, install dependencies, testing dependencies, entry points etc. Content of setup.py is described in detail in &lt;a href=&quot;https://packaging.python.org/distributing/#setup-py&quot;&gt;this document&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4 id=&quot;setupcfg&quot;&gt;setup.cfg&lt;/h4&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ini&quot; data-lang=&quot;ini&quot;&gt;&lt;span class=&quot;nn&quot;&gt;[bumpversion]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;current_version&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;0.0.0&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;commit&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;True&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;tag&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;True&lt;/span&gt;
+
+&lt;span class=&quot;nn&quot;&gt;[bumpversion:file:setup.py]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;search&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;version='{current_version}'&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;replace&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;version='{new_version}'&lt;/span&gt;
+
+&lt;span class=&quot;nn&quot;&gt;[bumpversion:file:src/__init__.py]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;search&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;__version__ = '{current_version}'&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;replace&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;__version__ = '{new_version}'&lt;/span&gt;
+
+&lt;span class=&quot;nn&quot;&gt;[bumpversion:file:docs/source/conf.py]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;search&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;version = '{current_version}'&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;replace&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;version = '{new_version}'&lt;/span&gt;
+
+&lt;span class=&quot;nn&quot;&gt;[bdist_wheel]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;universal&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;1&lt;/span&gt;
+
+&lt;span class=&quot;nn&quot;&gt;[flake8]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;exclude&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;docs&lt;/span&gt;
+
+&lt;span class=&quot;nn&quot;&gt;[aliases]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;pytest&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h4 id=&quot;setuppy&quot;&gt;setup.py&lt;/h4&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;codecs&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os.path&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;setuptools&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;setup&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;find_packages&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;here&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;abspath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dirname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;__file__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Get the long description from the README file&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;here&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'README.md'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;encoding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'utf-8'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;long_description&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;setup&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Biostudio'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'0.0.0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'A PDB python reader'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;long_description&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;long_description&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'https://gitlab.com/mdyzma/biostudio'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;author&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Michal Dyzma'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;author_email&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'mdyzma@gmail.com'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;license&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'MIT'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;classifiers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'Development Status :: 3 - Alpha'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'Intended Audience :: Developers'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'Topic :: Software Development :: Build Tools'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'License :: OSI Approved :: MIT License'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'Programming Language :: Python :: 2'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'Programming Language :: Python :: 2.7'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'Programming Language :: Python :: 3'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'Programming Language :: Python :: 3.5'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'Programming Language :: Python :: 3.6'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;keywords&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'pdb editor'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;packages&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;find_packages&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;exclude&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'docs'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'tests'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;entry_points&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{},&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;test_suite&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'tests'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;test_require&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'pytest'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'pytest-runner'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'coverage'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'pytest-cov'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'pylint'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;install_requires&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h4 id=&quot;creating-packages&quot;&gt;Creating packages&lt;/h4&gt;
+
+&lt;p&gt;Binary distribution package may be universal wheel file &lt;code class=&quot;highlighter-rouge&quot;&gt;.whl&lt;/code&gt;, or more traditional package distribution &lt;code class=&quot;highlighter-rouge&quot;&gt;.tar.gz&lt;/code&gt;. They are called artifacts and their creation will be included into &lt;strong&gt;Continuous Integration&lt;/strong&gt; pipeline. To build package manually:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;biostudio&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; mdyzma@devbox:~/biostudio&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python setup.py bdist_wheel bdist&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Packages are located in &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dist/&lt;/code&gt;&lt;/strong&gt; folder.&lt;/p&gt;
+
+&lt;h2 id=&quot;summary&quot;&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;In general, if I omit all listings, status checks and folder navigation, entire work can be enclosed in few commands in terminal. Some of them must be done only once during project preparation, some of them will be repeated with each iteration or task  progress. Here is list of most important commands used so far. I can wrap them up in some shell script i.e &lt;code class=&quot;highlighter-rouge&quot;&gt;start_script&lt;/code&gt;:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Initial steps (only once):&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/env bash&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Title: start_script&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# Author: Michal Dyzma&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# create virtual environment&lt;/span&gt;
+virtualenv biostudio &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;source &lt;/span&gt;activate biostudio &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;
+pip install -r requirements.txt &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# clone project from the git repository&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# git clone git@gitlab.com:mdyzma/biostudio.git &lt;/span&gt;
+git remote add origin git@gitlab.com:mdyzma/biostudio.git
+
+&lt;span class=&quot;c&quot;&gt;# ----------------------------------------------&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# Following steps are optional and depend on the fact if I am creator of the project&lt;/span&gt;
+mkdir -p biostudio/&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;docs,src/&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;common,fileandler/pdb,functional&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;,tests/&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;common,filehandler/pdb,functional&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;,uml&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;biostudio/ &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;  touch README.md LICENSE setup.py setup.cfg tox.ini
+find src -type d -exec touch &lt;span class=&quot;o&quot;&gt;{}&lt;/span&gt;/__init__.py &lt;span class=&quot;se&quot;&gt;\;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;
+find tests -type d -exec touch &lt;span class=&quot;o&quot;&gt;{}&lt;/span&gt;/.gitkeep &lt;span class=&quot;se&quot;&gt;\;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# ----------------------------------------------&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;docs &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; sphinx-quickstart&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Used frequently every day when work progress will be saved and checked for consistency:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;git add &amp;lt;filename&amp;gt;
+git commit -m &lt;span class=&quot;s2&quot;&gt;&quot;Message&quot;&lt;/span&gt;
+bumpversion patch &lt;span class=&quot;c&quot;&gt;#or minor / major&lt;/span&gt;
+git tag -a v -m &lt;span class=&quot;s2&quot;&gt;&quot;This is my &quot;&lt;/span&gt;
+git push origin master&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Occasionally to build package, update documentation or check code metrics&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;pylint src
+python -m pytest --cov&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;src tests/
+&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;docs &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;  make html
+
+python setup.py bdist bdist_wheel&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;If I add my source code to the system path by executing &lt;code class=&quot;highlighter-rouge&quot;&gt;pip instal -e .&lt;/code&gt; I will not have to proceed &lt;code class=&quot;highlighter-rouge&quot;&gt;pytest&lt;/code&gt; or  &lt;code class=&quot;highlighter-rouge&quot;&gt;coverage&lt;/code&gt; with &lt;code class=&quot;highlighter-rouge&quot;&gt;python -m&lt;/code&gt; command.&lt;/p&gt;
+
+&lt;p&gt;This is the essence of entire post. Each command in this three points forms single brick building entire application. Although it is not a problem to execute this commands every time I need them, it may be very confusing if this approach was adopted by entire team. Imagine each developer using different versions of the code, different test coverage and different stage of documentation production. All this must be combined somehow in common code repository, so everyone can pull current most up-to-date software and start to work on it. Also their local changes should update repository for everyone else.&lt;/p&gt;
+
+&lt;p&gt;In addition I will need several different virtual environments to test developed package with different Python versions. At least 3 or 4 for Python 3.X and maybe two for Python 2.6 and 2.7. Then I must install all production dependencies in every environment… Dependencies shouldn’t change between iterations. System grows quickly and becomes very hard to maintain across development team. I will follow Raymond Hettinger’s words, Python core developer, very talented speaker:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;There must be a better way&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;And there is. In next part I will focus on setting logical pipeline out of my building blocks and ensure each team member has access to the same pool of tests, dependencies etc. If you are interested how to integrate  Continuous Integration and Continuous Deployment into your workflow please check &lt;a href=&quot;http://localhost:4000/2017/06/24/part3-biostudio-automate-everything/&quot;&gt;Part 3: Automate everything&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;If you have any comments, or ideas how to improve this tutorial, please let me know by leaving a post below, or contacting me via email.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;!-- Links --&gt;
+&lt;!-- www --&gt;</content>
+
+      
+      
+      
+      
+      
+
+      
+        <author>
+            <name>Michal Dyzma</name>
+          
+          
+        </author>
+      
+
+      
+        <category term="biostudio" />
+      
+        <category term="workflow" />
+      
+        <category term="python" />
+      
+        <category term="GitLab" />
+      
+
+      
+
+      
+        <summary type="html">In Part 2 I will set up and show how to manage virtual environments in python. Initiate version control and software versioning automation. Additionally I will set up continuous integration service using GitLab, which will include automatic testing with pytest and documentation creation. Code will run tests every time update has been pushed to the master branch of the software repository.</summary>
+      
+
+      
+      
+    </entry>
+  
+  
+  
+    <entry>
+      
+      <title type="html">Python, R, Scala and Julia in one Notebook</title>
+      
+      <link href="http://localhost:4000/2017/04/23/python-r-scala-julia-in-one-notebook/" rel="alternate" type="text/html" title="Python, R, Scala and Julia in one Notebook" />
+      <published>2017-04-23T14:51:25+02:00</published>
+      <updated>2017-04-23T14:51:25+02:00</updated>
+      <id>http://localhost:4000/2017/04/23/python-r-scala-julia-in-one-notebook</id>
+      <content type="html" xml:base="http://localhost:4000/2017/04/23/python-r-scala-julia-in-one-notebook/">&lt;p&gt;Shall I use R, Julia, Scala or Python? The answer is: &lt;strong&gt;Yes!&lt;/strong&gt; How to create versatile environment, in which different languages are available and able to communicate with each other? Without changing program you work in and where data may be passed between specific structures characteristic for the language? This post will show you how to do it with four most powerful languages used in Data Science: &lt;strong&gt;Python&lt;/strong&gt;, &lt;strong&gt;R&lt;/strong&gt;, &lt;strong&gt;Scala&lt;/strong&gt; and &lt;strong&gt;Julia&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;/h2&gt;
+
+&lt;p&gt;It is hard to choose best language for data analysis, especially if you are beginner and do not want to go into details about strengths and weaknesses of particular solutions. Should I choose R or Python (2 or 3), maybe Julia would be faster?  What should I use to work with large data sets? My answer is: use what you can! Take the best you can from several languages and make it work. This post will show you how.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Use what you can! Take the best you can!&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I have chosen four most powerful languages used in Data Science and Big Data analysis, which should give you broadest span of accessible technologies and speed up development or data analysis. Current versions of chosen software:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Language&lt;/th&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th&gt;Version&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;a href=&quot;https://www.python.org/downloads/release/python-2713/&quot;&gt;Python 2&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;2.7.13&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;a href=&quot;https://www.python.org/downloads/release/python-361/&quot;&gt;Python 3&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;3.6.1&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;a href=&quot;https://cloud.r-project.org&quot;&gt;R&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;3.4.0&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;a href=&quot;https://julialang.org/downloads/&quot;&gt;Julia&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;0.7.0&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;a href=&quot;https://www.scala-lang.org/download/&quot;&gt;Scala&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;2.12.1&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;procedure&quot;&gt;Procedure&lt;/h2&gt;
+
+&lt;p&gt;I will follow this procedure to prepare work environment:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;#python_dist&quot;&gt;installing Python interpreter&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#r_lang&quot;&gt;installing R language&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#julia_compiler&quot;&gt;installing Julia language compiler&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#scala_compiler&quot;&gt;installing Scala or sbt compiler&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;installing additional jupyter kernels:
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#ipykernel&quot;&gt;ipykernel&lt;/a&gt; - multiple Python support&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#irkernel_py&quot;&gt;IRkernel&lt;/a&gt; via conda - R language support&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#irkernel_r&quot;&gt;IRkernel&lt;/a&gt; via R&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#ijulia&quot;&gt;IJulia&lt;/a&gt; - Julia REPL in notebook&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#iscala&quot;&gt;IScala&lt;/a&gt; - Scala support&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;So my goal is to install Python, Scala, Julia and R on working machine. Additionally to run notebooks in languages other than Python I need to install specific middle-ware called kernels.&lt;/p&gt;
+
+&lt;p&gt;First let’s grab necessary tools - compilers and interpreters for each language (linked in table above). All languages presented here are multi-platform and can be installed on Windows, Linux and Mac OS machines. Since my working system is Fedora 25 I will describe install procedures for this OS. Debian based Linux distributions do not differ much from Red Hat family (except using different package manager and repos). Windows versions have convenient installers and installation process is trivial. If necessary, I will place link to the windows installer in each section.&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&quot;python_dist&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;python-interpreter&quot;&gt;Python interpreter&lt;/h2&gt;
+
+&lt;p&gt;In all Linux distributions Python is available “out of the box”. Unfortunately in many cases default Python is still 2.7 branch. It should be mentioned, that 2.7 is very old and it is being slowly depreciated. It is last supported branch from 2.x family and it’s support will drop in 2020 (see: &lt;a href=&quot;https://www.python.org/dev/peps/pep-0373/&quot;&gt;PEP 373&lt;/a&gt;). There will be no official bug fixes after that date. Additionally most of the currently used libraries are ready to run at least 3.5 version. Unless you have some obscure dependency, there is no excuse not to use Python 3. Older version is included here just for to demonstrate how to manage different Python versions in isolated environments.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;There is no excuse not to use Python 3 anymore. Grab it! Use it!&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I assume you have basic knowledge of Python flavors available today and their strengths and weaknesses. In this tutorial I will use &lt;strong&gt;Python 3&lt;/strong&gt; running on &lt;strong&gt;Fedora 25&lt;/strong&gt; workstation.&lt;/p&gt;
+
+&lt;p&gt;Moreover I have chosen specific distribution of Python, prepared by Continuum Analytics called &lt;strong&gt;Anaconda&lt;/strong&gt;. It is the most comprehensive and free bundle of Python software dedicated to &lt;strong&gt;Data Science&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;!-- &lt;div markdown=&quot;span&quot; class=&quot;alert alert-info&quot; role=&quot;alert&quot; style=&quot;text-align: justify; vertical-align:middle;&quot;&gt;
+Python 3 only
+&lt;/div&gt;
+ --&gt;
+
+&lt;p&gt;I strongly recommended to use &lt;a href=&quot;https://www.continuum.io/DOWNLOADS&quot;&gt;Anaconda distribution&lt;/a&gt;, which will install Python interpreter, the Jupyter Notebook, and several other packages commonly used in data science and this tutorial. If you choose Anaconda 3, your interpreter will be of version 3.6 (current version) or higher (3.7 alpha is already available).&lt;/p&gt;
+
+&lt;p&gt;I will just follow instructions from installation page and simply execute downloaded script:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox mdyzma]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;wget https://repo.continuum.io/archive/Anaconda3-4.3.1-Linux-x86_64.sh
+--2017-04-23 19:36:37--  https://repo.continuum.io/archive/Anaconda3-4.3.1-Linux-x86_64.sh
+Resolving repo.continuum.io &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;repo.continuum.io&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;... 104.16.18.10, 104.16.19.10, 2400:cb00:2048:1::6810:130a, ...
+Connecting to repo.continuum.io &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;repo.continuum.io&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;|104.16.18.10|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 497343851 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;474M&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;application/x-sh]
+Saving to: &lt;span class=&quot;s1&quot;&gt;'Anaconda3-4.3.1-Linux-x86_64.sh'&lt;/span&gt;
+
+Anaconda3-4.3.1-Linux-x86_64.sh     100%[&lt;span class=&quot;o&quot;&gt;==========================================&lt;/span&gt;&amp;gt;] 474.30M  14.1MB/s &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;34s
+
+2017-04-23 19:37:12 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;13.8 MB/s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; - &lt;span class=&quot;s1&quot;&gt;'Anaconda3-4.3.1-Linux-x86_64.sh'&lt;/span&gt; saved &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;497343851/497343851]&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Script contains all binaries and weights nearly  475 MB. After executing, you should see Anaconda installer:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox mdyzma]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;bash Anaconda3-4.3.1-Linux-x86_64.sh
+
+Welcome to Anaconda3 4.3.1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;by Continuum Analytics, Inc.&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+In order to &lt;span class=&quot;k&quot;&gt;continue &lt;/span&gt;the installation process, please review the license
+agreement.
+Please, press ENTER to &lt;span class=&quot;k&quot;&gt;continue&lt;/span&gt;
+&amp;gt;&amp;gt;&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Automatic process will guide you through installation. You don’t have to run installer as a root, unless you want it to be installed for all users. In that case you need sudo privilege to install it in some globally accessible location like &lt;code class=&quot;highlighter-rouge&quot;&gt;/opt/anaconda3&lt;/code&gt; and append &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/profile&lt;/code&gt; with the location of the interpreter &lt;code class=&quot;highlighter-rouge&quot;&gt;export PATH=/opt/Anaconda3/bin:$PATH&lt;/code&gt;. This will make Python change system-wide. If you run it with normal user privileges it will choose your user’s home directory and place it in &lt;code class=&quot;highlighter-rouge&quot;&gt;/home/&amp;lt;user&amp;gt;/anaconda3&lt;/code&gt;. Installer will install bunch of python packages including MKL optimizations (Math Kernel Library), numpy, pandas, matplotlib, scikit-learn and Jupyter - just to name few. Nearly 200 packages grouped together to make your life easier. To get list of the packages execute this command: &lt;code class=&quot;highlighter-rouge&quot;&gt;conda list | wc -l&lt;/code&gt;. Anyway lets continue with installation…&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;PREFIX&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/home/mdyzma/anaconda3
+installing: python-3.6.0-0 ...
+
+Python 3.6.0 :: Continuum Analytics, Inc.
+creating default environment...
+installation finished.
+Do you wish the installer to prepend the Anaconda3 install location
+to PATH &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;your /home/mdyzma/.bashrc ? &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;yes|no]
+&amp;gt;&amp;gt;&amp;gt;yes
+
+Prepending &lt;span class=&quot;nv&quot;&gt;PATH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/home/mdyzma/anaconda3/bin to PATH &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; /home/mdyzma/.bashrc&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Answering &lt;code class=&quot;highlighter-rouge&quot;&gt;yes&lt;/code&gt; will make Anaconda’s python your default interpreter. Sometimes installer may be a little bit outdated. Restart terminal, or source &lt;code class=&quot;highlighter-rouge&quot;&gt;.bashrc&lt;/code&gt; and upgrade Python. You can do it with all installed packages using single command: &lt;code class=&quot;highlighter-rouge&quot;&gt;conda update --all&lt;/code&gt;; or just interpreter itself: &lt;code class=&quot;highlighter-rouge&quot;&gt;conda update python&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox mdyzma]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;conda update python
+Fetching package metadata .........
+Solving package specifications: .
+
+Package plan &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;installation &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;environment /home/mdyzma/anaconda3:
+
+The following packages will be UPDATED:
+
+    anaconda: 4.3.1-np111py36_0 --&amp;gt; custom-py36_0
+    conda:    4.3.14-py36_0     --&amp;gt; 4.3.17-py36_0
+    python:   3.6.0-0           --&amp;gt; 3.6.1-0
+
+Proceed &lt;span class=&quot;o&quot;&gt;([&lt;/span&gt;y]/n&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;? y&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;After that you should have brand new Python 3.6.1 as your main system interpreter. To confirm it type &lt;code class=&quot;highlighter-rouge&quot;&gt;conda info&lt;/code&gt; or simply try to run python interpreter in your terminal.&lt;/p&gt;
+
+&lt;p&gt;Conda command should result in displaying detailed information about current Anaconda installation:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox mdyzma]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;conda info
+    Current conda install:
+
+                   platform : linux-64
+              conda version : 4.3.17
+           conda is private : False
+          conda-env version : 4.3.17
+        conda-build version : not installed
+             python version : 3.6.1.final.0
+           requests version : 2.12.4
+           root environment : /home/mdyzma/anaconda3  &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;writable&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+        default environment : /home/mdyzma/anaconda3
+           envs directories : /home/mdyzma/anaconda3/envs
+                          /home/mdyzma/.conda/envs
+              package cache : /home/mdyzma/anaconda3/pkgs
+                          /home/mdyzma/.conda/pkgs
+               channel URLs : https://repo.continuum.io/pkgs/free/linux-64
+                          https://repo.continuum.io/pkgs/free/noarch
+                          https://repo.continuum.io/pkgs/r/linux-64
+                          https://repo.continuum.io/pkgs/r/noarch
+                          https://repo.continuum.io/pkgs/pro/linux-64
+                          https://repo.continuum.io/pkgs/pro/noarch
+                config file : None
+               offline mode : False
+                 user-agent : conda/4.3.17 requests/2.12.4 CPython/3.6.1 Linux/4.9.27-moby Fedora/25 glibc/2.24
+                    UID:GID : 0:0&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Running python should expose interpreters REPL:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@0devbox mdyzma]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python
+Python 3.6.1 |Anaconda custom &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;64-bit&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;| &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;default, May 11 2017, 13:09:58&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;GCC 4.4.7 20120313 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Red Hat 4.4.7-1&lt;span class=&quot;o&quot;&gt;)]&lt;/span&gt; on Linux
+Type &lt;span class=&quot;s2&quot;&gt;&quot;help&quot;&lt;/span&gt;, &lt;span class=&quot;s2&quot;&gt;&quot;copyright&quot;&lt;/span&gt;, &lt;span class=&quot;s2&quot;&gt;&quot;credits&quot;&lt;/span&gt; or &lt;span class=&quot;s2&quot;&gt;&quot;license&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;more information.
+&amp;gt;&amp;gt;&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Windows users have to follow simple next,next installer prepared by Continuum. It can be downloaded &lt;a href=&quot;https://www.continuum.io/DOWNLOADS&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&quot;r_lang&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;r-language&quot;&gt;R language&lt;/h2&gt;
+
+&lt;p&gt;Fedora users can install &lt;code class=&quot;highlighter-rouge&quot;&gt;R&lt;/code&gt; from the standard Fedora repository using:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox mdyzma]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;sudo dnf install R&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The RPM of &lt;code class=&quot;highlighter-rouge&quot;&gt;R&lt;/code&gt; is a meta package, which will install following components:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;R-core         User RPM&lt;/li&gt;
+  &lt;li&gt;R-core-devel   Developer RPM containing header files&lt;/li&gt;
+  &lt;li&gt;R-java         RPM to ensure that R is configured for use with Java&lt;/li&gt;
+  &lt;li&gt;libRmath       Standalone R math library&lt;/li&gt;
+  &lt;li&gt;libRmath-devel Header file for the standalone R math library&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;According to CRAN manual Fedora will also require developer versions, which contain header files necessary to properly install other R packages and to compile them from the source. Windows users have simple &lt;a href=&quot;https://cloud.r-project.org/bin/windows/base/&quot;&gt;installer&lt;/a&gt; at their disposal.&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&quot;julia_compiler&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;julia-compiler&quot;&gt;Julia compiler&lt;/h2&gt;
+
+&lt;p&gt;A &lt;a href=&quot;https://copr.fedorainfracloud.org/coprs/nalimilan/julia/&quot;&gt;Copr repository&lt;/a&gt; is provided for Fedora users. To install Julia just run:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox mdyzma]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;sudo dnf copr &lt;span class=&quot;nb&quot;&gt;enable &lt;/span&gt;nalimilan/julia&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Bleeding edge version of Julia is held in separate repository, which can be added with this command: &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo dnf copr enable nalimilan/julia-nightlies&lt;/code&gt;. I decided to install nightly Julia release. Adding any of mentioned above results in:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox mdyzma]# dnf copr &lt;span class=&quot;nb&quot;&gt;enable &lt;/span&gt;nalimilan/julia-nightlies
+
+You are about to &lt;span class=&quot;nb&quot;&gt;enable &lt;/span&gt;a Copr repository. Please note that this
+repository is not part of the main Fedora distribution, and quality
+may vary.
+
+The Fedora Project does not exercise any power over the contents of
+this repository beyond the rules outlined &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;the Copr FAQ at
+&amp;lt;https://fedorahosted.org/copr/wiki/UserDocs#WhatIcanbuildinCopr&amp;gt;, and
+packages are not held to any quality or security level.
+
+Please &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;not file bug reports about these packages &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;Fedora
+Bugzilla. In &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; of problems, contact the owner of this repository.
+
+Do you want to &lt;span class=&quot;k&quot;&gt;continue&lt;/span&gt;? &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;y/N]: y
+Repository successfully enabled.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;After that you can easily install specific build of Julia compiler:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox mdyzma]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;sudo dnf install julia
+Password:
+
+Copr repo &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;julia-nightlies owned by nalimilan                                                                                                              53 kB/s |  67 kB     00:01
+Dependencies resolved.
+&lt;span class=&quot;o&quot;&gt;=========================&lt;/span&gt;
+... List of packages ...
+
+Transaction Summary
+&lt;span class=&quot;o&quot;&gt;=========================&lt;/span&gt;
+Install  59 Packages
+
+Total download size: 60 M
+Installed size: 260 M&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;To verify either type &lt;code class=&quot;highlighter-rouge&quot;&gt;julia --version&lt;/code&gt; or simply try to run Julia REPL:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox mdyzma]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;julia
+   _       _ _&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;_&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;_     |  A fresh approach to technical computing
+  &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;_&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;     | &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;_&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;_&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;    |  Documentation: https://docs.julialang.org
+   _ _   _| |_  __ _   |  Type &lt;span class=&quot;s2&quot;&gt;&quot;?help&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;help.
+  | | | | | | |/ _&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; |  |
+  | | |_| | | | &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;_| |  |  Version 0.7.0-DEV.401 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2017-05-30 17:07 UTC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+ _/ |&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;_&lt;span class=&quot;s1&quot;&gt;'_|_|_|\__'&lt;/span&gt;_|  |  Commit e3794ee&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2 days old master&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|__/                   |  x86_64-redhat-linux
+
+julia&amp;gt;
+
+&lt;span class=&quot;gp&quot;&gt;julia&amp;gt; &lt;/span&gt;2+2
+4
+
+julia&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;a name=&quot;scala_compiler&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;scala--sbt&quot;&gt;Scala / sbt&lt;/h2&gt;
+
+&lt;p&gt;Scala compiles to Java byte-code using &lt;strong&gt;Java Virtual Machine&lt;/strong&gt;. Therefore before using it, JRE or JDK must be installed in the system.&lt;/p&gt;
+
+&lt;h4 id=&quot;install-oracle-java-jdkjre&quot;&gt;Install Oracle Java JDK/JRE&lt;/h4&gt;
+
+&lt;p&gt;Download JRE or JDK from Oracle &lt;a href=&quot;http://www.oracle.com/technetwork/java/javase/downloads/index.html&quot;&gt;www&lt;/a&gt;. Select one of the available options (i.e. download JRE -&amp;gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;jre-8u131-linux-x64.rpm&lt;/code&gt; or download JDK -&amp;gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;jdk-8u131-linux-x64.rpm&lt;/code&gt;). What is the difference? JRE stands for &lt;strong&gt;Java Runtime Environment&lt;/strong&gt; , which covers all end-users needs if it comes to run software written in Java. JDK is developers environment (&lt;strong&gt;Java Developers Kit&lt;/strong&gt;) containing JRE with additional tools supporting Java programs development and debugging. Installation must be done with administrator privileges.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox mdyzma]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;su -
+Password: 
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@devbox mdyzma]# rpm -Uvh /home/mdyzma/jdk-8u131-linux-x64.rpm&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;… or:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox mdyzma]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;su -
+Password: 
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@devbox mdyzma]# rpm -Uvh /home/mdyzma/jre-8u131-linux-x64.rpm&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Please remember to change paths to downloaded files. Windows users should choose &lt;code class=&quot;highlighter-rouge&quot;&gt;msi&lt;/code&gt; installer and follow &lt;a href=&quot;http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html&quot;&gt;java installer&lt;/a&gt; instructions.&lt;/p&gt;
+
+&lt;p&gt;This step may be skipped for “nix” operating systems, since &lt;code class=&quot;highlighter-rouge&quot;&gt;dnf&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;apt&lt;/code&gt; will manage dependences for you and install appropriate openJDK environment during Scala installation.&lt;/p&gt;
+
+&lt;h4 id=&quot;install-scala&quot;&gt;Install Scala&lt;/h4&gt;
+
+&lt;p&gt;Installing Scala is straight forward. Windows users have typical &lt;a href=&quot;https://www.scala-lang.org/download/&quot;&gt;installer&lt;/a&gt;. On fedora and other “nix” systems Scala is part of official repository and can be installed with single command:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Scala compiles to Java byte-code&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox mdyzma]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;dnf install scala&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;When process is finished you can check your installation simply by trying to use Scala REPL:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox mdyzma]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;scala
+Welcome to Scala version 2.10.4 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;OpenJDK 64-Bit Server VM, Java 1.8.0_131&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+Type &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;expressions to have them evaluated.
+Type :help &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;more information.
+
+&lt;span class=&quot;gp&quot;&gt;scala&amp;gt; &lt;/span&gt;2+2
+res0: Int &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 4&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;It works! Perfect!&lt;/p&gt;
+
+&lt;p&gt;You may notice, that scala from this repo is little bit outdated. Don’t worry. It will be updated when used with sbt build-tool.&lt;/p&gt;
+
+&lt;p&gt;When you write small programs which consist of only one, or just two source files, then it’s easy enough to compile those source files by typing &lt;code class=&quot;highlighter-rouge&quot;&gt;scalac MyProgram.scala&lt;/code&gt; in the terminal. Scalac is name of Scala compiler program. But when project gets bigger, with dozens or maybe even hundreds of source files, then it becomes too tedious to compile all those source files manually. You start to think: &lt;em&gt;“There must be a better way.”&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;C/C++ programmers use &lt;code class=&quot;highlighter-rouge&quot;&gt;make&lt;/code&gt; tool. For programs compiling to Java byte-code there is &lt;code class=&quot;highlighter-rouge&quot;&gt;sbt&lt;/code&gt;.  It is a general purpose build tool written in Scala. In the next section I will describe its installation.&lt;/p&gt;
+
+&lt;h4 id=&quot;install-sbt&quot;&gt;Install sbt&lt;/h4&gt;
+
+&lt;p&gt;As I mentioned before manual compilation of complex project with hundreds of files is nearly impossible. Not mentioning managing all dependencies required by hundreds of files. Build-tools, such as &lt;code class=&quot;highlighter-rouge&quot;&gt;sbt&lt;/code&gt; (&lt;em&gt;Simple Build Tool&lt;/em&gt;),  can automate this time consuming and tedious process.  It will manage compiling all source files and dependencies for you.  This means that if you need to use some libraries written by others, sbt can automatically download the right versions of those libraries and include them in your project. Moreover you can compose automatic unit-tests which can also be run by build-tool. Sbt will also provide some boilerplate code to automate starting new projects in Scala.&lt;/p&gt;
+
+&lt;p&gt;As usual Windows users will use &lt;a href=&quot;http://www.scala-sbt.org/download.html&quot;&gt;sbt installer&lt;/a&gt;. “Nix” users will have to add official repository to their system. Sbt binaries are published to Bintray repository, and conveniently Bintray provides an RPM variant for Fedora. Super user privileges are required.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox mdyzma]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;su -
+Password: 
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@devbox mdyzma]# curl https://bintray.com/sbt/rpm/rpm | tee /etc/yum.repos.d/bintray-sbt-rpm.repo
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   162    0   162    0     0    183      0 --:--:-- --:--:-- --:--:--   186
+&lt;span class=&quot;c&quot;&gt;#bintray--sbt-rpm - packages by  from Bintray&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;bintray--sbt-rpm]
+&lt;span class=&quot;nv&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;bintray--sbt-rpm
+&lt;span class=&quot;nv&quot;&gt;baseurl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;http://dl.bintray.com/sbt/rpm
+&lt;span class=&quot;nv&quot;&gt;gpgcheck&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0
+&lt;span class=&quot;nv&quot;&gt;repo_gpgcheck&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0
+&lt;span class=&quot;nv&quot;&gt;enabled&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Once Bintray repository is added you can install latest &lt;code class=&quot;highlighter-rouge&quot;&gt;sbt&lt;/code&gt; using package manager:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@devbox mdyzma]# dnf install sbt&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Sbt is a tool that runs from the project folder. When it starts it will try to read &lt;code class=&quot;highlighter-rouge&quot;&gt;build.sbt&lt;/code&gt; file which should contain information about project. You can also use sbt creator to start new project. To test sbt I will create test directory and run project creator:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox mdyzma]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;mkdir &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox mdyzma]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd test&lt;/span&gt;/ &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; sbt new sbt/scala-seed.g8
+WARN: No sbt.version &lt;span class=&quot;nb&quot;&gt;set &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;project/build.properties, base directory: /home/mdyzma/test
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;warn] Executing &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;batch mode.
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;warn]   For better performance, hit &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ENTER] to switch to interactive mode, or
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;warn]   consider launching sbt without any commands, or explicitly passing &lt;span class=&quot;s1&quot;&gt;'shell'&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;info] Set current project to &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;build file:/home/mdyzma/test/&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Minimum Scala build.
+
+name &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;My Something Project]: hello
+
+Template applied &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; ./hello
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; .. &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; tree &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;/
+&lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;/
+|-- hello
+|   |-- build.sbt
+|   |-- project
+|   |   |-- Dependencies.scala
+|   |   &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-- build.properties
+|   &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-- src
+|       |-- main
+|       |   &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-- scala
+|       |       &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-- example
+|       |           &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-- Hello.scala
+|       &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-- &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;
+|           &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-- scala
+|               &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-- example
+|                   &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-- HelloSpec.scala
+&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-- target
+    &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-- streams
+        &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-- &lt;span class=&quot;nv&quot;&gt;$global&lt;/span&gt;
+            |-- ivyConfiguration
+            |   &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-- &lt;span class=&quot;nv&quot;&gt;$global&lt;/span&gt;
+            |       &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-- streams
+            |           &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-- out
+            &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-- projectDescriptors
+                &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-- &lt;span class=&quot;nv&quot;&gt;$global&lt;/span&gt;
+                    &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-- streams
+                        &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-- out&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Sbt created nice basic project structure and filled it with boilerplate code. Main project folder is &lt;code class=&quot;highlighter-rouge&quot;&gt;hello&lt;/code&gt; and contains two important pieces: &lt;code class=&quot;highlighter-rouge&quot;&gt;build.sbt&lt;/code&gt; file and &lt;code class=&quot;highlighter-rouge&quot;&gt;src/&lt;/code&gt; folder with your Scala program. If you enter the folder and run sbt from it, you should be directed to sbt shell, which will allow you to compile, run or test your code.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;&lt;/code&gt; sign is sbt shell prompt. You can run scala from it simply by typing &lt;code class=&quot;highlighter-rouge&quot;&gt;console&lt;/code&gt;:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox mdyzma]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd test&lt;/span&gt;/hello/
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox hello]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;sbt
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;info] Loading project definition from /home/mdyzma/test/hello/project
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;info] Updating &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;file:/home/mdyzma/test/hello/project/&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;hello-build...
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;info] Resolving org.fusesource.jansi#jansi;1.4 ...
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;info] Done updating.
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;info] Compiling 1 Scala &lt;span class=&quot;nb&quot;&gt;source &lt;/span&gt;to /home/mdyzma/test/hello/project/target/scala-2.10/sbt-0.13/classes...
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;info] Set current project to Hello &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;build file:/home/mdyzma/test/hello/&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;console
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;info] Starting scala interpreter...
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;info]
+Welcome to Scala 2.12.1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;OpenJDK 64-Bit Server VM, Java 1.8.0_131&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+Type &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;expressions &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;evaluation. Or try :help.
+
+&lt;span class=&quot;gp&quot;&gt;scala&amp;gt; &lt;/span&gt;2+2
+res0: Int &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 4
+
+scala&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Type &lt;code class=&quot;highlighter-rouge&quot;&gt;Ctrl+D&lt;/code&gt; (&lt;code class=&quot;highlighter-rouge&quot;&gt;Ctrl+Z&lt;/code&gt; on Windows) to exit scala REPL and go back to the sbt shell.&lt;/p&gt;
+
+&lt;p&gt;It is also possible to  &lt;code class=&quot;highlighter-rouge&quot;&gt;run&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;test&lt;/code&gt; your code:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;run
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;info] Updating &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;file:/home/mdyzma/test/hello/&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;root...
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;info] Resolving jline#jline;2.14.1 ...
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;info] Done updating.
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;info] Compiling 1 Scala &lt;span class=&quot;nb&quot;&gt;source &lt;/span&gt;to /home/mdyzma/test/hello/target/scala-2.12/classes...
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;info] Running example.Hello
+hello
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;success] Total &lt;span class=&quot;nb&quot;&gt;time&lt;/span&gt;: 5 s, completed April 23, 2017 6:53:19 PM
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;info] Compiling 1 Scala &lt;span class=&quot;nb&quot;&gt;source &lt;/span&gt;to /home/mdyzma/test/hello/target/scala-2.12/test-classes...
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;info] HelloSpec:
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;info] The Hello object
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;info] - should say hello
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;info] Run completed &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;283 milliseconds.
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;info] Total number of tests run: 1
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;info] Suites: completed 1, aborted 0
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;info] Tests: succeeded 1, failed 0, canceled 0, ignored 0, pending 0
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;info] All tests passed.
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;success] Total &lt;span class=&quot;nb&quot;&gt;time&lt;/span&gt;: 3 s, completed April 23, 2017 6:53:40 PM&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;kernels-installation&quot;&gt;Kernels installation&lt;/h2&gt;
+
+&lt;p&gt;Jupyter notebook is a fantastic tool, that allows my favorite programming style: Prototype driven development. Existence of REPL (Read, Evaluate, Print Loop) in all installed languages can be used to instantaneously test our code. We can also test our tests. This makes commits cleaner and faster. After all -  it is much easier to control very small chunks of the code and work on it interactively. First IPython  notebook made it possible with python, but later Jupyter project began to live own life and extended functionality by adding more languages it could “manage”. It is done by specific middle-ware called “kernel”. There is nearly 100 different kernels now(see &lt;a href=&quot;https://github.com/jupyter/jupyter/wiki/Jupyter-kernels&quot;&gt;here&lt;/a&gt;). Lets get Big Four.&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&quot;ipykernel&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;ipykernel-additional-python&quot;&gt;Ipykernel (additional python)&lt;/h4&gt;
+
+&lt;p&gt;In many Linux distributions python 3.x is accessible from &lt;code class=&quot;highlighter-rouge&quot;&gt;python3&lt;/code&gt; command, but it is cumbersome to manage both python versions and their dependencies by calling specific pip/pip3 or python/python3 from the system level. Managing versions, as well as third party dependencies and environmental variables is very, very confusing. Unless one uses correct tool. Anaconda has such tool out of the box and it is called &lt;code class=&quot;highlighter-rouge&quot;&gt;conda&lt;/code&gt;. It is able to manage packages and virtual environments. With minimal effort one can create and delete entire environments with specific python and packages configuration. Other, very popular environment manager is &lt;code class=&quot;highlighter-rouge&quot;&gt;virtualenv&lt;/code&gt; especially with additional package &lt;code class=&quot;highlighter-rouge&quot;&gt;virtualenvwrapper&lt;/code&gt;. I will use manager built in conda. More about conda virtual env capabilities &lt;a href=&quot;https://conda.io/docs/using/envs.html#&quot;&gt;here&lt;/a&gt; or in built in help system &lt;code class=&quot;highlighter-rouge&quot;&gt;conda env --help&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;So…. I have Anaconda 3 with Python 3.6.1 on my Fedora machine. Let’s say I want to install additional python interpreter from 2.7 branch (last 2.x branch supported by Python Foundation). In order to create environment with specific python version, run this command:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox mdyzma]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;conda create --name py27 &lt;span class=&quot;nv&quot;&gt;python&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;2 ipykernel
+
+Fetching package metadata .........
+Solving package specifications: .
+
+Package plan &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;installation &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;environment /opt/conda/envs/py27:
+
+The following NEW packages will be INSTALLED:
+...
+
+Proceed &lt;span class=&quot;o&quot;&gt;([&lt;/span&gt;y]/n&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;? y
+...
+
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# To activate this environment, use:&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# &amp;gt; source activate py27&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# To deactivate this environment, use:&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# &amp;gt; source deactivate py27&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This should install bunch of packages, including latest python 2 version with basic tools to manage packages in new environment. I also specified, that I want &lt;code class=&quot;highlighter-rouge&quot;&gt;ipykernel&lt;/code&gt; package to be installed as well.  Now I have to activate new environment following conda help from the screen:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox mdyzma]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;source &lt;/span&gt;activate py27
+
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;py27&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox mdyzma]&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Prompt changed, indicating that I am now in py27 environment with its packages. Quick &lt;code class=&quot;highlighter-rouge&quot;&gt;pip list&lt;/code&gt; reveals, that only handful of basic packages (including ipykernel and its dependencies) were installed :&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox mdyzma]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pip list
+DEPRECATION: The default format will switch to columns &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;the future. You can use --format&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;legacy|columns&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;or define a &lt;span class=&quot;nv&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;legacy|columns&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;your pip.conf under the &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;list] section&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; to disable this warning.
+decorator &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;4.0.11&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+ipykernel &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;4.6.1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+ipython &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;6.0.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+ipython-genutils &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.2.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+jedi &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.10.2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+jupyter-client &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;5.0.1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+jupyter-core &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;4.3.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+pexpect &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;4.2.1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+pickleshare &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.7.4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+pip &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;9.0.1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+prompt-toolkit &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1.0.14&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+ptyprocess &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.5.1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Pygments &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2.2.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+python-dateutil &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2.6.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+pyzmq &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;16.0.2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+setuptools &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;27.2.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+simplegeneric &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.8.1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+six &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1.10.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+tornado &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;4.5.1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+traitlets &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;4.3.2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+wcwidth &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.1.7&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+wheel &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.29.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;py27&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; root@fc954edb0a6d:/#&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;After activation I have to add this kernel to the global list of kernels managed by Jupyter package from main Anaconda installation. To register this kernel I have to enter: &lt;code class=&quot;highlighter-rouge&quot;&gt;python -m ipykernel install --user&lt;/code&gt; in the terminal with this kernel activated:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;py27&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox mdyzma]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python -m ipykernel install --user
+Installed kernelspec python2 &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; /home/mdyzma/.local/share/jupyter/kernels/python2&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Done.I should have both kernels accessible when I run my Jupyter Notebook:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/23-04-2017-two-kernels.png&quot; alt=&quot;bothkernels&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&quot;irkernel_py&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;irkernel-with-conda&quot;&gt;IRkernel with conda&lt;/h4&gt;
+
+&lt;p&gt;Continuum Analytics did great job making R language available almost out of the box. Conda can access different repositories by specifying &lt;code class=&quot;highlighter-rouge&quot;&gt;--chanel&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;-c&lt;/code&gt; flag when calling install option. Continuum is maintaining repository with most popular R packages ported, so they can be used as python packages. To install R packages for conda enter:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;conda install --channel r r-essentials&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This command should install dozens of R packages and will make R kernel available to you when you run Jupyter Notebook.  For more information go to &lt;a href=&quot;https://conda.io/docs/r-with-conda.html&quot;&gt;R with conda&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Simple and efficient. To run R code in Jupyter notebook simply choose R kernel from the drop-down list:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/23-04-2017-r-kernel.png&quot; alt=&quot;withrkernel&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Con of this method is that you have to install nearly 160 packages, taking few gigs of space. On the other hand I will have nice and ready to go R environment in my python after typing just five words. Awesome!&lt;/p&gt;
+
+&lt;p&gt;If you want to see alternative way (much less space hungry) check next section.&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&quot;irkernel_r&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;irkernel-from-r&quot;&gt;IRkernel from R&lt;/h4&gt;
+
+&lt;p&gt;We will soon submit the IRkernel package to CRAN. Until then, you can install it via the devtools package:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;install.packages&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'repr'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'IRdisplay'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'crayon'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'pbdZMQ'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'devtools'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'stringr'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;devtools&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;install_github&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'IRkernel/IRkernel'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;IRkernel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;installspec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;register&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;the&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kernel&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;in&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;the&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;current&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;R&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;installation&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Effect is identical to the one R will install requested packages&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&quot;ijulia&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;ijulia-kernel&quot;&gt;IJulia kernel&lt;/h4&gt;
+
+&lt;p&gt;Once you have &lt;strong&gt;Julia&lt;/strong&gt; installed on your machine, run Julia app  (you will see fancy prompt by &lt;code class=&quot;highlighter-rouge&quot;&gt;julia&amp;gt;&lt;/code&gt;), then type:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;julia&amp;gt; Pkg.add(&quot;IJulia&quot;)
+INFO: Initializing package repository /home/mdyzma/.julia/v0.7
+INFO: Cloning METADATA from https://github.com/JuliaLang/METADATA.jl
+INFO: Cloning ...
+INFO: Installing ...
+INFO: Building ...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Julia package manager will take care of dependencies and download requested software. Specifically it will download and install basic python environment based on &lt;a href=&quot;https://conda.io/miniconda.html&quot;&gt;Miniconda&lt;/a&gt;, which will be local for Julia, and accessible only by Julia. Thanks to that you don’t really need any python installed in your system to run Julia Notebook. In that case only one kernel will be available. Julia will use its private python interpreter and minimal Jupyter installation to run notebook with it’s kernel. You can run it at any time typing in Julia REPL:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-julia&quot; data-lang=&quot;julia&quot;&gt;&lt;span class=&quot;n&quot;&gt;julia&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IJulia&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;INFO&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Precompiling&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IJulia&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;julia&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;notebook&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Since I already had two additional kernels installed (python 2,  and R), IJulia will be added to the collection.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/23-04-2017-julia-kernel.png&quot; alt=&quot;julia-kernel&quot; /&gt;&lt;/p&gt;
+
+&lt;div class=&quot;alert alert-info&quot; role=&quot;alert&quot; style=&quot;text-align: justify; vertical-align:middle;&quot;&gt;
+In the meantime I updated entire Anaconda bundle (&lt;code class=&quot;highlighter-rouge&quot;&gt;conda update --all&lt;/code&gt;), including Jupyter notebook, which changed little bit its UI. You may notice that list of kernels is displayed first. Opposite to previous screen-shots.
+&lt;/div&gt;
+
+&lt;p&gt;In Julia language &lt;code class=&quot;highlighter-rouge&quot;&gt;using &amp;lt;package Name&amp;gt;&lt;/code&gt; is an &lt;strong&gt;import statement&lt;/strong&gt;, which pre-compiles and gets ready to work module/program denoted in the statement. Next line calls this programs subroutine called &lt;code class=&quot;highlighter-rouge&quot;&gt;notebook&lt;/code&gt;. If you use some arguments, you can modify notebooks behavior. For example &lt;code class=&quot;highlighter-rouge&quot;&gt;notebook(detached=true)&lt;/code&gt;, Julia will run notebook server in the background and you will be able to use or exit REPL without closing the notebook.&lt;/p&gt;
+
+&lt;p&gt;By default, the notebook “dashboard” opens in your home directory, but you can open the dashboard in a different directory with &lt;code class=&quot;highlighter-rouge&quot;&gt;notebook(dir=&quot;/some/path&quot;)&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;But we want to add IJulia kernel to existing Jupyter installation. to do that you need to set environmental variable &lt;code class=&quot;highlighter-rouge&quot;&gt;JUPYTER&lt;/code&gt; to the value of your current jupyer program path before running &lt;code class=&quot;highlighter-rouge&quot;&gt;Pkg.add(&quot;IJulia&quot;)&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;a name=&quot;iscala&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;iscala-kernel&quot;&gt;IScala kernel&lt;/h4&gt;
+
+&lt;p&gt;https://datasciencevademecum.wordpress.com/2016/01/28/6-points-to-compare-python-and-scala-for-data-science-using-apache-spark/&lt;/p&gt;
+
+&lt;p&gt;Scala programs compile to JVM bytecodes. Their
+run-time performance is usually on par with Java programs. Scala code can
+call Java methods, access Java fields, inherit from Java classes, and implement Java interfaces.&lt;/p&gt;
+
+&lt;h2 id=&quot;using-all-kernels&quot;&gt;Using all kernels&lt;/h2&gt;
+
+&lt;p&gt;Jupyter notebook is language agnostic platform. It is able to support nearly 100 different languages (check &lt;a href=&quot;https://github.com/jupyter/jupyter/wiki/Jupyter-kernels&quot;&gt;here&lt;/a&gt;) via kernels, which provide is kernel is execution backend for Jupyter to invoke specifics language commands and direct response back to the browser. By default only ipython kernel is installed and runs out of the box. Other kernels must be installed and activated by user. By default installing Jupyter also installs &lt;code class=&quot;highlighter-rouge&quot;&gt;ipykernel&lt;/code&gt; appropriate to your interpreter version.&lt;/p&gt;
+
+&lt;p&gt;https://jupyter-client.readthedocs.io/en/latest/kernels.html#kernelspecs&lt;/p&gt;
+
+&lt;p&gt;https://ipython.readthedocs.io/en/latest/install/kernel_install.html&lt;/p&gt;
+
+&lt;h2 id=&quot;one-to-rule-them-all&quot;&gt;One to rule them all…&lt;/h2&gt;
+
+&lt;p&gt;Once all kernels are installed, you can print all available kernels using Jupyter function:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;mdyzma@devbox mdyzma]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;jupyter kernelspec list
+Available kernels:
+    julia-0.5    /home/mdyzma/.jupyter/kernels/julia-0.7
+    python2      /home/mdyzma/.jupyter/kernels/python2
+    python3      /home/mdyzma/.jupyter/kernels/python3
+    ir           /home/mdyzma/.jupyter/kernels/ir&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;summary&quot;&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;There we are. Versatile, multi-language prototyping environment in the browser.&lt;/p&gt;
+
+&lt;p&gt;If you struggle between using python Julia, Scala or R, don’t! Use all of them! At the same time in the same notebook, passing data structures between languages and perform analysis with the best tools they can offer. With Jupyter notebook it is all possible. It is possible to add even more players to the game. Julia, Haskel, Lua, bash, Octave… Pick whatever you can… Currently Jupyter supports nearly 100 different kernels (check &lt;a href=&quot;https://github.com/jupyter/jupyter/wiki/Jupyter-kernels&quot;&gt;here&lt;/a&gt;).&lt;/p&gt;
+
+&lt;!-- Links --&gt;
+&lt;!-- www --&gt;
+
+&lt;!-- Images --&gt;</content>
+
+      
+      
+      
+      
+      
+
+      
+        <author>
+            <name>Michal Dyzma</name>
+          
+          
+        </author>
+      
+
+      
+        <category term="python" />
+      
+        <category term="R" />
+      
+        <category term="Scala" />
+      
+        <category term="Julia" />
+      
+        <category term="jupyter-notebook" />
+      
+
+      
+
+      
+        <summary type="html">Shall I use R, Julia, Scala or Python? The answer is: Yes! How to create versatile environment, in which different languages are available and able to communicate with each other? Without changing program you work in and where data may be passed between specific structures characteristic for the language? This post will show you how to do it with four most powerful languages used in Data Science: Python, R, Scala and Julia.</summary>
+      
+
+      
+      
+    </entry>
+  
+  
+  
+    <entry>
+      
+      <title type="html">Jupyter Notebook - python based lab book</title>
+      
+      <link href="http://localhost:4000/2017/04/14/jupyter-notebook-lab-book/" rel="alternate" type="text/html" title="Jupyter Notebook - python based lab book" />
+      <published>2017-04-14T17:28:54+02:00</published>
+      <updated>2017-04-14T17:28:54+02:00</updated>
+      <id>http://localhost:4000/2017/04/14/jupyter-notebook-lab-book</id>
+      <content type="html" xml:base="http://localhost:4000/2017/04/14/jupyter-notebook-lab-book/">&lt;p&gt;Data analysis using Jupyter Notebook. I will mention biology and focus on work with data specific for biology, but  all the principles and tools described here may be applied in other projects and disciplines.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\frac{\partial c_\gamma}{\partial t} = D_c \Delta c_\gamma + \phi(c) \delta_{\gamma} + 
+    \sum_{i=1}^n \left[ k^{-}_{i\gamma} b_{i\gamma} - k^{+}_{i\gamma} c (b^0_{i\gamma} -b_{i\gamma})\right]&lt;/script&gt;
+
+&lt;h2 id=&quot;data-analysis&quot;&gt;Data analysis&lt;/h2&gt;
+
+&lt;p&gt;In &lt;a href=&quot;https://www.packtpub.com/mapt/book/big_data_and_business_intelligence/9781783980246&quot;&gt;&lt;em&gt;“Practical Data Science Cookbook”&lt;/em&gt;&lt;/a&gt; by Tony Ojeda authors distinguished five core activities in data analysis:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Stating thesis&lt;/li&gt;
+  &lt;li&gt;Exploring the data&lt;/li&gt;
+  &lt;li&gt;Building formal model/models&lt;/li&gt;
+  &lt;li&gt;Interpreting the results&lt;/li&gt;
+  &lt;li&gt;Communicating the results&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;All these activities may be successfully performed using python ecosystem. No doubt python has one of the best communities, active and contributing frequently with quality packages. I would risk statement, that python’s community is even better, than R’s, but I do not want to provoke another flame war.&lt;/p&gt;
+
+&lt;h2 id=&quot;data-and-biology&quot;&gt;Data and biology&lt;/h2&gt;
+
+&lt;p&gt;Biologist simply can not ignore data anymore. Huge amounts of data flow from each instrument from confocal microscope to RT-PCR every day. Equipment producers usually provide some tools to perform data analysis, but they lack flexibility. Data should be accessible and ready to use from any workstation, transform and visualize. Biology people must deal with them with ease and grace. Actually the problem isn’t new. Astronomers faced it long time ago. Most of them started to use scripting languages to develop their own tools. Chemistry and pharmaceutical industry deal with it as well and now biologist face same problem.&lt;/p&gt;
+
+&lt;p&gt;Data produced by biological experiments in time. ,- graph&lt;/p&gt;
+
+&lt;p&gt;Excel spreadsheet is simply not enough anymore. It lacks capabilities to properly hold large amounts of data, describe them and, what is most important, to exchange them with other collaborators.  Currently average MD experiments can produce hundreds of gigs of data. Average sequencing few gigs. From microscopy pictures to large MD trajectories you should be able to ingest, crack, visualize and share your data. Traditional statistical approach to analysis of the data is not enough and one needs to go deeper and deal with data more interactively, with more integrative insight. Currently in biology BigData is a big problem and is treated as such. But it is just a problem scientists are not ready to deal with. Giga- and tera- byte scale level requires large and expensive computational cluster or smart approach. Therefore, nowadays, basic &lt;em&gt;Data Science&lt;/em&gt; skills are essential for every decent researcher.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Basic &lt;em&gt;Data Science&lt;/em&gt; skills are essential for every decent researcher.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Python has very extensive toolkit to process various data in many different ways. What is more important - it is easy to learn. Lets take a closer look at some packages, that can be used in biology. Lets start small, to get comfortable to use python pipelines in every day analysis.&lt;/p&gt;
+
+&lt;h2 id=&quot;anaconda&quot;&gt;Anaconda&lt;/h2&gt;
+
+&lt;p&gt;Continuum Analytics developed great swiss-army toolkit to data science. It’s name is &lt;a href=&quot;https://www.continuum.io/anaconda-overview&quot;&gt;&lt;strong&gt;Anaconda&lt;/strong&gt;&lt;/a&gt;. It groups over 700 python programs called packages, which will help you get started with python and data science in no time. Also, it has huge advantage - it’s free. There are competitive products like &lt;a href=&quot;https://www.enthought.com/products/canopy/&quot;&gt;Enthough Canopy’s&lt;/a&gt; data science platform, or &lt;a href=&quot;https://www.yhat.com/products/rodeo&quot;&gt;Yhat’s Rodeo&lt;/a&gt;, which also provide very decent software. In general they are all based on basic python data science tools like &lt;code class=&quot;highlighter-rouge&quot;&gt;numpy&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;pandas&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;dask&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;matplotlib&lt;/code&gt;. Some of them have closed source original solutions to particular problems, some are based completely on freely available software. Feel free to try whatever suits you best.&lt;/p&gt;
+
+&lt;p&gt;Why not pure python? Many packages included in Anaconda has non-trivial installation processes. Some parts of most frequently used packages (i.e numpy) are written in compiled languages like C/C++ or Fortran (hence their advantage over pure python solutions), therefore require specific compilers as well as some mathematical libraries like LAPAC, which must be linked during  compilation process. It is much easier to grab installer, in which all foreign dependencies are already compiled and shipped in form of binary files, and get going within few minutes, rather than deal with python &lt;strong&gt;dependency hell&lt;/strong&gt; for few days. Alternatively you can spend days trying to install all dependencies… The choice is yours.&lt;/p&gt;
+
+&lt;p&gt;How do we start working with python? In the beginning it good to see what you compute, experience the process itself, therefore I strongly recommend to start with &lt;code class=&quot;highlighter-rouge&quot;&gt;jupyter notebook&lt;/code&gt;. Great tool to replace your lab-book, report files in various documents and data held in spreadsheets.&lt;/p&gt;
+
+&lt;h2 id=&quot;jupyter-notebook--jupyter-lab&quot;&gt;Jupyter notebook / Jupyter Lab&lt;/h2&gt;
+
+&lt;p&gt;To start the notebook simply type &lt;code class=&quot;highlighter-rouge&quot;&gt;jupyter notebook&lt;/code&gt; in your command line or terminal.&lt;/p&gt;
+
+&lt;p&gt;Alternatively you may add path to the existing jupyter notebook file with &lt;code class=&quot;highlighter-rouge&quot;&gt;.ipybn&lt;/code&gt; extension&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;jupyter notebook&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&amp;lt; – link to python r julia in one notebook&lt;/p&gt;
+
+&lt;p&gt;This is our interactive window in browser, that allows us to talk to python interpreter.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}{{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;site&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}}{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}{{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;site&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}}{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;endif&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;numpy--pandas&quot;&gt;Numpy &amp;amp; Pandas&lt;/h2&gt;
+
+&lt;p&gt;Cornerstones of any data science project. Basic pair if it comes to deal with data. In biology majority of numerical data come in form of vectors (series of values) or tables. These two are more than enough to&lt;/p&gt;
+
+&lt;h3 id=&quot;hdf5&quot;&gt;HDF5&lt;/h3&gt;
+
+&lt;h3 id=&quot;netcdf&quot;&gt;netCDF&lt;/h3&gt;
+
+&lt;h2 id=&quot;biopandas&quot;&gt;Biopandas&lt;/h2&gt;
+
+&lt;h2 id=&quot;biopython&quot;&gt;Biopython&lt;/h2&gt;
+
+&lt;!-- Links --&gt;</content>
+
+      
+      
+      
+      
+      
+
+      
+        <author>
+            <name>Michal Dyzma</name>
+          
+          
+        </author>
+      
+
+      
+        <category term="python" />
+      
+        <category term="jupyter-notebook" />
+      
+        <category term="data" />
+      
+
+      
+
+      
+        <summary type="html">Data analysis using Jupyter Notebook. I will mention biology and focus on work with data specific for biology, but all the principles and tools described here may be applied in other projects and disciplines.</summary>
+      
+
+      
+      
+    </entry>
+  
+  
+  
+    <entry>
+      
+      <title type="html">Part 1: Application design</title>
+      
+      <link href="http://localhost:4000/2017/03/26/part1-biostudio-application-design/" rel="alternate" type="text/html" title="Part 1: Application design" />
+      <published>2017-03-26T13:18:53+02:00</published>
+      <updated>2017-03-26T13:18:53+02:00</updated>
+      <id>http://localhost:4000/2017/03/26/part1-biostudio-application-design</id>
+      <content type="html" xml:base="http://localhost:4000/2017/03/26/part1-biostudio-application-design/">&lt;p&gt;In &lt;strong&gt;Part 1&lt;/strong&gt; I will present process of application design. From collecting requirements to low level design describing specific algorithms and implementations. Final result should give something in form of &lt;em&gt;Software Design Document&lt;/em&gt;  that can be easily transformed to professional SSD template which can be used for other projects.&lt;/p&gt;
+
+&lt;h4 id=&quot;about-biostudio-project&quot;&gt;About biostudio project&lt;/h4&gt;
+
+&lt;p&gt;This is part of  what should develop to a series of articles on development process of &lt;em&gt;Biostudio&lt;/em&gt; - python GUI app. I will include best practices and solutions used in corporate projects. From preparing  software specifications to fully functional software deployed to the PyPI repository. Final product will be GUI application for Protein Data Bank &lt;code class=&quot;highlighter-rouge&quot;&gt;.pdb&lt;/code&gt; files editor, which carry information about 3D structure of biological macro-molecules.&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;Series consists of:&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://localhost:4000/2017/03/26/part1-biostudio-application-design/&quot;&gt;Part 1: Application designs&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://localhost:4000/2017/05/28/part2-biostudio-setting-up-environment/&quot;&gt;Part 2: Setting up work environment&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;!-- 
+* [Part 3: Test Driven Development](http://localhost:4000/2017/04/14/part3-biostudio-design-implementation-tdd/)
+* [Part 4: Low Level Design implementation](http://localhost:4000/2017/04/15/part4-biostudio-design-implementation-continue/)
+* [Part 5: Debugging and profiling](http://localhost:4000/2017/04/16/part5-biostudio-debugging-and-profiling/)
+* [Part 6: Application deployment](http://localhost:4000/2017/04/17/part6-biostudio-application-deployment/)
+* [Part 7: Application life cycle](http://localhost:4000/2017/04/18/part7-biostudio-application-lifecycle/)
+* [Part 8: Code metrics](http://localhost:4000/2017/04/19/part8-biostudio-code-metrics/) --&gt;
+
+&lt;h4 id=&quot;basic-configuration&quot;&gt;Basic configuration&lt;/h4&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Platform&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;Linux 64 bit&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Python&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;3.6.1&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Source&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;&lt;a href=&quot;https://gitlab.com/mdyzma/biostudio&quot;&gt;link&lt;/a&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;alert alert-info&quot; role=&quot;alert&quot; style=&quot;text-align: justify; vertical-align:middle;&quot;&gt;
+I will run the code using docker virtualization technology or spin new VirtualBox Fedora or Ubuntu, to test how it works freshly out of the box. So I can be sure every piece of code was properly tested. Outputs from my tests will be pasted here, unless they are ridiculous long (hundreds of lines). Then I will truncate output to the bare minimum necessary to understand what is going on.
+&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;/h2&gt;
+
+&lt;p&gt;Simple fact is that it is not important what kind of methodology you use, as long as it allows you to deliver high quality software at the end of each development cycle (on time and on budget). Most of the small open-source projects is born as an idea in the head of one person, without any design documentation, requirements, with rudimentary diagrams drawn on the napkin. The only automated task used from day one is usually source code control. This works at the beginning, in projects infancy, when single developer handles all the tasks. Unfortunately it fails miserably when project gains popularity or grows bigger and requires more team members, who’s work must be coordinated.&lt;/p&gt;
+
+&lt;p&gt;Maintaining project written by team of developers without any specs, design, common goal, and automatic delivery is a horrible idea, and should not happen at all, ever! It can be easily avoided, just by following already tested solutions, which offer some decent control over the project. If you run company and try to sell product It is a MUST. It also allows to promise regular delivery of the  software, that will satisfy customer.&lt;/p&gt;
+
+&lt;p&gt;In corporate projects one of the most important part of the project is documentation. From the very beginning i.e software specification, to the final version of user’s manual. Documentation must be maintained and updated. Period. Because it is time-consuming, dull and requires collaboration between many team members, writing documentation/comments is usually assigned to new team members as a part of &lt;em&gt;getting familiar with the project&lt;/em&gt;. It is a mistake in my humble opinion Due to this reasons documentation is generally incomplete or out-of-date at any given time. There is one solution - writing documentation must be automatic process, triggered by code staging or release. Therefore one should try to write self-documenting code and keep specific branch in your delivery pipeline devoted to proper documentation production, which will guarantee that produced documentation reflects at least doc-strings in the code. I will deal with this problem in Part 2 and Part 3. In this article I will prepare &lt;em&gt;Software Design Document&lt;/em&gt; for the project I called &lt;strong&gt;Biostudio&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;go-agile&quot;&gt;Go Agile&lt;/h2&gt;
+
+&lt;p&gt;In this tutorial I will adopt elements of agile software development techniques with some necessary adjustments, which in fact resembles extreme programing paradigm. Obviously I will have to play roles of all partners involved in agile process. The client communicating requirements and making changes to the project, developers team responsible for preparing documentation and proper implementation, as well as project manager contacting assigning/managing tasks, software evolution and releases. There will be no budget constrains and budget planning. No effort or time estimation. No stand-up meetings etc…&lt;/p&gt;
+
+&lt;p&gt;I will do my best to follow good practices and guidelines in order to prepare best quality code, tests and documentation. I will put extra effort in preparing modern development environment automating several activities like testing, documentation generation and finally - deployment. Knowledge of this techniques will help you increase efficiency and stability of your own development process, reduce development time and make easier to include new team members in the project.&lt;/p&gt;
+
+&lt;p&gt;Employed technologies will also help to automate some management tasks like overall progress tracking, single tasks progress tracking, code metrics and end users feedback/bugs tracking.&lt;/p&gt;
+
+&lt;p&gt;Since it is agile methodology, each iteration will result in deploying new version of functional software, which should meet client criteria.&lt;/p&gt;
+
+&lt;h2 id=&quot;initial-requirements&quot;&gt;Initial requirements&lt;/h2&gt;
+
+&lt;p&gt;The purpose of this project is to build a GUI desktop app responsible for reading, viewing and changing Protein Data Bank fies, holding information about proteins 3D structure. Application should work on Windows, Linux and/or MacOS operating system. Actually in the first sentence I have envisioned at least six requirements, which describe general features my app should have:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;GUI interface running on Windows and Linux OS&lt;/li&gt;
+  &lt;li&gt;read &lt;code class=&quot;highlighter-rouge&quot;&gt;pdb&lt;/code&gt; files&lt;/li&gt;
+  &lt;li&gt;display file’s content in table view&lt;/li&gt;
+  &lt;li&gt;edit/change&lt;/li&gt;
+  &lt;li&gt;save changes&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;This initial requirements for &lt;em&gt;Biostudio&lt;/em&gt;, in the form of user stories may be presented as follows:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;User can work with pdb files using window interface.&lt;/li&gt;
+  &lt;li&gt;User opens pdb files from location on hardrive&lt;/li&gt;
+  &lt;li&gt;User can change pdb file and save changes&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;This should suffice for start.&lt;/p&gt;
+
+&lt;h2 id=&quot;high-level-design&quot;&gt;High Level Design&lt;/h2&gt;
+
+&lt;p&gt;High-level design (HLD) explains the architecture of a software product in nontechnical to mildly technical terms.
+A high-level design document or HLDD adds the necessary details to the current project description to represent a suitable model for coding. This document includes a high-level architecture diagram depicting the structure of the system, such as the database architecture, application architecture (layers), application flow (navigation), security architecture and technology architecture.&lt;/p&gt;
+
+&lt;p&gt;A high-level design provides an overview of a solution, platform, system, product, service or process.
+Such an overview is important in a multi-project development to make sure that each supporting component design will be compatible with its neighboring designs and with the big picture.
+The highest-level solution design should briefly describe all platforms, systems, products, services and processes that it depends on and include any important changes that need to be made to them.
+In addition, there should be brief consideration of all significant commercial, legal, environmental, security, safety and technical risks, issues and assumptions.
+The idea is to mention every work area briefly, clearly delegating the ownership of more detailed design activity whilst also encouraging effective collaboration between the various project teams.
+Today, most high-level designs require contributions from a number of experts, representing many distinct professional disciplines.
+Finally, every type of end-user should be identified in the high-level design and each contributing design should give due consideration to customer experience.&lt;/p&gt;
+
+&lt;h2 id=&quot;low-level-design&quot;&gt;Low Level Design&lt;/h2&gt;
+
+&lt;p&gt;Low-level design (LLD) is a component-level design process that follows a step-by-step refinement process. This process can be used for designing data structures, required software architecture, source code and ultimately, performance algorithms. Overall, the data organization may be defined during requirement analysis and then refined during data design work. Post-build, each component is specified in detail.[1]
+The LLD phase is the stage where the actual software components are designed.
+During the detailed phase the logical and functional design is done and the design of application structure is developed during the high-level design phase.&lt;/p&gt;
+
+&lt;p&gt;A design is the order of a system that connects individual components. Often, it can interact with other systems. Design is important to achieve high reliability, low cost, and good maintain-ability.[2] We can distinguish two types of program design phases:
+Architectural or high-level design
+Detailed or low-level design
+Structured flow charts and HIPO diagrams typify the class of software design tools and these provide a high-level overview of a program. The advantages of such a design tool is that it yields a design specification that is understandable to non-programmers and it provides a good pictorial display of the module dependencies.
+A disadvantage is that it may be difficult for software developers to go from graphic-oriented representation of software design to implementation. Therefore, it is necessary to provide little insight into the algorithmic structure describing procedural steps to facilitate the early stages of software development (generally using PDLs).[3]&lt;/p&gt;
+
+&lt;p&gt;The goal of LLD or a low-level design document (LLDD) is to give the internal logical design of the actual program code. High-level design is created based on the low-level design. LLD describes the class diagrams with the methods and relations between classes and program specs. It describes the modules so that the programmer can directly code the program from the document.
+A good low-level design document makes the program easy to develop when proper analysis is utilized to create a low-level design document. The code can then be developed directly from the low-level design document with minimal debugging and testing. Other advantages include lower cost and easier maintenance.&lt;/p&gt;
+
+&lt;h2 id=&quot;from-requirements-to-low-level-design&quot;&gt;From requirements to low-level-design&lt;/h2&gt;
+
+&lt;p&gt;In contrast, low-level design further exposes the logical detailed design of each of these elements for programmers.&lt;/p&gt;
+
+&lt;p&gt;System 
+language
+technologies&lt;/p&gt;
+
+&lt;p&gt;To get UML graphs we wll use www.draw.io service.&lt;/p&gt;
+
+&lt;p&gt;The SDD usually contains the following information:
+The data design describes structures that reside within the software. Attributes and relationships between data objects dictate the choice of data structures.
+The architecture design uses information flowing characteristics, and maps them into the program structure. The transformation mapping method is applied to exhibit distinct boundaries between incoming and outgoing data. The data flow diagrams allocate control input, processing and output along three separate modules.
+The interface design describes internal and external program interfaces, as well as the design of human interface. Internal and external interface designs are based on the information obtained from the analysis model.
+The procedural design describes structured programming concepts using graphical, tabular and textual notations. These design mediums enable the designer to represent procedural detail, that facilitates translation to code. This blueprint for implementation forms the basis for all subsequent software engineering work.&lt;/p&gt;
+
+&lt;h3&gt;#&lt;/h3&gt;
+&lt;h2 id=&quot;sdd-elements-pushed-to-project-documentation&quot;&gt;SDD elements pushed to project documentation&lt;/h2&gt;
+
+&lt;h3 id=&quot;requierements&quot;&gt;Requierements&lt;/h3&gt;
+&lt;h3 id=&quot;structurl-design-component-class-diagram--are-born&quot;&gt;Structurl design (component, class diagram,  are born&lt;/h3&gt;
+
+&lt;p&gt;Assumptions and Dependencies&lt;/p&gt;
+
+&lt;p&gt;Describe any assumptions or dependencies regarding the software and its use. These may concern such issues as:&lt;/p&gt;
+
+&lt;p&gt;Related software or hardware
+Operating systems
+End-user characteristics
+Possible and/or probable changes in functionality
+General Constraints&lt;/p&gt;
+
+&lt;p&gt;Describe any global limitations or constraints that have a significant impact on the design of the system’s software (and describe the associated impact). Such constraints may be imposed by any of the following (the list is not exhaustive):&lt;/p&gt;
+
+&lt;p&gt;Hardware or software environment
+End-user environment
+Availability or volatility of resources
+Standards compliance
+Interoperability requirements
+Interface/protocol requirements
+Data repository and distribution requirements
+Security requirements (or other such regulations)
+Memory and other capacity limitations
+Performance requirements
+Network communications
+Verification and validation requirements (testing)
+Other means of addressing quality goals
+Other requirements described in the requirements specification
+Goals and Guidelines&lt;/p&gt;
+
+&lt;p&gt;Describe any goals, guidelines, principles, or priorities which dominate or embody the design of the system’s software. Such goals might be:&lt;/p&gt;
+
+&lt;p&gt;Emphasis on speed versus memory use
+working, looking, or “feeling” like an existing product&lt;/p&gt;
+
+&lt;h4 id=&quot;good-practices&quot;&gt;Good practices&lt;/h4&gt;
+
+&lt;p&gt;The KISS principle (“Keep it simple stupid!”)
+THE DRY
+YAGNI&lt;/p&gt;
+
+&lt;h4 id=&quot;1-do-not-systematically-include-the-blog-name-in-the-title-tag&quot;&gt;1) Do not systematically include the blog name in the title tag&lt;/h4&gt;
+
+&lt;p&gt;source : &lt;a href=&quot;http://sixrevisions.com/content-strategy/5-common-seo-mistakes-with-web-page-titles/&quot;&gt;5 Common SEO Mistakes with Web Page Titles&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The clean blog template include the blog name in every post title, which is bad :&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;title&amp;gt;&lt;/span&gt;{% if page.title %}{{ page.title }} - {{ site.title }}{% else %}{{ site.title }}{% endif %}&lt;span class=&quot;nt&quot;&gt;&amp;lt;/title&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;To continue check:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://localhost:4000/2017/05/28/part2-biostudio-setting-up-environment/&quot;&gt;Part 2: Setting up work environment&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;If you have any comments, or ideas how to improve this tutorial, please let me know by leaving a post below, or contacting me via email.&lt;/strong&gt;&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      
+        <author>
+            <name>Michal Dyzma</name>
+          
+          
+        </author>
+      
+
+      
+        <category term="biostudio" />
+      
+        <category term="software-engineering" />
+      
+        <category term="python" />
+      
+
+      
+
+      
+        <summary type="html">In Part 1 I will present process of application design. From collecting requirements to low level design describing specific algorithms and implementations. Final result should give something in form of Software Design Document that can be easily transformed to professional SSD template which can be used for other projects.</summary>
+      
+
+      
+      
+    </entry>
+  
+  
+</feed>
