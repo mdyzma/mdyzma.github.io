@@ -13,6 +13,7 @@ Data analysis using **Jupyter Notebook**. Natural sciences more and more rely on
 
 ## Install Anaconda
 
+> Basic _Data Science_ skills are essential for every decent researcher.
 
 [Anaconda Python Distribution][anaconda] prepared by Continuum Analytics is the most comprehensive and free bundle of Python software dedicated to __Data Science__. 
 
@@ -159,34 +160,23 @@ Anaconda already has plenty of tools to read and manipulate data. Main tools I w
 
 ### Binary data
 
-## Plotting in python
+## Plotting in Python
+
+### Matplotlib
 
 
-
-
-In [_"Practical Data Science Cookbook"_][data-science-cookbook] by Tony Ojeda authors distinguished five core activities in data analysis:
-
-1. Stating thesis
-2. Exploring the data
-3. Building formal model/models
-4. Interpreting the results
-5. Communicating the results
+### Bokeh / Seaborn
 
 All these activities may be successfully performed using python ecosystem. No doubt python has one of the best communities, active and contributing frequently with quality packages. I would risk statement, that python's community is even better, than R's, but I do not want to provoke another flame war.
 
 
 ## Data and biology
 
-Biologist simply can not ignore data anymore. Huge amounts of data flow from each instrument from confocal microscope to RT-PCR every day. Equipment producers usually provide some tools to perform data analysis, but they lack flexibility. Data should be accessible and ready to use from any workstation, transform and visualize. Biology people must deal with them with ease and grace. Actually the problem isn't new. Astronomers faced it long time ago. Most of them started to use scripting languages to develop their own tools. Chemistry and pharmaceutical industry deal with it as well and now biologist face same problem. 
-
-
-Data produced by biological experiments in time. ,- graph
-
 
 
 Excel spreadsheet is simply not enough anymore. It lacks capabilities to properly hold large amounts of data, describe them and, what is most important, to exchange them with other collaborators.  Currently average MD experiments can produce hundreds of gigs of data. Average sequencing few gigs. From microscopy pictures to large MD trajectories you should be able to ingest, crack, visualize and share your data. Traditional statistical approach to analysis of the data is not enough and one needs to go deeper and deal with data more interactively, with more integrative insight. Currently in biology BigData is a big problem and is treated as such. But it is just a problem scientists are not ready to deal with. Giga- and tera- byte scale level requires large and expensive computational cluster or smart approach. Therefore, nowadays, basic _Data Science_ skills are essential for every decent researcher.
 
-> Basic _Data Science_ skills are essential for every decent researcher.
+
 
 Python has very extensive toolkit to process various data in many different ways. What is more important - it is easy to learn. Lets take a closer look at some packages, that can be used in biology. Lets start small, to get comfortable to use python pipelines in every day analysis.
 
