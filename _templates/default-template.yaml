@@ -2,10 +2,17 @@
 ---
 layout:     post
 author:     Michal Dyzma
-title:      default-post
+title:      Scrapping Polish weather data from IMGW
 date:       2017-04-20 01:15:08
 comments:   true
 mathjax:    false
 categories: python R julia jupyter
 keywords:   python, R, Julia, jupyter notebook
 ---
+
+IMGW - stands for Institute of Meteorology and Water Management ([Instytut Meteorologii i Gospodarki Wodnej][imgw])
+
+
+
+
+

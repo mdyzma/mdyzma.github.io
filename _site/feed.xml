@@ -5,7 +5,7 @@
   
   <link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" />
   <link href="http://localhost:4000/" rel="alternate" type="text/html" />
-  <updated>2017-06-14T23:19:39+02:00</updated>
+  <updated>2017-06-23T22:37:28+02:00</updated>
   <id>http://localhost:4000//</id>
 
   
@@ -37,10 +37,15 @@
       <id>http://localhost:4000/2017/03/03/jupyter-notebook-lab-book</id>
       <content type="html" xml:base="http://localhost:4000/2017/03/03/jupyter-notebook-lab-book/">&lt;p&gt;Data analysis using &lt;strong&gt;Jupyter Notebook&lt;/strong&gt;. Natural sciences more and more rely on skills related to Data Science. Experiments produce more and more data, and skilled researcher has to know how to deal with variety of data and sometime very large datasets. &lt;strong&gt;Anaconda&lt;/strong&gt; Python Distribution offers large set of great tools to manipulate any kind of data “out of the box”. Multitude of community packages allows to read, analyze and report all kinds of data produced by science. It is caused mostly by simple fact, that scientific community is developing it’s tools mostly in Python. How to work with small and large data in python and make Jupyter Notebook your lab-book? Check this article.&lt;/p&gt;
 
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;alert alert-info&quot; role=&quot;alert&quot; style=&quot;text-align: justify; vertical-align:middle;&quot;&gt;
+Notebooks, as well as all related data files, described in this article are located in my &lt;a href=&quot;https://github.com/mdyzma/blog-src-files/tree/master/2017-03-03-jupyter-notebook-lab-book&quot;&gt;GitHub repository&lt;/a&gt;
+&lt;/div&gt;
+
 &lt;h2 id=&quot;install-anaconda&quot;&gt;Install Anaconda&lt;/h2&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;Basic &lt;em&gt;Data Science&lt;/em&gt; skills are essential for every decent researcher.&lt;/p&gt;
+  &lt;p&gt;&lt;em&gt;Data Science&lt;/em&gt; skills are essential for every decent researcher.&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://www.continuum.io/DOWNLOADS&quot;&gt;Anaconda Python Distribution&lt;/a&gt; prepared by Continuum Analytics is the most comprehensive and free bundle of Python software dedicated to &lt;strong&gt;Data Science&lt;/strong&gt;.&lt;/p&gt;
@@ -66,11 +71,11 @@ Anaconda3-4.3.1-Windows-x86_64.sh     100%[&lt;span class=&quot;o&quot;&gt;=====
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;conda update --all&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;Anaconda will install nearly 300 packages, including most important for this tutorial: Jupyter Notebook, ipython, pandas, numpy, statsmodels&lt;/p&gt;
+&lt;p&gt;Anaconda will install nearly 200 packages (182 to be exact), including most important for this tutorial: Jupyter Notebook, ipython, pandas, numpy, statsmodels&lt;/p&gt;
 
 &lt;h2 id=&quot;anaconda-channels&quot;&gt;Anaconda channels&lt;/h2&gt;
 
-&lt;p&gt;Some packages are distributed in repositories owned by groups other than Anaconda team. Repositories are called channels. One can indicate channel simply by choosing &lt;code class=&quot;highlighter-rouge&quot;&gt;-c&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;--channel&lt;/code&gt; flag during invoking &lt;code class=&quot;highlighter-rouge&quot;&gt;conda install&lt;/code&gt; command. Some of the channels are supported by continuum Analytics, like &lt;code class=&quot;highlighter-rouge&quot;&gt;conda-forge&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;omnia&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;r&lt;/code&gt;. They are full of excellent packages developed by Anaconda community. Every time I mention I want to use other channel than default, conda will check this repositories for available packages. It is possible to add this channels to the &lt;code class=&quot;highlighter-rouge&quot;&gt;.condarc&lt;/code&gt; file (see: &lt;a href=&quot;https://conda.io/docs/config.html#the-conda-configuration-file-condarc&quot;&gt;here&lt;/a&gt;). First config file must be created by running &lt;code class=&quot;highlighter-rouge&quot;&gt;conda config&lt;/code&gt; command. If other version of this file is placed in Anaconda installation root directory it will override  users home configuration. to notify package manager, that every time  I want to install something this channels should be checked. Order of repositories is important. In case packages are deployed to both repositories listed in channels section, last repository super-seeds all above it. Example file looks like this:&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;conda&lt;/code&gt; is built in Anaconda package manager, which uses default, maintained by Contunuum Analytics python packages repository. Some packages are distributed in repositories owned by groups other than Anaconda team. Repositories are called channels. One can indicate channel simply by choosing &lt;code class=&quot;highlighter-rouge&quot;&gt;-c&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;--channel&lt;/code&gt; flag during invoking &lt;code class=&quot;highlighter-rouge&quot;&gt;conda install&lt;/code&gt; command. Some of the channels are supported by continuum Analytics, like &lt;code class=&quot;highlighter-rouge&quot;&gt;conda-forge&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;omnia&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;r&lt;/code&gt;. They are full of excellent packages developed by Anaconda community. Every time I mention I want to use other channel than default, conda will check this repositories for available packages. It is possible to add this channels to the &lt;code class=&quot;highlighter-rouge&quot;&gt;.condarc&lt;/code&gt; file (see: &lt;a href=&quot;https://conda.io/docs/config.html#the-conda-configuration-file-condarc&quot;&gt;here&lt;/a&gt;). First config file must be created by running &lt;code class=&quot;highlighter-rouge&quot;&gt;conda config&lt;/code&gt; command. If other version of this file is placed in Anaconda installation root directory it will override  users home configuration. to notify package manager, that every time  I want to install something this channels should be checked. Order of repositories is important. In case packages are deployed to both repositories listed in channels section, last repository super-seeds all above it. Example file looks like this:&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;channels:
     - omnia
@@ -84,15 +89,14 @@ proxy_servers:
     http: http://user:pass@corp.com:8080
     https: https://user:pass@corp.com:8080&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;Last group of inputs is very important for users behind corporate proxy, which will block &lt;code class=&quot;highlighter-rouge&quot;&gt;conda&lt;/code&gt; package lookup, unless correct settings are provided.&lt;/p&gt;
+&lt;p&gt;Last group of inputs is very important for users behind corporate proxy, which will block &lt;code class=&quot;highlighter-rouge&quot;&gt;conda&lt;/code&gt; package lookup, unless correct settings are provided. I can alway use official python package manager &lt;code class=&quot;highlighter-rouge&quot;&gt;pip&lt;/code&gt;, which checks PyPI (Python Packages Index)&lt;/p&gt;
 
 &lt;p&gt;There is another great part about Anaconda and Jupyter Notebook. It is cross-platform, which means, that Notebook files created on one system will open on other system with similar package configuration.&lt;/p&gt;
 
-&lt;h2 id=&quot;jupyter-notebook--jupyter-lab&quot;&gt;Jupyter notebook / Jupyter Lab&lt;/h2&gt;
+&lt;h2 id=&quot;jupyter-notebook--jupyter-lab&quot;&gt;Jupyter Notebook / Jupyter Lab&lt;/h2&gt;
 
-&lt;p&gt;To start the notebook simply type &lt;code class=&quot;highlighter-rouge&quot;&gt;jupyter notebook&lt;/code&gt; in your command line or terminal.&lt;/p&gt;
-
-&lt;p&gt;Alternatively you may add path to the existing jupyter notebook file with &lt;code class=&quot;highlighter-rouge&quot;&gt;.ipybn&lt;/code&gt; extension&lt;/p&gt;
+&lt;p&gt;Jupyter Notebook allows to create and share documents that contain live code, equations, visualizations and explanatory text. Text may be written in markdown markup  language. Code can produce rich output such as images, videos, LaTeX, and JavaScript. Interactive widgets can be used to manipulate and visualize data in real time.
+Alternatively you may add path to the existing Jupyter notebook file with &lt;code class=&quot;highlighter-rouge&quot;&gt;.ipybn&lt;/code&gt; extension. If you add path to the notebook file ( extension &lt;code class=&quot;highlighter-rouge&quot;&gt;.ipynb&lt;/code&gt;), it will be opened in the location of the file. Jupyter automatically runs a local server.&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;jupyter notebook
 
@@ -110,7 +114,44 @@ proxy_servers:
 
 &lt;p&gt;&lt;img src=&quot;/assets/03-03-2017-jupyter-notebook.png&quot; alt=&quot;notebook&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Jupyter Lab is new project of Jupyter team, which eventually will replace good old notebook, but currently it is in very early alpha release version and it is not recommended to be used in any serious project. It has built in file manager, image browser, documentation and many, many other. And one disadvantage: &lt;code class=&quot;highlighter-rouge&quot;&gt;ipywidgets&lt;/code&gt; do not work.&lt;/p&gt;
+&lt;p&gt;There is a handy collection of extensions that add functionality to the Jupyter notebook. Extensions are grouped in package &lt;a href=&quot;https://github.com/ipython-contrib/jupyter_contrib_nbextensions&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;nbextensions&lt;/code&gt;&lt;/a&gt;, which is not included in fresh Anaconda installation and I will install it using conda:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;conda install -c conda-forge jupyter_contrib_nbextensions
+Fetching package metadata .............
+Solving package specifications: .
+
+Package plan &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;installation &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;environment C:&lt;span class=&quot;se&quot;&gt;\U&lt;/span&gt;sers&lt;span class=&quot;se&quot;&gt;\M&lt;/span&gt;ichal&lt;span class=&quot;se&quot;&gt;\A&lt;/span&gt;naconda3:
+
+The following NEW packages will be INSTALLED:
+
+    jupyter_contrib_core:              0.3.1-py36_0   conda-forge
+    jupyter_contrib_nbextensions:      0.2.8-py36_1   conda-forge
+    jupyter_highlight_selected_word:   0.0.10-py36_0  conda-forge
+    jupyter_latex_envs:                1.3.8.2-py36_1 conda-forge
+    jupyter_nbextensions_configurator: 0.2.5-py36_0   conda-forge
+
+The following packages will be UPDATED:
+
+    conda:                             4.3.21-py36_0              --&amp;gt; 4.3.21-py36_1 conda-forge
+
+The following packages will be SUPERSEDED by a higher-priority channel:
+
+    conda-env:                         2.6.0-0                    --&amp;gt; 2.6.0-0       conda-forge
+
+Proceed &lt;span class=&quot;o&quot;&gt;([&lt;/span&gt;y]/n&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;? y
+
+
+conda-env-2.6. 100% |###############################| Time: 0:00:00 206.58 kB/s
+conda-4.3.21-p 100% |###############################| Time: 0:00:01 281.65 kB/s
+jupyter_contri 100% |###############################| Time: 0:00:00 417.99 kB/s
+jupyter_highli 100% |###############################| Time: 0:00:00 793.82 kB/s
+jupyter_latex_ 100% |###############################| Time: 0:00:02 324.68 kB/s
+jupyter_nbexte 100% |###############################| Time: 0:00:01 442.23 kB/s
+jupyter_contri 100% |###############################| Time: 0:00:03   5.47 MB/s&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Because I used conda it will automatically register all extensions and copy necessary &lt;code class=&quot;highlighter-rouge&quot;&gt;javascript&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;css&lt;/code&gt; files in Jupyter environment for me. If I used pip instead, I would have to fetch additional command: &lt;code class=&quot;highlighter-rouge&quot;&gt;jupyter contrib nbextension install --user&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Jupyter Lab is new project of Jupyter team, which eventually will replace good old notebook, but currently it is in very early alpha release version and it is not recommended to be used in any serious project. It has built in file manager, image browser, documentation and many, many other. And one disadvantage: &lt;code class=&quot;highlighter-rouge&quot;&gt;ipywidgets&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;nbextensions&lt;/code&gt; do not work yet or their functionality must be loaded through lab extensions system, which is not very convenient.&lt;/p&gt;
 
 &lt;p&gt;Jupyter lab is not accessible in Anaconda distribution and must be installed. One can do it with default package manager:&lt;/p&gt;
 
@@ -137,15 +178,29 @@ conda-4.3.21-p 100% |###############################| Time: 0:00:01 378.40 kB/s
 jupyterlab_lau 100% |###############################| Time: 0:00:00   1.18 MB/s
 jupyterlab-0.2 100% |###############################| Time: 0:00:01   1.34 MB/s&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;Lab environment can be started using &lt;code class=&quot;highlighter-rouge&quot;&gt;jupyter lab&lt;/code&gt; command.. It should start in default browser under this address: &lt;a href=&quot;http://localhost:8888/lab&quot;&gt;http://127.0.0.1:8888&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Lab environment can be started using &lt;code class=&quot;highlighter-rouge&quot;&gt;jupyter lab&lt;/code&gt; command. It should start in default browser under this address: &lt;a href=&quot;http://localhost:8888/lab&quot;&gt;http://127.0.0.1:8888&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/03-03-2017-jupyter-lab.png&quot; alt=&quot;lab&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;More information about this project and development plans can be found &lt;a href=&quot;https://github.com/jupyterlab/jupyterlab&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
 
+&lt;p&gt;Simple &lt;code class=&quot;highlighter-rouge&quot;&gt;conda list&lt;/code&gt; shows all packages installed in current environment. In practice only handful of them are imported directly. Main tools I will use in this tutorial include:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;numpy&lt;/code&gt; - array calculations&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sympy&lt;/code&gt; - symbolic mathematics&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;matplotlib&lt;/code&gt; - 2D plotting&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;statsmodels&lt;/code&gt; - statistical models&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;pandas&lt;/code&gt; - data structures and analysis&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;which are part of SciPy - python based scientific ecosystem. &lt;a href=&quot;http://www.numpy.org&quot;&gt;Numpy&lt;/a&gt; and &lt;a href=&quot;http://pandas.pydata.org&quot;&gt;Pandas&lt;/a&gt; alone have enormous documentations, which are worth to check. Huge advantage of notebook environment is that it allows to compute and manipulate data directly and export entire notebook in various formats, to share with other.&lt;/p&gt;
+
 &lt;h2 id=&quot;other-environments&quot;&gt;Other environments&lt;/h2&gt;
 
 &lt;p&gt;There are several other environment to work with data. Some of them accessible from Anaconda Navigator program, which allow to handle packages, environment and channels from the level of window app. One of them is &lt;a href=&quot;https://orange.biolab.si&quot;&gt;Orange&lt;/a&gt;, not installed, but ready to install using single button click or using shell command: &lt;code class=&quot;highlighter-rouge&quot;&gt;conda install -c conda-forge orange3&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/03-03-2017-anaconda-navigator.png&quot; alt=&quot;Anaconda Navigator&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/03-03-2017-orange.png&quot; alt=&quot;Orange3&quot; /&gt;&lt;/p&gt;
 
@@ -157,13 +212,90 @@ jupyterlab-0.2 100% |###############################| Time: 0:00:01   1.34 MB/s&
 
 &lt;p&gt;&lt;img src=&quot;/assets/03-03-2017-rodeo.png&quot; alt=&quot;Rodeo&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;I prefer Jupyter Notebook work, therefore I will not go further into details. I never used it, but maybe for someone it is more appealing.&lt;/p&gt;
+&lt;p&gt;I prefer Jupyter Notebook to work, therefore I will not go further into details. I never used any of them for more serious work, but maybe for someone alternatives may be more appealing.&lt;/p&gt;
 
-&lt;h2 id=&quot;work-with-data&quot;&gt;Work with data&lt;/h2&gt;
+&lt;h2 id=&quot;version-control&quot;&gt;Version control&lt;/h2&gt;
 
-&lt;p&gt;Anaconda already has plenty of tools to read and manipulate data. Main tools I will be using are: &lt;code class=&quot;highlighter-rouge&quot;&gt;numpy&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;pandas&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;h5py&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;sqlite3&lt;/code&gt;. Numpy and pandas both have enormuouis documentation, which is worth to check.&lt;/p&gt;
+&lt;p&gt;Everyone has files like &lt;code class=&quot;highlighter-rouge&quot;&gt;report_1&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;report_2&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;report_01_12_2016&lt;/code&gt; etc. in our project folders. Versioning files helps to organize work and trace progress. Software developers have to trace it even more rigorous. Therefore version control systems (VCS) were created. They help to automatically store and keep track on versions of the source files. Why not use it in every day scientific activity. Currently most popular VCS is &lt;code class=&quot;highlighter-rouge&quot;&gt;git&lt;/code&gt;. It can be installed from &lt;a href=&quot;https://git-scm.com&quot;&gt;here&lt;/a&gt;. It is free. Just by learning 4-5 commands and adapting specific work-flow, one can start using git in every project.&lt;/p&gt;
+
+&lt;p&gt;I will create test folder and start git repository.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;mkdir &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;cd test&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Basic git commands:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;git init
+Initialized empty Git repository &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;C:/Users/Michal/Documents/test/.git/&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now I shall add something to the folder, i.e. &lt;code class=&quot;highlighter-rouge&quot;&gt;README.md&lt;/code&gt; file with project description and start tracing it:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;touch README.md
+&lt;span class=&quot;c&quot;&gt;# Edit readme in text editor or simply&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;# Experiment 1&quot;&lt;/span&gt; &amp;gt; README.md
+&lt;span class=&quot;c&quot;&gt;# When we check file content&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;cat README.md
+&lt;span class=&quot;gp&quot;&gt;&quot;# &lt;/span&gt;Experiment 1&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;If I ask git what changed:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;git status
+On branch master
+
+Initial commit
+
+Untracked files:
+  &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;use &lt;span class=&quot;s2&quot;&gt;&quot;git add &amp;lt;file&amp;gt;...&quot;&lt;/span&gt; to include &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;what will be committed&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+        README.md
+
+nothing added to commit but untracked files present &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;use &lt;span class=&quot;s2&quot;&gt;&quot;git add&quot;&lt;/span&gt; to track&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I have one untracked file (git figured out, that content of the folder changed). Now I need to add this file to the tracking system. It is simple as:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;git add README.md&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now if I ask git what changed:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;git status
+On branch master
+
+Initial commit
+
+Changes to be committed:
+  &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;use &lt;span class=&quot;s2&quot;&gt;&quot;git rm --cached &amp;lt;file&amp;gt;...&quot;&lt;/span&gt; to unstage&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+        new file:   README.md&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Once I stop adding new content to the file I will add changed file again (to “stage it”) and commit changes to the repository, to keep them there as a current snapshot. git allows me to go back to tis specific version of the file any time.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;git commit -m &lt;span class=&quot;s2&quot;&gt;&quot;Added README to the project&quot;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;master &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;root-commit&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; cf02fde] Added README to the project
+ 1 file changed, 1 insertion&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;+&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+ create mode 100644 README.md&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Done! Now any change to the file will be tracked and the same set of instructions must be repeated to store changes:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;change file&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;git add &amp;lt;file&amp;gt;&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;git commit -m &quot;Message&quot;&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;This is very basic introduction to git. Please refer to the &lt;a href=&quot;https://git-scm.com/documentation&quot;&gt;manual&lt;/a&gt; to get more info about usage and configuration.Now I am going to create few notebooks describing typical biochemical experiments. The theory, data analysis, plots and figures will be presented in notebooks.&lt;/p&gt;
+
+&lt;h2 id=&quot;simple-experiments&quot;&gt;Simple experiments&lt;/h2&gt;
+
+&lt;h3 id=&quot;protein-concentration&quot;&gt;Protein concentration&lt;/h3&gt;
+
+&lt;h3 id=&quot;protein-activity&quot;&gt;Protein activity&lt;/h3&gt;
+
+&lt;h3 id=&quot;determination-of-dna-quality-and-quantity&quot;&gt;Determination of DNA Quality and Quantity&lt;/h3&gt;
+
+&lt;p&gt;Lets imagine basic colorimetric experiment. In biology colorimetric techniques are used to measure&lt;/p&gt;
 
 &lt;h3 id=&quot;text-data&quot;&gt;Text data&lt;/h3&gt;
+
+&lt;p&gt;Data in biology are usually text based, grouped in columns, sometimes delimited with tabs, comas or other characters. For example It is like this in case o&lt;/p&gt;
 
 &lt;h3 id=&quot;binary-data&quot;&gt;Binary data&lt;/h3&gt;
 
@@ -173,29 +305,37 @@ jupyterlab-0.2 100% |###############################| Time: 0:00:01   1.34 MB/s&
 
 &lt;h3 id=&quot;bokeh--seaborn&quot;&gt;Bokeh / Seaborn&lt;/h3&gt;
 
-&lt;p&gt;All these activities may be successfully performed using python ecosystem. No doubt python has one of the best communities, active and contributing frequently with quality packages. I would risk statement, that python’s community is even better, than R’s, but I do not want to provoke another flame war.&lt;/p&gt;
+&lt;p&gt;All these activities may be successfully performed using python ecosystem. No doubt python has one of the best communities, active and contributing frequently with quality packages.&lt;/p&gt;
 
-&lt;h2 id=&quot;data-and-biology&quot;&gt;Data and biology&lt;/h2&gt;
+&lt;!-- ## Data and biology
 
-&lt;p&gt;Excel spreadsheet is simply not enough anymore. It lacks capabilities to properly hold large amounts of data, describe them and, what is most important, to exchange them with other collaborators.  Currently average MD experiments can produce hundreds of gigs of data. Average sequencing few gigs. From microscopy pictures to large MD trajectories you should be able to ingest, crack, visualize and share your data. Traditional statistical approach to analysis of the data is not enough and one needs to go deeper and deal with data more interactively, with more integrative insight. Currently in biology BigData is a big problem and is treated as such. But it is just a problem scientists are not ready to deal with. Giga- and tera- byte scale level requires large and expensive computational cluster or smart approach. Therefore, nowadays, basic &lt;em&gt;Data Science&lt;/em&gt; skills are essential for every decent researcher.&lt;/p&gt;
 
-&lt;p&gt;Python has very extensive toolkit to process various data in many different ways. What is more important - it is easy to learn. Lets take a closer look at some packages, that can be used in biology. Lets start small, to get comfortable to use python pipelines in every day analysis.&lt;/p&gt;
 
-&lt;h2 id=&quot;anaconda&quot;&gt;Anaconda&lt;/h2&gt;
+Excel spreadsheet is simply not enough anymore. It lacks capabilities to properly hold large amounts of data, describe them and, what is most important, to exchange them with other collaborators.  Currently average MD experiments can produce hundreds of gigs of data. Average sequencing few gigs. From microscopy pictures to large MD trajectories you should be able to ingest, crack, visualize and share your data. Traditional statistical approach to analysis of the data is not enough and one needs to go deeper and deal with data more interactively, with more integrative insight. Currently in biology BigData is a big problem and is treated as such. But it is just a problem scientists are not ready to deal with. Giga- and tera- byte scale level requires large and expensive computational cluster or smart approach. Therefore, nowadays, basic _Data Science_ skills are essential for every decent researcher.
 
-&lt;p&gt;Continuum Analytics developed great swiss-army toolkit to data science. It’s name is &lt;a href=&quot;https://www.continuum.io/DOWNLOADS&quot;&gt;&lt;strong&gt;Anaconda&lt;/strong&gt;&lt;/a&gt;. It groups over 700 python programs called packages, which will help you get started with python and data science in no time. Also, it has huge advantage - it’s free. There are competitive products like [Enthough Canopy’s][Canopy] data science platform, or &lt;a href=&quot;https://www.yhat.com/products/rodeo&quot;&gt;Yhat’s Rodeo&lt;/a&gt;, which also provide very decent software. In general they are all based on basic python data science tools like &lt;code class=&quot;highlighter-rouge&quot;&gt;numpy&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;pandas&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;dask&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;matplotlib&lt;/code&gt;. Some of them have closed source original solutions to particular problems, some are based completely on freely available software. Feel free to try whatever suits you best.&lt;/p&gt;
 
-&lt;p&gt;Why not pure python? Many packages included in Anaconda has non-trivial installation processes. Some parts of most frequently used packages (i.e numpy) are written in compiled languages like C/C++ or Fortran (hence their advantage over pure python solutions), therefore require specific compilers as well as some mathematical libraries like LAPAC, which must be linked during  compilation process. It is much easier to grab installer, in which all foreign dependencies are already compiled and shipped in form of binary files, and get going within few minutes, rather than deal with python &lt;strong&gt;dependency hell&lt;/strong&gt; for few days. Alternatively you can spend days trying to install all dependencies… The choice is yours.&lt;/p&gt;
 
-&lt;p&gt;How do we start working with python? In the beginning it good to see what you compute, experience the process itself, therefore I strongly recommend to start with &lt;code class=&quot;highlighter-rouge&quot;&gt;jupyter notebook&lt;/code&gt;. Great tool to replace your lab-book, report files in various documents and data held in spreadsheets.&lt;/p&gt;
+Python has very extensive toolkit to process various data in many different ways. What is more important - it is easy to learn. Lets take a closer look at some packages, that can be used in biology. Lets start small, to get comfortable to use python pipelines in every day analysis.
 
-&lt;p&gt;This is our interactive window in browser, that allows us to talk to python interpreter.&lt;/p&gt;
+## Anaconda
+
+Continuum Analytics developed great swiss-army toolkit to data science. It's name is [__Anaconda__][Anaconda]. It groups over 700 python programs called packages, which will help you get started with python and data science in no time. Also, it has huge advantage - it's free. There are competitive products like [Enthough Canopy's][Canopy] data science platform, or [Yhat's Rodeo][Rodeo], which also provide very decent software. In general they are all based on basic python data science tools like `numpy`, `pandas`, `dask`, `matplotlib`. Some of them have closed source original solutions to particular problems, some are based completely on freely available software. Feel free to try whatever suits you best. 
+
+Why not pure python? Many packages included in Anaconda has non-trivial installation processes. Some parts of most frequently used packages (i.e numpy) are written in compiled languages like C/C++ or Fortran (hence their advantage over pure python solutions), therefore require specific compilers as well as some mathematical libraries like LAPAC, which must be linked during  compilation process. It is much easier to grab installer, in which all foreign dependencies are already compiled and shipped in form of binary files, and get going within few minutes, rather than deal with python __dependency hell__ for few days. Alternatively you can spend days trying to install all dependencies... The choice is yours.
+
+How do we start working with python? In the beginning it good to see what you compute, experience the process itself, therefore I strongly recommend to start with `jupyter notebook`. Great tool to replace your lab-book, report files in various documents and data held in spreadsheets. 
+
+
+
+This is our interactive window in browser, that allows us to talk to python interpreter. 
+
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}{{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;site&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}}{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}{{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;site&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}}{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;endif&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
+ --&gt;
 &lt;h2 id=&quot;numpy--pandas&quot;&gt;Numpy &amp;amp; Pandas&lt;/h2&gt;
 
-&lt;p&gt;Cornerstones of any data science project. Basic pair if it comes to deal with data. In biology majority of numerical data come in form of vectors (series of values) or tables. These two are more than enough to&lt;/p&gt;
+&lt;p&gt;Cornerstones of any data science project. Basic pair if it comes to deal with data. In biology majority of numerical data come in form of vectors (series of values) or tables. These two are more than enough to do variety of tasks like fast and efficient calculations, reading multiple formats, data cleaning, manipulation and visualization too. Numpy provides fast vector operations&lt;/p&gt;
 
 &lt;h3 id=&quot;hdf5&quot;&gt;HDF5&lt;/h3&gt;
 
@@ -204,6 +344,8 @@ jupyterlab-0.2 100% |###############################| Time: 0:00:01   1.34 MB/s&
 &lt;h2 id=&quot;biopandas&quot;&gt;Biopandas&lt;/h2&gt;
 
 &lt;h2 id=&quot;biopython&quot;&gt;Biopython&lt;/h2&gt;
+
+&lt;p&gt;All examples can be also downloaded in form of Jupyter Notebook file from &lt;a href=&quot;https://github.com/mdyzma/blog-src-files&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
 
 &lt;!-- Links --&gt;
 
