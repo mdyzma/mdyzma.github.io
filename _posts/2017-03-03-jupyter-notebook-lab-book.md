@@ -13,7 +13,7 @@ Data analysis using **Jupyter Notebook**. Natural sciences more and more rely on
 
 
 <br>
-{% include note.html content="Notebooks, as well as all related data files, described in this article are located in my [GitHub repository](https://github.com/mdyzma/blog-src-files/tree/master/2017-03-03-jupyter-notebook-lab-book)" %}
+{% include note.html content="Notebooks and related data files from this article can be downloaded from this [GitHub repository](https://github.com/mdyzma/blog-src-files/tree/master/2017-03-03-jupyter-notebook-lab-book)" %}
 
 ## Install Anaconda
 
@@ -23,24 +23,27 @@ Data analysis using **Jupyter Notebook**. Natural sciences more and more rely on
 
 I strongly recommended to use [Anaconda distribution][anaconda], which will install Python interpreter, the Jupyter Notebook, and several other packages commonly used in data science and this tutorial. If you choose Anaconda 3, your interpreter will be of version 3.6 (current version) or higher (3.7 alpha is already available). 
 
-I will just follow instructions from installation page and simply execute downloaded script(your current version may differ from the one listed here):
+Execute script and just follow instructions from installation program (your current version may differ from the one listed here):
 
 {% highlight bash %}
-> wget https://repo.continuum.io/archive/Anaconda3-4.3.1-Windows-x86_64.sh
+> wget https://repo.continuum.io/archive/Anaconda3-4.3.1-Linux-x86_64.sh
 
---2017-03-03 19:36:37--  https://repo.continuum.io/archive/Anaconda3-4.3.1-Windows-x86_64.sh
+--2017-03-03 19:36:37--  https://repo.continuum.io/archive/Anaconda3-4.3.1-Linux-x86_64.sh
 Resolving repo.continuum.io (repo.continuum.io)... 104.16.18.10, 104.16.19.10, 2400:cb00:2048:1::6810:130a, ...
 Connecting to repo.continuum.io (repo.continuum.io)|104.16.18.10|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 497343851 (474M) [application/x-sh]
-Saving to: 'Anaconda3-4.3.1-Windows-x86_64.sh'
+Saving to: 'Anaconda3-4.3.1-Linux-x86_64.sh'
 
-Anaconda3-4.3.1-Windows-x86_64.sh     100%[==========================================>] 474.30M  14.1MB/s in 34s
+Anaconda3-4.3.1-Linux-x86_64.sh     100%[==========================================>] 474.30M  14.1MB/s in 34s
 
-2017-03-03 19:37:12 (13.8 MB/s) - 'Anaconda3-4.3.1-Windows-x86_64.sh' saved [497343851/497343851]
+2017-03-03 19:37:12 (13.8 MB/s) - 'Anaconda3-4.3.1-Linux-x86_64.sh' saved [497343851/497343851]
+
+> bash ./Anaconda3-4.3.1-Linux-x86_64.sh
+
 {% endhighlight %}
 
-To make sure my software is up to date I shall run:
+To make sure software is up to date, run:
 
 {% highlight bash %}
 > conda update --all
@@ -69,10 +72,10 @@ proxy_servers:
 
 {% endhighlight %}
 
-Last group of inputs is very important for users behind corporate proxy, which will block `conda` package lookup, unless correct settings are provided. I can alway use official python package manager `pip`, which checks PyPI (Python Packages Index)
+Last group of inputs is very important for users behind corporate proxy, which will block `conda` package lookup, unless correct settings are provided. Additionally one can alway use official python package manager `pip` in parallel to `conda`. Conda is able to sense origin of the package and shows this during package listing. Pip checks [PyPI][pypi] (Python Packages Index) repository for python packages (which stores nearly 110 000 packages). 
 
 
-There is another great part about Anaconda and Jupyter Notebook. It is cross-platform, which means, that Notebook files created on one system will open on other system with similar package configuration. 
+Another great part about Anaconda and Jupyter Notebook. It is cross-platform, which means, that Notebook files created on one system will open on other system with similar package configuration. 
 
 
 ## Jupyter Notebook / Jupyter Lab 
@@ -83,7 +86,7 @@ Alternatively you may add path to the existing Jupyter notebook file with `.ipyb
 {% highlight bash %}
 > jupyter notebook
 
-[I 21:09:38.658 NotebookApp] Serving notebooks from local directory: C:\Users\Michal
+[I 21:09:38.658 NotebookApp] Serving notebooks from local directory: /home/mdyzma/
 [I 21:09:38.659 NotebookApp] 0 active kernels
 [I 21:09:38.660 NotebookApp] The Jupyter Notebook is running at: http://localhost:8888/?token=c6a93623006ede30a579af4d7e693909abd90c98224916ee
 [I 21:09:38.660 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation). [C 21:09:38.665 NotebookApp]
@@ -105,7 +108,7 @@ There is a handy collection of extensions that add functionality to the Jupyter 
 Fetching package metadata .............
 Solving package specifications: .
 
-Package plan for installation in environment C:\Users\Michal\Anaconda3:
+Package plan for installation in environment /home/mdyzma/anaconda3:
 
 The following NEW packages will be INSTALLED:
 
@@ -137,16 +140,27 @@ jupyter_contri 100% |###############################| Time: 0:00:03   5.47 MB/s
 
 Because I used conda it will automatically register all extensions and copy necessary `javascript` and `css` files in Jupyter environment for me. If I used pip instead, I would have to fetch additional command: `jupyter contrib nbextension install --user`
 
-Jupyter Lab is new project of Jupyter team, which eventually will replace good old notebook, but currently it is in very early alpha release version and it is not recommended to be used in any serious project. It has built in file manager, image browser, documentation and many, many other. And one disadvantage: `ipywidgets` and `nbextensions` do not work yet or their functionality must be loaded through lab extensions system, which is not very convenient.
+Jupyter Lab is new project of Jupyter team, which eventually will replace good old notebook, but currently it is in very early alpha release version and it is not recommended to be used in any serious project. It has built in file manager, image browser, documentation and many, many other. And one disadvantage: `ipywidgets` and `nbextensions` do not work yet or their functionality must be loaded through lab extensions system, which is not very convenient. Another handy extension is [`watermark`][watermark] package. It will timestamp notebooks and provide basic python configuration info. I will fetch latest version from GitHub:
 
-Jupyter lab is not accessible in Anaconda distribution and must be installed. One can do it with default package manager:
+{% highlight bash %}
+> pip install -e git+https://github.com/rasbt/watermark#egg=watermark
+Obtaining watermark from git+https://github.com/rasbt/watermark#egg=watermark
+  Cloning https://github.com/rasbt/watermark to c:\users\michal\src\watermark
+Requirement already satisfied: ipython in /home/mdyzma/anaconda3/lib/site-packages (from watermark)
+Installing collected packages: watermark
+  Running setup.py develop for watermark
+Successfully installed watermark
+{% endhighlight %}
+
+
+Jupyter lab is not accessible in Anaconda distribution out of the box and must be installed. One can do it with default package manager from `conda-forge` channel:
 
 {% highlight bash %}
 > conda install -c conda-forge jupyterlab
 Fetching package metadata .............
 Solving package specifications: .
 
-Package plan for installation in environment C:\Users\Michal\Anaconda3:
+Package plan for installation in environment /home/mdyzma/anaconda3:
 
 The following NEW packages will be INSTALLED:
 
@@ -173,7 +187,7 @@ Lab environment can be started using `jupyter lab` command. It should start in d
 
 More information about this project and development plans can be found [here][jupyterlab].
 
-Simple `conda list` shows all packages installed in current environment. In practice only handful of them are imported directly. Main tools I will use in this tutorial include:
+Simple `conda list` shows all packages installed in current environment. Main tools I will use in this tutorial include:
 
 * `numpy` - array calculations
 * `sympy` - symbolic mathematics
@@ -182,119 +196,89 @@ Simple `conda list` shows all packages installed in current environment. In prac
 * `pandas` - data structures and analysis
 
 
-which are part of SciPy - python based scientific ecosystem. [Numpy][numpy] and [Pandas][pandas] alone have enormous documentations, which are worth to check. Huge advantage of notebook environment is that it allows to compute and manipulate data directly and export entire notebook in various formats, to share with other.
+which are part of SciPy - python based scientific ecosystem. [Numpy][numpy] and [Pandas][pandas] alone have enormous documentations, which are worth to check. Huge advantage of notebook environment is that it allows to compute and manipulate data directly and export entire notebook in various formats, to share with other. There is also `JupyterHub`, providing access to the notebook for multiple users, which can be used as a official project documentation  in secure location and controlled access. Check [JupyterHub][jhub] documentation to learn more.
 
 
-## Other environments
+## Experiments examples:
 
-There are several other environment to work with data. Some of them accessible from Anaconda Navigator program, which allow to handle packages, environment and channels from the level of window app. One of them is [Orange][orange], not installed, but ready to install using single button click or using shell command: `conda install -c conda-forge orange3`.
-
-![Anaconda Navigator][navigator]
-
-![Orange3][orange-view]
-
-
-More general purpose python environment resembling Matlab/RStudio is [Spyder][spyder]. Also worth to try.
-
-![Spyder][spyder-view]
-
-
-Another great tool based on fantastic RStudio is creation of the Yhat company called [Rodeo][rodeo].
-
-![Rodeo][rodeo-view]
-
-I prefer Jupyter Notebook to work, therefore I will not go further into details. I never used any of them for more serious work, but maybe for someone alternatives may be more appealing. 
-
-## Version control
-
-Everyone has files like `report_1`, `report_2` or `report_01_12_2016` etc. in our project folders. Versioning files helps to organize work and trace progress. Software developers have to trace it even more rigorous. Therefore version control systems (VCS) were created. They help to automatically store and keep track on versions of the source files. Why not use it in every day scientific activity. Currently most popular VCS is `git`. It can be installed from [here][git]. It is free. Just by learning 4-5 commands and adapting specific work-flow, one can start using git in every project. 
-
-I will create test folder and start git repository. 
-
-{% highlight bash %}
-> mkdir test && cd test
-{% endhighlight %}
-
-Basic git commands:
-
-{% highlight bash %}
-> git init
-Initialized empty Git repository in C:/Users/Michal/Documents/test/.git/
-{% endhighlight %}
-
-Now I shall add something to the folder, i.e. `README.md` file with project description and start tracing it:
-{% highlight bash %}
-> touch README.md
-# Edit readme in text editor or simply
-> echo "# Experiment 1" > README.md
-# When we check file content
-> cat README.md
-"# Experiment 1"
-{% endhighlight %}
-
-
-If I ask git what changed:
-
-{% highlight bash %}
-> git status
-On branch master
-
-Initial commit
-
-Untracked files:
-  (use "git add <file>..." to include in what will be committed)
-
-        README.md
-
-nothing added to commit but untracked files present (use "git add" to track)
-{% endhighlight %}
-
-I have one untracked file (git figured out, that content of the folder changed). Now I need to add this file to the tracking system. It is simple as:
-
-{% highlight bash %}
-> git add README.md
-{% endhighlight %}
- 
-Now if I ask git what changed:
-
-{% highlight bash %}
-> git status
-On branch master
-
-Initial commit
-
-Changes to be committed:
-  (use "git rm --cached <file>..." to unstage)
-
-        new file:   README.md
-{% endhighlight %}
-
-
-Once I stop adding new content to the file I will add changed file again (to "stage it") and commit changes to the repository, to keep them there as a current snapshot. git allows me to go back to tis specific version of the file any time. 
-
-{% highlight bash %}
-> git commit -m "Added README to the project"
-[master (root-commit) cf02fde] Added README to the project
- 1 file changed, 1 insertion(+)
- create mode 100644 README.md
-{% endhighlight %}
-
-Done! Now any change to the file will be tracked and the same set of instructions must be repeated to store changes:
-
-1. change file
-2. `git add <file>`
-3. `git commit -m "Message"`
-
-This is very basic introduction to git. Please refer to the [manual][git-man] to get more info about usage and configuration.Now I am going to create few notebooks describing typical biochemical experiments. The theory, data analysis, plots and figures will be presented in notebooks.
-
-## Simple experiments
-
+To present power enclosed in python and jupyter notebook I will create several scenarios of typical experiments conducted in collage labs or own research. It will cover data acquisition, modeling, visualization and data storage.
 
 
 ### Protein concentration
 
+Example of simple experiment with data from VIS spectrophotometric experiment. Lets assume specific substance is changing properties of the solution. For example when specific dye or biochemical reaction causes solution coloring, making it less penetrable by light. 
 
-### Protein activity
+#### Theoretical background
+
+For a uniform absorbing solution  the proportion of light passing through is called the transmittance: \\(T\\), and the proportion of light absorbed by molecules in the medium is absorbance, \\(Abs\\). 
+
+Transmittance is defined as:
+
+$$T =  \frac{I}{I_{o}} $$
+
+where:
+
+* \\(I_o\\) is intensity of the incident radiation entering the medium.
+* \\(I\\) = intensity of the transmitted radiation leaving the medium.
+
+
+T can be expressed as percent transmittance, \\(%T\\):
+
+$$%T = \frac{I}{I_{o}} \times 100$$
+
+The relationship between percent transmittance (\\(\%T\\)) and absorbance (\\(Abs\\)) is given by the following equation:
+
+$$Abs = 2 - log (\%T) $$
+
+From above equation we can see, that probe, which absorbs 100% of the light will have transmittance 100% and absorbance equal 2 \\((log_{10} 100 = 2)\\), while completely transparent sample will have absorbance 0. Therefore theoretical span of Absorbance values range from 0 to 2, however Beer-Lambert's law is most accurate in range 0.05 to 0.7 \\(Abs\\).
+
+The Beer-Lambert Law states that Absorbance is proportional to the concentration of the absorbing molecules, the length of light-path through the medium and the molar extinction coefficient:
+
+$$ Abs = \epsilon \cdot c \cdot l $$
+
+where:
+
+* \\(Abs\\) – absorbance
+* \\(\epsilon\\) – light extinction coefficient at max absorption wavelength \\(\lambda_{max}\\)
+* \\(c\\) – substance concentration
+* \\(l\\) – length of light-path
+
+
+#### Determine the absorption spectra
+
+In order to obtain \\(\lambda_{max}\\) one needs to obtain the absorbance of the diluted sample at 50 nm intervals between 350-700 nm. This will give you a ballpark estimate of where the sample absorbs most (peaks) and least (valleys). In normal conditions experiment would be conducted to measure this values. I will generate them using python. Sample data can be easily generated:
+
+
+{% highlight bash %}
+# absorbance of the sample at 50 nm intervals between 350-700 nm.
+x = range(350, 750, 50)
+
+#random values in range 0.05 - 0.7
+y = np.random.uniform(0.05, 0.7, len(x))
+{% endhighlight %}
+
+
+Lets turn data into table:
+
+{% highlight bash %}
+df = pd.DataFrame(y, index=x, columns=['Absorbance'])
+df.describe()
+{% endhighlight %}
+
+And we get table in form of DataFrame. To find basic statistics, lets call `describe()` method on data Frame. 
+
+
+
+#### Calculate the extinction coefficient (\\(\epsilon\\)) of the standards. 
+
+In order to 
+
+#### Determine the concentration of proteins in solution using a colorimetry
+
+
+First we measure absorbance construct column contains single column of timestamps and single column of measurements. Data can be in tex file, seprated with tabs, spaces, or other delimiter (i.e. coma).
+
+
 
 
 ### Determination of DNA Quality and Quantity
@@ -357,7 +341,7 @@ Cornerstones of any data science project. Basic pair if it comes to deal with da
 
 
 ### HDF5
-
+http://www2.fiu.edu/~bch3033/bch3033l/pdf/spectra.pdf
 
 
 ### netCDF
@@ -390,6 +374,9 @@ All examples can be also downloaded in form of Jupyter Notebook file from [GitHu
 [nbext]:      https://github.com/ipython-contrib/jupyter_contrib_nbextensions
 [git]:        https://git-scm.com
 [git-man]:    https://git-scm.com/documentation
+[pypi]:       https://pypi.python.org/pypi
+[jhub]:       https://jupyterhub.readthedocs.io/en/latest/
+[watermark]:  https://github.com/rasbt/watermark
 
 [data-science-cookbook]: https://www.packtpub.com/mapt/book/big_data_and_business_intelligence/9781783980246
 

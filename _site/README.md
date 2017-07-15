@@ -1,4 +1,4 @@
-# Satatic page blog in jekyll
+# Static page blog in jekyll
 
 Blog can be seen [here](https://mdyzma.github.io).
 
