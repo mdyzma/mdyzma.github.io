@@ -5,7 +5,7 @@
   
   <link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" />
   <link href="http://localhost:4000/" rel="alternate" type="text/html" />
-  <updated>2017-07-16T20:07:14+02:00</updated>
+  <updated>2017-07-16T21:52:17+02:00</updated>
   <id>http://localhost:4000//</id>
 
   
@@ -427,7 +427,7 @@ where:
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;x = \frac{(absorbance - intercept)}{slope} = \frac{(absorbance - 0.1760)}{0.0124}&lt;/script&gt;
 
-&lt;p&gt;FOr third degree polynomial it is little bit more complicated and beyond scope of this simple tutorial. Lets just summarize, that ror given&lt;/p&gt;
+&lt;p&gt;FOr third degree polynomial it is little bit more complicated. Very crude approach is usage of Cardano’s formula.&lt;/p&gt;
 
 &lt;!-- ## Data and biology
 
@@ -458,7 +458,7 @@ This is our interactive window in browser, that allows us to talk to python inte
 
 &lt;hr /&gt;
 
-&lt;p&gt;Example Jupyter notebook can be downloaded from &lt;a href=&quot;https://github.com/mdyzma/blog-src-files&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Example Jupyter notebook can be downloaded from &lt;a href=&quot;https://github.com/mdyzma/blog-src-files/tree/master/2017-03-03-jupyter-notebook-lab-book&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
 
 &lt;hr /&gt;
 

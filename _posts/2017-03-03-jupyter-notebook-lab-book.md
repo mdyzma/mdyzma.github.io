@@ -420,8 +420,7 @@ Interpolation of the unknown sample is simple as resolving one of the functions 
 $$ x = \frac{(absorbance - intercept)}{slope} = \frac{(absorbance - 0.1760)}{0.0124}$$
 
 
-FOr third degree polynomial it is little bit more complicated and beyond scope of this simple tutorial. Lets just summarize, that ror given
-
+FOr third degree polynomial it is little bit more complicated. Very crude approach is usage of Cardano's formula.
 
 
 
@@ -462,7 +461,7 @@ Example Jupyter notebook can be downloaded from [GitHub][github].
 
 <!-- Links -->
 
-[github]:     https://github.com/mdyzma/blog-src-files
+[github]:     https://github.com/mdyzma/blog-src-files/tree/master/2017-03-03-jupyter-notebook-lab-book
 [anaconda]:   https://www.continuum.io/DOWNLOADS
 [condarc]:    https://conda.io/docs/config.html#the-conda-configuration-file-condarc
 [jupyterlab]: https://github.com/jupyterlab/jupyterlab
