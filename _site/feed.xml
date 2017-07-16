@@ -5,7 +5,7 @@
   
   <link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" />
   <link href="http://localhost:4000/" rel="alternate" type="text/html" />
-  <updated>2017-07-15T23:38:10+02:00</updated>
+  <updated>2017-07-16T20:07:14+02:00</updated>
   <id>http://localhost:4000//</id>
 
   
@@ -114,7 +114,7 @@ Alternatively you may add path to the existing Jupyter notebook file with &lt;co
 
 &lt;p&gt;It should start notebook server in your browser (default address: &lt;a href=&quot;http://localhost:8888/tree&quot;&gt;http://127.0.0.1:8888&lt;/a&gt;):&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/03-03-2017-jupyter-notebook.png&quot; alt=&quot;notebook&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/03-03-2017/jupyter-notebook.png&quot; alt=&quot;notebook&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;There is a handy collection of extensions that add functionality to the Jupyter notebook. Extensions are grouped in package &lt;a href=&quot;https://github.com/ipython-contrib/jupyter_contrib_nbextensions&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;nbextensions&lt;/code&gt;&lt;/a&gt;, which is not included in fresh Anaconda installation and I will install it using conda:&lt;/p&gt;
 
@@ -190,7 +190,7 @@ jupyterlab-0.2 100% |###############################| Time: 0:00:01   1.34 MB/s&
 
 &lt;p&gt;Lab environment can be started using &lt;code class=&quot;highlighter-rouge&quot;&gt;jupyter lab&lt;/code&gt; command. It should start in default browser under this address: &lt;a href=&quot;http://localhost:8888/lab&quot;&gt;http://127.0.0.1:8888&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/03-03-2017-jupyter-lab.png&quot; alt=&quot;lab&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/03-03-2017/jupyter-lab.png&quot; alt=&quot;lab&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;More information about this project and development plans can be found &lt;a href=&quot;https://github.com/jupyterlab/jupyterlab&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
 
@@ -208,36 +208,98 @@ jupyterlab-0.2 100% |###############################| Time: 0:00:01   1.34 MB/s&
 
 &lt;h2 id=&quot;experiments-examples&quot;&gt;Experiments examples:&lt;/h2&gt;
 
-&lt;p&gt;To present power enclosed in python and jupyter notebook I will create several scenarios of typical experiments conducted in collage labs or own research. It will cover data acquisition, modeling, visualization and data storage.&lt;/p&gt;
+&lt;p&gt;To present power enclosed in python and jupyter notebook I will create several scenarios of typical experiments conducted in labs. It will cover data acquisition, modeling, visualization and data storage.&lt;/p&gt;
 
 &lt;h3 id=&quot;protein-concentration&quot;&gt;Protein concentration&lt;/h3&gt;
 
-&lt;p&gt;Example of simple experiment with data from VIS spectrophotometric experiment. Lets assume specific substance is changing properties of the solution. For example when specific dye or biochemical reaction causes solution coloring, making it less penetrable by light.&lt;/p&gt;
+&lt;p&gt;Example of simple experiment with data from VIS spectrophotometric experiment. Lets assume we have solution with protein colored by protein dye. For a uniform absorbing solution the proportion of light passing through is called the transmittance: \(T\), and the proportion of light absorbed by molecules in the medium is absorbance, \(Abs\). Experiment consists of three steps:&lt;/p&gt;
 
-&lt;h4 id=&quot;theoretical-background&quot;&gt;Theoretical background&lt;/h4&gt;
+&lt;ol&gt;
+  &lt;li&gt;Determine the absorption spectra \(\lambda_{max}\)&lt;/li&gt;
+  &lt;li&gt;Calculate the extinction coefficient (\(\epsilon\)) of the standards.&lt;/li&gt;
+  &lt;li&gt;Determine the concentration of proteins in solution&lt;/li&gt;
+&lt;/ol&gt;
 
-&lt;p&gt;For a uniform absorbing solution  the proportion of light passing through is called the transmittance: \(T\), and the proportion of light absorbed by molecules in the medium is absorbance, \(Abs\).&lt;/p&gt;
+&lt;!-- #### Theoretical background
 
-&lt;p&gt;Transmittance is defined as:&lt;/p&gt;
+For a uniform absorbing solution  the proportion of light passing through is called the transmittance: \\(T\\), and the proportion of light absorbed by molecules in the medium is absorbance, \\(Abs\\). 
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;T =  \frac{I}{I_{o}}&lt;/script&gt;
+Transmittance is defined as:
 
-&lt;p&gt;where:&lt;/p&gt;
+$$T =  \frac{I}{I_{o}} $$
 
-&lt;ul&gt;
-  &lt;li&gt;\(I_o\) is intensity of the incident radiation entering the medium.&lt;/li&gt;
-  &lt;li&gt;\(I\) = intensity of the transmitted radiation leaving the medium.&lt;/li&gt;
-&lt;/ul&gt;
+where:
 
-&lt;p&gt;T can be expressed as percent transmittance, \(%T\):&lt;/p&gt;
+* \\(I_o\\) is intensity of the incident radiation entering the medium.
+* \\(I\\) = intensity of the transmitted radiation leaving the medium.
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;%T = \frac{I}{I_{o}} \times 100&lt;/script&gt;
 
-&lt;p&gt;The relationship between percent transmittance (\(\%T\)) and absorbance (\(Abs\)) is given by the following equation:&lt;/p&gt;
+T can be expressed as percent transmittance, \\(%T\\):
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;Abs = 2 - log (\%T)&lt;/script&gt;
+$$%T = \frac{I}{I_{o}} \times 100$$
 
-&lt;p&gt;From above equation we can see, that probe, which absorbs 100% of the light will have transmittance 100% and absorbance equal 2 \((log_{10} 100 = 2)\), while completely transparent sample will have absorbance 0. Therefore theoretical span of Absorbance values range from 0 to 2, however Beer-Lambert’s law is most accurate in range 0.05 to 0.7 \(Abs\).&lt;/p&gt;
+The relationship between percent transmittance (\\(\%T\\)) and absorbance (\\(Abs\\)) is given by the following equation:
+
+$$Abs = 2 - log (\%T) $$
+
+From above equation we can see, that probe, which absorbs 100% of the light will have transmittance 100% and absorbance equal 2 \\((log_{10} 100 = 2)\\), while completely transparent sample will have absorbance 0. Therefore theoretical span of Absorbance values range from 0 to 2, however Beer-Lambert's law is most accurate in range 0.05 to 0.7 \\(Abs\\).
+
+The Beer-Lambert Law states that Absorbance is proportional to the concentration of the absorbing molecules, the length of light-path through the medium and the molar extinction coefficient:
+
+$$ Abs = \epsilon \cdot c \cdot l $$
+
+where:
+
+* \\(Abs\\) – absorbance
+* \\(\epsilon\\) – light extinction coefficient at max absorption wavelength \\(\lambda_{max}\\)
+* \\(c\\) – substance concentration
+* \\(l\\) – length of light-path
+
+ --&gt;
+&lt;h4 id=&quot;determine-the-absorption-spectra&quot;&gt;Determine the absorption spectra&lt;/h4&gt;
+
+&lt;p&gt;In order to obtain \(\lambda_{max}\) measure the absorbance of the diluted sample at 50 nm intervals between 350-700 nm. This will give an estimate of where the sample absorbs most (peaks) and least (valleys). I will generate them using python. Procedure requires that all measurements to be within 0-0.7 absorbance range. If maximal values are higher, sample should be diluted:&lt;/p&gt;
+
+&lt;p&gt;Data can be generated:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;c&quot;&gt;# absorbance of the sample at 10 nm intervals between 350-700 nm.&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;350&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;750&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#random values in range 0 - 0.7&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;uniform&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;df&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DataFrame&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;columns&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Absorbance'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Or read from file:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;df&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read_csv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;data/lambda_max.csv&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;header&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Absorbance&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Pandas can ingest every text and binary data format, which fits RAM memory. This way I got table called DataFrame. To find basic statistics, lets call &lt;code class=&quot;highlighter-rouge&quot;&gt;describe()&lt;/code&gt; method on data Frame.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;df&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;describe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+       &lt;span class=&quot;n&quot;&gt;Absorbance&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;count&lt;/span&gt;   &lt;span class=&quot;mf&quot;&gt;36.000000&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;mean&lt;/span&gt;     &lt;span class=&quot;mf&quot;&gt;0.355109&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;      &lt;span class=&quot;mf&quot;&gt;0.176637&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;min&lt;/span&gt;      &lt;span class=&quot;mf&quot;&gt;0.018094&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;25&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;      &lt;span class=&quot;mf&quot;&gt;0.265485&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;      &lt;span class=&quot;mf&quot;&gt;0.371752&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;75&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;      &lt;span class=&quot;mf&quot;&gt;0.470539&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;max&lt;/span&gt;      &lt;span class=&quot;mf&quot;&gt;0.683876&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Find wavelength for which absorbance is highest (it is trivial for few arguments, but becomes more complex when amount of data grows):&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Absorbance'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argmax&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;410&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And plot it to get more direct data feel:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;df&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Absorbance&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;$&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;lambda_{max}$ of the protein&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_ylabel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Absorbance&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/03-03-2017/lambda_max.png&quot; alt=&quot;lambda&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;calculate-the-extinction-coefficient-epsilon-of-the-standards&quot;&gt;Calculate the extinction coefficient (\(\epsilon\)) of the standards.&lt;/h4&gt;
 
 &lt;p&gt;The Beer-Lambert Law states that Absorbance is proportional to the concentration of the absorbing molecules, the length of light-path through the medium and the molar extinction coefficient:&lt;/p&gt;
 
@@ -252,48 +314,120 @@ jupyterlab-0.2 100% |###############################| Time: 0:00:01   1.34 MB/s&
   &lt;li&gt;\(l\) – length of light-path&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h4 id=&quot;determine-the-absorption-spectra&quot;&gt;Determine the absorption spectra&lt;/h4&gt;
+&lt;p&gt;therefore \(\epsilon\) is equal to:&lt;/p&gt;
 
-&lt;p&gt;In order to obtain \(\lambda_{max}\) one needs to obtain the absorbance of the diluted sample at 50 nm intervals between 350-700 nm. This will give you a ballpark estimate of where the sample absorbs most (peaks) and least (valleys). In normal conditions experiment would be conducted to measure this values. I will generate them using python. Sample data can be easily generated:&lt;/p&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\epsilon =  \frac{Abs_{410}}{c \cdot l}&lt;/script&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;# absorbance of the sample at 50 nm intervals between 350-700 nm.&lt;/span&gt;
-x &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; range&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;350, 750, 50&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;c&quot;&gt;# Abs_410 = 0.683876&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;epsilon&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.683876&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;span class=&quot;c&quot;&gt;#random values in range 0.05 - 0.7&lt;/span&gt;
-y &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; np.random.uniform&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.05, 0.7, len&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;x&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Lets turn data into table:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;df &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; pd.DataFrame&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y, &lt;span class=&quot;nv&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;x, &lt;span class=&quot;nv&quot;&gt;columns&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Absorbance'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;])&lt;/span&gt;
-df.describe&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;And we get table in form of DataFrame. To find basic statistics, lets call &lt;code class=&quot;highlighter-rouge&quot;&gt;describe()&lt;/code&gt; method on data Frame.&lt;/p&gt;
-
-&lt;h4 id=&quot;calculate-the-extinction-coefficient-epsilon-of-the-standards&quot;&gt;Calculate the extinction coefficient (\(\epsilon\)) of the standards.&lt;/h4&gt;
-
-&lt;p&gt;In order to&lt;/p&gt;
+&lt;p&gt;where c is concentration of the standard.&lt;/p&gt;
 
 &lt;h4 id=&quot;determine-the-concentration-of-proteins-in-solution-using-a-colorimetry&quot;&gt;Determine the concentration of proteins in solution using a colorimetry&lt;/h4&gt;
 
-&lt;p&gt;First we measure absorbance construct column contains single column of timestamps and single column of measurements. Data can be in tex file, seprated with tabs, spaces, or other delimiter (i.e. coma).&lt;/p&gt;
+&lt;p&gt;Simply solve standard beer-Lamber equation for c, but first construct calibration curve from known samples.&lt;/p&gt;
 
-&lt;h3 id=&quot;determination-of-dna-quality-and-quantity&quot;&gt;Determination of DNA Quality and Quantity&lt;/h3&gt;
+&lt;h5 id=&quot;calibration-curve&quot;&gt;Calibration curve&lt;/h5&gt;
 
-&lt;p&gt;Lets imagine basic colorimetric experiment. In biology colorimetric techniques are used to measure&lt;/p&gt;
+&lt;p&gt;Consider the following example involving a set of six standard points (5, 10, 25, 30, 40, 50, 60, and 70 µg/mL). Absorbance: (0.106, 0.236, 0.544, 0.690, 0.791, 0.861, 0.882, 0.911). I have two collumn of x and y values of the calibration curve points.&lt;/p&gt;
 
-&lt;h3 id=&quot;text-data&quot;&gt;Text data&lt;/h3&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Conc&lt;/th&gt;
+      &lt;th&gt;Absorbance&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;5&lt;/td&gt;
+      &lt;td&gt;0.106&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;0.236&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;25&lt;/td&gt;
+      &lt;td&gt;0.544&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;30&lt;/td&gt;
+      &lt;td&gt;0.690&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;40&lt;/td&gt;
+      &lt;td&gt;0.791&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;50&lt;/td&gt;
+      &lt;td&gt;0.861&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;60&lt;/td&gt;
+      &lt;td&gt;0.882&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;70&lt;/td&gt;
+      &lt;td&gt;0.911&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
 
-&lt;p&gt;Data in biology are usually text based, grouped in columns, sometimes delimited with tabs, comas or other characters. For example It is like this in case o&lt;/p&gt;
+&lt;p&gt;Ploted :&lt;/p&gt;
 
-&lt;h3 id=&quot;binary-data&quot;&gt;Binary data&lt;/h3&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;matplotlib.pyplot&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;plt&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;concentration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;absorbance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'o'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;label&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'original data'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;grid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;alpha&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;h2 id=&quot;plotting-in-python&quot;&gt;Plotting in Python&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/03-03-2017/calibration-points.png&quot; alt=&quot;calibration-points&quot; /&gt;&lt;/p&gt;
 
-&lt;h3 id=&quot;matplotlib&quot;&gt;Matplotlib&lt;/h3&gt;
+&lt;p&gt;And fitted to the line:&lt;/p&gt;
 
-&lt;h3 id=&quot;bokeh--seaborn&quot;&gt;Bokeh / Seaborn&lt;/h3&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;y = Ax + b&lt;/script&gt;
 
-&lt;p&gt;All these activities may be successfully performed using python ecosystem. No doubt python has one of the best communities, active and contributing frequently with quality packages.&lt;/p&gt;
+&lt;p&gt;where:&lt;/p&gt;
+
+&lt;p&gt;\(A\) - is slope = 0.0124571906355
+\(b\) - is intercept = 0.176051839465&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;c&quot;&gt;# Linear regression&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;scipy&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stats&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;slope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;intercept&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std_err&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stats&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;linregress&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;concentration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;absorbance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;concentration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;absorbance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'o'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;label&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'data points'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;concentration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;intercept&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;slope&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;concentration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'r'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;label&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'fitted line'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;legend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;grid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;alpha&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;For this set of points linear regression fitting seems to be suboptimal choice. \(R^2 = 0.8754454029810919\)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/03-03-2017/calibration-linear-fit.png&quot; alt=&quot;calibration-points&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Polynomial fitting allows to  reflect character of the points much better. Fitting function creates list of coefficients for least-squares fit of the data points to the polynomial described by: \(p(x) = c_0 + c_1 x + … + c_n x_n\). I shall fit data to the third degree polynomial. Coefficients are: 1.12600636e-06  -3.68738266e-04   3.40965628e-02  -6.29998061e-02. Therefore polynomial has form:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;y = 1.1 \times 10^{-6}x^3 - 3.6 \times 10^{-4}x^2 - 3.4 \times 10^{-2}x - 6.2 \times 10^{-2}&lt;/script&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;c&quot;&gt;#polynomial fit&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy.polynomial.polynomial&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;poly&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;coefs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;poly&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;polyfit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;concentration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;absorbance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;ffit&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;poly&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;polyval&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;concentration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;coefs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;concentration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;absorbance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'o'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;label&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'data points'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;concentration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ffit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'r'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;label&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'fitted line'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;legend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;grid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;alpha&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/03-03-2017/calibration-polynomial-fit.png&quot; alt=&quot;calibration-linear-fit&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Interpolation of the unknown sample is simple as resolving one of the functions in respect to x. In case of linear regression transformation is trivial (rounded to four digits after the ):&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;x = \frac{(absorbance - intercept)}{slope} = \frac{(absorbance - 0.1760)}{0.0124}&lt;/script&gt;
+
+&lt;p&gt;FOr third degree polynomial it is little bit more complicated and beyond scope of this simple tutorial. Lets just summarize, that ror given&lt;/p&gt;
 
 &lt;!-- ## Data and biology
 
@@ -321,20 +455,12 @@ This is our interactive window in browser, that allows us to talk to python inte
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}{{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;site&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}}{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}{{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;site&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}}{&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;endif&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
  --&gt;
-&lt;h2 id=&quot;numpy--pandas&quot;&gt;Numpy &amp;amp; Pandas&lt;/h2&gt;
 
-&lt;p&gt;Cornerstones of any data science project. Basic pair if it comes to deal with data. In biology majority of numerical data come in form of vectors (series of values) or tables. These two are more than enough to do variety of tasks like fast and efficient calculations, reading multiple formats, data cleaning, manipulation and visualization too. Numpy provides fast vector operations&lt;/p&gt;
+&lt;hr /&gt;
 
-&lt;h3 id=&quot;hdf5&quot;&gt;HDF5&lt;/h3&gt;
-&lt;p&gt;http://www2.fiu.edu/~bch3033/bch3033l/pdf/spectra.pdf&lt;/p&gt;
+&lt;p&gt;Example Jupyter notebook can be downloaded from &lt;a href=&quot;https://github.com/mdyzma/blog-src-files&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
 
-&lt;h3 id=&quot;netcdf&quot;&gt;netCDF&lt;/h3&gt;
-
-&lt;h2 id=&quot;biopandas&quot;&gt;Biopandas&lt;/h2&gt;
-
-&lt;h2 id=&quot;biopython&quot;&gt;Biopython&lt;/h2&gt;
-
-&lt;p&gt;All examples can be also downloaded in form of Jupyter Notebook file from &lt;a href=&quot;https://github.com/mdyzma/blog-src-files&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;hr /&gt;
 
 &lt;!-- Links --&gt;
 

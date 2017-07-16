@@ -201,14 +201,21 @@ which are part of SciPy - python based scientific ecosystem. [Numpy][numpy] and 
 
 ## Experiments examples:
 
-To present power enclosed in python and jupyter notebook I will create several scenarios of typical experiments conducted in collage labs or own research. It will cover data acquisition, modeling, visualization and data storage.
+To present power enclosed in python and jupyter notebook I will create several scenarios of typical experiments conducted in labs. It will cover data acquisition, modeling, visualization and data storage.
 
 
 ### Protein concentration
 
-Example of simple experiment with data from VIS spectrophotometric experiment. Lets assume specific substance is changing properties of the solution. For example when specific dye or biochemical reaction causes solution coloring, making it less penetrable by light. 
+Example of simple experiment with data from VIS spectrophotometric experiment. Lets assume we have solution with protein colored by protein dye. For a uniform absorbing solution the proportion of light passing through is called the transmittance: \\(T\\), and the proportion of light absorbed by molecules in the medium is absorbance, \\(Abs\\). Experiment consists of three steps:
 
-#### Theoretical background
+1. Determine the absorption spectra \\(\lambda_{max}\\)
+2. Calculate the extinction coefficient (\\(\epsilon\\)) of the standards.
+3. Determine the concentration of proteins in solution 
+
+
+
+
+<!-- #### Theoretical background
 
 For a uniform absorbing solution  the proportion of light passing through is called the transmittance: \\(T\\), and the proportion of light absorbed by molecules in the medium is absorbance, \\(Abs\\). 
 
@@ -243,69 +250,180 @@ where:
 * \\(c\\) – substance concentration
 * \\(l\\) – length of light-path
 
-
+ -->
 #### Determine the absorption spectra
 
-In order to obtain \\(\lambda_{max}\\) one needs to obtain the absorbance of the diluted sample at 50 nm intervals between 350-700 nm. This will give you a ballpark estimate of where the sample absorbs most (peaks) and least (valleys). In normal conditions experiment would be conducted to measure this values. I will generate them using python. Sample data can be easily generated:
+In order to obtain \\(\lambda_{max}\\) measure the absorbance of the diluted sample at 50 nm intervals between 350-700 nm. This will give an estimate of where the sample absorbs most (peaks) and least (valleys). I will generate them using python. Procedure requires that all measurements to be within 0-0.7 absorbance range. If maximal values are higher, sample should be diluted:
 
+Data can be generated:
 
-{% highlight bash %}
-# absorbance of the sample at 50 nm intervals between 350-700 nm.
-x = range(350, 750, 50)
+{% highlight python %}
+# absorbance of the sample at 10 nm intervals between 350-700 nm.
+x = range(350, 750, 10)
 
-#random values in range 0.05 - 0.7
-y = np.random.uniform(0.05, 0.7, len(x))
+#random values in range 0 - 0.7
+y = np.random.uniform(0, 0.7, len(x))
 {% endhighlight %}
 
 
-Lets turn data into table:
-
-{% highlight bash %}
+{% highlight python %}
 df = pd.DataFrame(y, index=x, columns=['Absorbance'])
-df.describe()
 {% endhighlight %}
 
-And we get table in form of DataFrame. To find basic statistics, lets call `describe()` method on data Frame. 
+
+Or read from file:
+
+{% highlight python %}
+df = pd.read_csv("data/lambda_max.csv", header=None, names=["Absorbance"])
+{% endhighlight %}
 
 
+Pandas can ingest every text and binary data format, which fits RAM memory. This way I got table called DataFrame. To find basic statistics, lets call `describe()` method on data Frame. 
 
-#### Calculate the extinction coefficient (\\(\epsilon\\)) of the standards. 
+{% highlight python %}
+df.describe()
+       Absorbance
+count   36.000000
+mean     0.355109
+std      0.176637
+min      0.018094
+25%      0.265485
+50%      0.371752
+75%      0.470539
+max      0.683876
+{% endhighlight %}
 
-In order to 
+
+Find wavelength for which absorbance is highest (it is trivial for few arguments, but becomes more complex when amount of data grows):
+
+{% highlight python %}
+df['Absorbance'].argmax()
+410
+{% endhighlight %}
+
+And plot it to get more direct data feel:
+
+{% highlight python %}
+ax = df.Absorbance.plot(title="$\lambda_{max}$ of the protein")
+ax.set_ylabel("Absorbance")
+{% endhighlight %} 
+
+![lambda][lambda]
+
+#### Calculate the extinction coefficient (\\(\epsilon\\)) of the standards.        
+
+The Beer-Lambert Law states that Absorbance is proportional to the concentration of the absorbing molecules, the length of light-path through the medium and the molar extinction coefficient:
+
+$$ Abs = \epsilon \cdot c \cdot l $$
+
+where:
+
+* \\(Abs\\) – absorbance
+* \\(\epsilon\\) – light extinction coefficient at max absorption wavelength \\(\lambda_{max}\\)
+* \\(c\\) – substance concentration
+* \\(l\\) – length of light-path
+
+therefore \\(\epsilon\\) is equal to:
+
+$$ \epsilon =  \frac{Abs_{410}}{c \cdot l} $$
+
+
+{% highlight python %}
+# Abs_410 = 0.683876
+epsilon = 0.683876/(c*1)
+{% endhighlight %}
+
+where c is concentration of the standard.
 
 #### Determine the concentration of proteins in solution using a colorimetry
 
+Simply solve standard beer-Lamber equation for c, but first construct calibration curve from known samples.
 
-First we measure absorbance construct column contains single column of timestamps and single column of measurements. Data can be in tex file, seprated with tabs, spaces, or other delimiter (i.e. coma).
+##### Calibration curve
+
+Consider the following example involving a set of six standard points (5, 10, 25, 30, 40, 50, 60, and 70 µg/mL). Absorbance: (0.106, 0.236, 0.544, 0.690, 0.791, 0.861, 0.882, 0.911). I have two collumn of x and y values of the calibration curve points.
+
+|--------------+------------|
+|Conc          | Absorbance |
+|--------------+------------|
+|5             | 0.106      |
+|10            | 0.236      |
+|25            | 0.544      |
+|30            | 0.690      |
+|40            | 0.791      |
+|50            | 0.861      |
+|60            | 0.882      |
+|70            | 0.911      |
+|--------------+------------|
 
 
+Ploted :
 
 
-### Determination of DNA Quality and Quantity
-
-{% highlight bash %}
-
+{% highlight python %}
+import matplotlib.pyplot as plt
+plt.plot(concentration, absorbance, 'o', label='original data')
+plt.grid(alpha=0.8)
 {% endhighlight %}
 
 
-Lets imagine basic colorimetric experiment. In biology colorimetric techniques are used to measure 
+![calibration-points][cal]
+
+And fitted to the line: 
+
+$$y = Ax + b$$
+
+where:
+
+\\(A\\) - is slope = 0.0124571906355
+\\(b\\) - is intercept = 0.176051839465
+
+{% highlight python %}
+# Linear regression
+from scipy import stats
+
+slope, intercept, r_value, p_value, std_err = stats.linregress(concentration, absorbance)
 
 
-### Text data
+plt.plot(concentration, absorbance, 'o', label='data points')
+plt.plot(concentration, intercept + slope*concentration, 'r', label='fitted line')
+plt.legend()
+plt.grid(alpha=0.8)
+{% endhighlight %}
 
-Data in biology are usually text based, grouped in columns, sometimes delimited with tabs, comas or other characters. For example It is like this in case o 
+For this set of points linear regression fitting seems to be suboptimal choice. \\(R^2 = 0.8754454029810919\\)
+
+![calibration-points][cal_lin]
+
+Polynomial fitting allows to  reflect character of the points much better. Fitting function creates list of coefficients for least-squares fit of the data points to the polynomial described by: \\(p(x) = c_0 + c_1 x + ... + c_n x_n\\). I shall fit data to the third degree polynomial. Coefficients are: 1.12600636e-06  -3.68738266e-04   3.40965628e-02  -6.29998061e-02. Therefore polynomial has form:
+
+$$ y = 1.1 \times 10^{-6}x^3 - 3.6 \times 10^{-4}x^2 - 3.4 \times 10^{-2}x - 6.2 \times 10^{-2} $$
+
+{% highlight python %}
+#polynomial fit
+import numpy.polynomial.polynomial as poly
+
+coefs = poly.polyfit(concentration, absorbance, 3)
+ffit = poly.polyval(concentration, coefs)
+
+plt.plot(concentration, absorbance, 'o', label='data points')
+plt.plot(concentration, ffit, 'r', label='fitted line')
+plt.legend()
+plt.grid(alpha=0.8)
+{% endhighlight %}
+
+![calibration-linear-fit][cal_poly]
 
 
-### Binary data
+Interpolation of the unknown sample is simple as resolving one of the functions in respect to x. In case of linear regression transformation is trivial (rounded to four digits after the ):
 
-## Plotting in Python
-
-### Matplotlib
+$$ x = \frac{(absorbance - intercept)}{slope} = \frac{(absorbance - 0.1760)}{0.0124}$$
 
 
-### Bokeh / Seaborn
+FOr third degree polynomial it is little bit more complicated and beyond scope of this simple tutorial. Lets just summarize, that ror given
 
-All these activities may be successfully performed using python ecosystem. No doubt python has one of the best communities, active and contributing frequently with quality packages.
+
+
 
 <!-- ## Data and biology
 
@@ -335,30 +453,12 @@ This is our interactive window in browser, that allows us to talk to python inte
 {% endraw %}
 {% endhighlight %}
  -->
-## Numpy & Pandas
 
-Cornerstones of any data science project. Basic pair if it comes to deal with data. In biology majority of numerical data come in form of vectors (series of values) or tables. These two are more than enough to do variety of tasks like fast and efficient calculations, reading multiple formats, data cleaning, manipulation and visualization too. Numpy provides fast vector operations
+-----
 
+Example Jupyter notebook can be downloaded from [GitHub][github].
 
-### HDF5
-http://www2.fiu.edu/~bch3033/bch3033l/pdf/spectra.pdf
-
-
-### netCDF
-
-
-
-## Biopandas
-
-
-
-
-## Biopython
-
-
-All examples can be also downloaded in form of Jupyter Notebook file from [GitHub][github].
-
-
+-----
 
 <!-- Links -->
 
@@ -383,10 +483,10 @@ All examples can be also downloaded in form of Jupyter Notebook file from [GitHu
 
 <!-- Images -->
 
-[notebook]:   /assets/03-03-2017-jupyter-notebook.png
-[lab]:        /assets/03-03-2017-jupyter-lab.png
-[nbext-view]: /assets/03-03-2017-nbextensions.png
-[orange-view]:/assets/03-03-2017-orange.png
-[spyder-view]:/assets/03-03-2017-spyder.png
-[rodeo-view]: /assets/03-03-2017-rodeo.png
-[navigator]:  /assets/03-03-2017-anaconda-navigator.png
+[notebook]:   /assets/03-03-2017/jupyter-notebook.png
+[lab]:        /assets/03-03-2017/jupyter-lab.png
+[nbext-view]: /assets/03-03-2017/nbextensions.png
+[lambda]:     /assets/03-03-2017/lambda_max.png
+[cal]:        /assets/03-03-2017/calibration-points.png
+[cal_lin]:    /assets/03-03-2017/calibration-linear-fit.png
+[cal_poly]:   /assets/03-03-2017/calibration-polynomial-fit.png
