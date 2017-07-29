@@ -13,13 +13,4 @@
 <url>
 <loc>http://localhost:4000/</loc>
 </url>
-<url>
-<loc>http://localhost:4000/categories/python/</loc>
-</url>
-<url>
-<loc>http://localhost:4000/categories/jupyter-notebook/</loc>
-</url>
-<url>
-<loc>http://localhost:4000/categories/data/</loc>
-</url>
 </urlset>
