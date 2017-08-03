@@ -15,7 +15,7 @@ Data analysis using **Jupyter Notebook**. Natural sciences more and more rely on
 <br>
 {% include note.html content="Notebooks and related data files from this article can be downloaded from this [GitHub repository](https://github.com/mdyzma/blog-src-files/tree/master/2017-03-03-jupyter-notebook-lab-book)" %}
 
-## Install Anaconda
+# Install Anaconda
 
 > _Data Science_ skills are essential for every decent researcher.
 
@@ -52,7 +52,7 @@ To make sure software is up to date, run:
 Anaconda will install nearly 200 packages (182 to be exact), including most important for this tutorial: Jupyter Notebook, ipython, pandas, numpy, statsmodels
 
 
-## Anaconda channels
+# Anaconda channels
 
 `conda` is built in Anaconda package manager, which uses default, maintained by Contunuum Analytics python packages repository. Some packages are distributed in repositories owned by groups other than Anaconda team. Repositories are called channels. One can indicate channel simply by choosing `-c` or `--channel` flag during invoking `conda install` command. Some of the channels are supported by continuum Analytics, like `conda-forge`, `omnia` or `r`. They are full of excellent packages developed by Anaconda community. Every time I mention I want to use other channel than default, conda will check this repositories for available packages. It is possible to add this channels to the `.condarc` file (see: [here][condarc]). First config file must be created by running `conda config` command. If other version of this file is placed in Anaconda installation root directory it will override  users home configuration. to notify package manager, that every time  I want to install something this channels should be checked. Order of repositories is important. In case packages are deployed to both repositories listed in channels section, last repository super-seeds all above it. Example file looks like this:
 
@@ -78,7 +78,7 @@ Last group of inputs is very important for users behind corporate proxy, which w
 Another great part about Anaconda and Jupyter Notebook. It is cross-platform, which means, that Notebook files created on one system will open on other system with similar package configuration. 
 
 
-## Jupyter Notebook / Jupyter Lab 
+# Jupyter Notebook / Jupyter Lab 
 
 Jupyter Notebook allows to create and share documents that contain live code, equations, visualizations and explanatory text. Text may be written in markdown markup  language. Code can produce rich output such as images, videos, LaTeX, and JavaScript. Interactive widgets can be used to manipulate and visualize data in real time.
 Alternatively you may add path to the existing Jupyter notebook file with `.ipybn` extension. If you add path to the notebook file ( extension ``.ipynb``), it will be opened in the location of the file. Jupyter automatically runs a local server.
@@ -145,8 +145,7 @@ Jupyter Lab is new project of Jupyter team, which eventually will replace good o
 {% highlight bash %}
 > pip install -e git+https://github.com/rasbt/watermark#egg=watermark
 Obtaining watermark from git+https://github.com/rasbt/watermark#egg=watermark
-  Cloning https://github.com/rasbt/watermark to c:\users\michal\src\watermark
-Requirement already satisfied: ipython in /home/mdyzma/anaconda3/lib/site-packages (from watermark)
+  Cloning https://github.com/rasbt/watermark to /home/mdyzma/watermark
 Installing collected packages: watermark
   Running setup.py develop for watermark
 Successfully installed watermark
@@ -199,12 +198,12 @@ Simple `conda list` shows all packages installed in current environment. Main to
 which are part of SciPy - python based scientific ecosystem. [Numpy][numpy] and [Pandas][pandas] alone have enormous documentations, which are worth to check. Huge advantage of notebook environment is that it allows to compute and manipulate data directly and export entire notebook in various formats, to share with other. There is also `JupyterHub`, providing access to the notebook for multiple users, which can be used as a official project documentation  in secure location and controlled access. Check [JupyterHub][jhub] documentation to learn more.
 
 
-## Experiments examples:
+# Experiments examples:
 
 To present power enclosed in python and jupyter notebook I will create several scenarios of typical experiments conducted in labs. It will cover data acquisition, modeling, visualization and data storage.
 
 
-### Protein concentration
+## Protein concentration
 
 Example of simple experiment with data from VIS spectrophotometric experiment. Lets assume we have solution with protein colored by protein dye. For a uniform absorbing solution the proportion of light passing through is called the transmittance: \\(T\\), and the proportion of light absorbed by molecules in the medium is absorbance, \\(Abs\\). Experiment consists of three steps:
 
@@ -251,7 +250,7 @@ where:
 * \\(l\\) – length of light-path
 
  -->
-#### Determine the absorption spectra
+### Determine the absorption spectra
 
 In order to obtain \\(\lambda_{max}\\) measure the absorbance of the diluted sample at 50 nm intervals between 350-700 nm. This will give an estimate of where the sample absorbs most (peaks) and least (valleys). I will generate them using python. Procedure requires that all measurements to be within 0-0.7 absorbance range. If maximal values are higher, sample should be diluted:
 
@@ -278,7 +277,7 @@ df = pd.read_csv("data/lambda_max.csv", header=None, names=["Absorbance"])
 {% endhighlight %}
 
 
-Pandas can ingest every text and binary data format, which fits RAM memory. This way I got table called DataFrame. To find basic statistics, lets call `describe()` method on data Frame. 
+Pandas can ingest every text and binary data format, which fits RAM memory. This way I received table called DataFrame. To find basic statistics, lets call `describe()` method on data Frame. 
 
 {% highlight python %}
 df.describe()
@@ -310,7 +309,7 @@ ax.set_ylabel("Absorbance")
 
 ![lambda][lambda]
 
-#### Calculate the extinction coefficient (\\(\epsilon\\)) of the standards.        
+### Calculate the extinction coefficient (\\(\epsilon\\)) of the standards.        
 
 The Beer-Lambert Law states that Absorbance is proportional to the concentration of the absorbing molecules, the length of light-path through the medium and the molar extinction coefficient:
 
@@ -335,76 +334,93 @@ epsilon = 0.683876/(c*1)
 
 where c is concentration of the standard.
 
-#### Determine the concentration of proteins in solution using a colorimetry
+### Determine the concentration of proteins in solution
 
-Simply solve standard beer-Lamber equation for c, but first construct calibration curve from known samples.
+Knowing epsilon just simply solve standard Beer-Lamber equation for \\(c\\). Another approach is to construct calibration curve from known samples, determine function, which fits data best and use it to calculate x (concentration) with known y (absorbance).
 
-##### Calibration curve
+#### Calibration curve
 
-Consider the following example involving a set of six standard points (5, 10, 25, 30, 40, 50, 60, and 70 µg/mL). Absorbance: (0.106, 0.236, 0.544, 0.690, 0.791, 0.861, 0.882, 0.911). I have two collumn of x and y values of the calibration curve points.
+Consider the following example involving a set of six standard points (5, 10, 25, 30, 40, 50, 60, and 70 µg/mL). Absorbance: (0.106, 0.236, 0.544, 0.690, 0.791, 0.861, 0.882, 0.911). I have two collumns of x and y values of the calibration curve points.
 
-|--------------+------------|
-|Conc          | Absorbance |
-|--------------+------------|
-|5             | 0.106      |
-|10            | 0.236      |
-|25            | 0.544      |
-|30            | 0.690      |
-|40            | 0.791      |
-|50            | 0.861      |
-|60            | 0.882      |
-|70            | 0.911      |
-|--------------+------------|
+|-----+-+--------:|
+|Conc.| | Abs.    |
+|:----|-|--------:|
+|5    | | 0.106   |
+|10   | | 0.236   |
+|25   | | 0.544   |
+|30   | | 0.690   |
+|40   | | 0.791   |
+|50   | | 0.861   |
+|60   | | 0.882   |
+|70   | | 0.911   |
+|-----+-+---------|
 
 
-Ploted :
+<br>
+We can plot it to visualize data and get some general overview of the data shape, like that:
 
 
 {% highlight python %}
+import numpy as np
 import matplotlib.pyplot as plt
-plt.plot(concentration, absorbance, 'o', label='original data')
+
+# Calibration curve data
+concentration = np.array([5, 10, 25, 30, 40, 50, 60, 70])
+absorbance = np.array([0.106, 0.236, 0.544, 0.690, 0.791, 0.861, 0.882, 0.911])
+
+plt.plot(concentration, absorbance, 'o')
 plt.grid(alpha=0.8)
 {% endhighlight %}
 
+Not bad, six lines of code and plot is ready.
 
 ![calibration-points][cal]
 
-And fitted to the line: 
+#### Linear fit
+
+To fit our data to the line scipy tool will be used. Linear fit means we will try to find function with general definition:
 
 $$y = Ax + b$$
 
 where:
 
-\\(A\\) - is slope = 0.0124571906355
-\\(b\\) - is intercept = 0.176051839465
+* \\(A\\) - is slope
+* \\(b\\) - is intercept 
+
+Our specific function will have minimal error fitted for all points:
 
 {% highlight python %}
-# Linear regression
 from scipy import stats
 
 slope, intercept, r_value, p_value, std_err = stats.linregress(concentration, absorbance)
+{% endhighlight %}
 
 
+Now plot points and line, that was fitted to them:
+
+{% highlight python %}
+# plot of fitted line
 plt.plot(concentration, absorbance, 'o', label='data points')
 plt.plot(concentration, intercept + slope*concentration, 'r', label='fitted line')
 plt.legend()
 plt.grid(alpha=0.8)
 {% endhighlight %}
 
-For this set of points linear regression fitting seems to be suboptimal choice. \\(R^2 = 0.8754454029810919\\)
 
 ![calibration-points][cal_lin]
 
-Polynomial fitting allows to  reflect character of the points much better. Fitting function creates list of coefficients for least-squares fit of the data points to the polynomial described by: \\(p(x) = c_0 + c_1 x + ... + c_n x_n\\). I shall fit data to the third degree polynomial. Coefficients are: 1.12600636e-06  -3.68738266e-04   3.40965628e-02  -6.29998061e-02. Therefore polynomial has form:
+For this set of points linear regression fitting seems to be suboptimal choice. \\(R^2 = 0.8754454029810919\\). Lets try other type of function - polynomial.
 
-$$ y = 1.1 \times 10^{-6}x^3 - 3.6 \times 10^{-4}x^2 - 3.4 \times 10^{-2}x - 6.2 \times 10^{-2} $$
+#### Polynomial fit
+
+Polynomial fitting will better reflect character of the points. In this data set there is step increase region with more flat part at the top, which makes line bat choice. It would be much better to fit other type of function, which will bent and reflect plato at the end. Such functions are polynomials or logrithmic functions. Increasing polynomial degree increases fitting accuracy, however at some point gain of accuracy is neglible, while calculations become more complex. In this case second degree polynomial is sufficient. Fitting function creates list of coefficients for least-squares fit of the data points to the polynomial function described in general as: \\(p(x) = c_0 + c_1 x + ... + c_n x_n\\). I shall fit data to the second and third degree polynomial functions. 
 
 {% highlight python %}
 #polynomial fit
-import numpy.polynomial.polynomial as poly
+from numpy.polynomial import Polynomial as P
 
-coefs = poly.polyfit(concentration, absorbance, 3)
-ffit = poly.polyval(concentration, coefs)
+coefs = P.polyfit(concentration, absorbance, 2)
+ffit = P.polyval(concentration, coefs)
 
 plt.plot(concentration, absorbance, 'o', label='data points')
 plt.plot(concentration, ffit, 'r', label='fitted line')
@@ -415,43 +431,45 @@ plt.grid(alpha=0.8)
 ![calibration-linear-fit][cal_poly]
 
 
+Coefficients are: -0.03969222  0.03034985  -0.00024301. Therefore polynomial has form:
+
+
+$$ y = -0.0396x^2 + 0.0303x - 0.00024$$
+
+As it was mentioned, there is minimal difference between quadratic and qubic fit. You can go ahead and write script taking third degree polynomial to fit  to data, or run snippet prepared in Jupyter Notebook. Both polynomials comparison should look similiar to this:
+
+![polynomials comparison-linear-fit][poly_comp]
+
+#### Concnetration interpolation
+
 Interpolation of the unknown sample is simple as resolving one of the functions in respect to x. In case of linear regression transformation is trivial (rounded to four digits after the ):
 
-$$ x = \frac{(absorbance - intercept)}{slope} = \frac{(absorbance - 0.1760)}{0.0124}$$
+$$ x = \frac{(absorbance - intercept)}{slope} = \frac{(absorbance - 0.176)}{0.0124}$$
 
+Lets calculate concentration for 0.5 absorbance:
 
-FOr third degree polynomial it is little bit more complicated. Very crude approach is usage of Cardano's formula.
+$$ x =  \frac{(0.5 - 0.176)}{0.0124} = 26.129 $$ 
 
+For second degree polynomial it is little bit more complicated. We can use well known math formula for quadratic equation roots, or ask numpy to calculate it for us. I will solve the equation \\(f(x) - y = 0\\) using `np.roots`, where \\(f(x)\\) is our polynomial:
 
-
-<!-- ## Data and biology
-
-
-
-Excel spreadsheet is simply not enough anymore. It lacks capabilities to properly hold large amounts of data, describe them and, what is most important, to exchange them with other collaborators.  Currently average MD experiments can produce hundreds of gigs of data. Average sequencing few gigs. From microscopy pictures to large MD trajectories you should be able to ingest, crack, visualize and share your data. Traditional statistical approach to analysis of the data is not enough and one needs to go deeper and deal with data more interactively, with more integrative insight. Currently in biology BigData is a big problem and is treated as such. But it is just a problem scientists are not ready to deal with. Giga- and tera- byte scale level requires large and expensive computational cluster or smart approach. Therefore, nowadays, basic _Data Science_ skills are essential for every decent researcher.
-
-
-
-Python has very extensive toolkit to process various data in many different ways. What is more important - it is easy to learn. Lets take a closer look at some packages, that can be used in biology. Lets start small, to get comfortable to use python pipelines in every day analysis.
-
-## Anaconda
-
-Continuum Analytics developed great swiss-army toolkit to data science. It's name is [__Anaconda__][Anaconda]. It groups over 700 python programs called packages, which will help you get started with python and data science in no time. Also, it has huge advantage - it's free. There are competitive products like [Enthough Canopy's][Canopy] data science platform, or [Yhat's Rodeo][Rodeo], which also provide very decent software. In general they are all based on basic python data science tools like `numpy`, `pandas`, `dask`, `matplotlib`. Some of them have closed source original solutions to particular problems, some are based completely on freely available software. Feel free to try whatever suits you best. 
-
-Why not pure python? Many packages included in Anaconda has non-trivial installation processes. Some parts of most frequently used packages (i.e numpy) are written in compiled languages like C/C++ or Fortran (hence their advantage over pure python solutions), therefore require specific compilers as well as some mathematical libraries like LAPAC, which must be linked during  compilation process. It is much easier to grab installer, in which all foreign dependencies are already compiled and shipped in form of binary files, and get going within few minutes, rather than deal with python __dependency hell__ for few days. Alternatively you can spend days trying to install all dependencies... The choice is yours.
-
-How do we start working with python? In the beginning it good to see what you compute, experience the process itself, therefore I strongly recommend to start with `jupyter notebook`. Great tool to replace your lab-book, report files in various documents and data held in spreadsheets. 
-
-
-
-This is our interactive window in browser, that allows us to talk to python interpreter. 
 
 {% highlight python %}
-{% raw %}
-<title>{% if page.title %}{{ page.title }} - {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
-{% endraw %}
+from numpy.polynomial import Polynomial as P
+
+p = P.fit(concentration, absorbance, 2)
+(p - .5).roots()
+
+
+Out[5]: 
+array([  21.47501868,  103.41541963])
+
 {% endhighlight %}
- -->
+
+For absorbance equal 0.5 program returned two values: 21.47501868, 103.41541963. Quick look at the graph shows that value we are looking for is 21.475.
+
+<br>
+
+
 
 -----
 
@@ -459,6 +477,7 @@ Example Jupyter notebook can be downloaded from [GitHub][github].
 
 -----
 
+<br>
 <!-- Links -->
 
 [github]:     https://github.com/mdyzma/blog-src-files/tree/master/2017-03-03-jupyter-notebook-lab-book
@@ -489,3 +508,4 @@ Example Jupyter notebook can be downloaded from [GitHub][github].
 [cal]:        /assets/03-03-2017/calibration-points.png
 [cal_lin]:    /assets/03-03-2017/calibration-linear-fit.png
 [cal_poly]:   /assets/03-03-2017/calibration-polynomial-fit.png
+[poly_comp]:  /assets/03-03-2017/polynomial-comparison.png
