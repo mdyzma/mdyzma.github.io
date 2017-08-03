@@ -413,7 +413,7 @@ For this set of points linear regression fitting seems to be suboptimal choice. 
 
 #### Polynomial fit
 
-Polynomial fitting will better reflect character of the points. In this data set there is step increase region with more flat part at the top, which makes line bat choice. It would be much better to fit other type of function, which will bent and reflect plato at the end. Such functions are polynomials or logrithmic functions. Increasing polynomial degree increases fitting accuracy, however at some point gain of accuracy is neglible, while calculations become more complex. In this case second degree polynomial is sufficient. Fitting function creates list of coefficients for least-squares fit of the data points to the polynomial function described in general as: \\(p(x) = c_0 + c_1 x + ... + c_n x_n\\). I shall fit data to the second and third degree polynomial functions. 
+Polynomial fitting will better reflect character of the points. In this data set there is step increase region with more flat part at the top, which makes line bat choice. It would be much better to fit other type of function, which will bent and reflect plateau at the end. Such functions are polynomials or logarithmic functions. Increasing polynomial degree increases fitting accuracy, however at some point gain of accuracy is negligible, while calculations become more complex. In this case second degree polynomial is sufficient. Fitting function creates list of coefficients for least-squares fit of the data points to the polynomial function described in general as: \\(p(x) = c_0 + c_1 x + ... + c_n x_n\\). I shall fit data to the second and third degree polynomial functions.
 
 {% highlight python %}
 #polynomial fit
@@ -436,7 +436,7 @@ Coefficients are: -0.03969222  0.03034985  -0.00024301. Therefore polynomial has
 
 $$ y = -0.0396x^2 + 0.0303x - 0.00024$$
 
-As it was mentioned, there is minimal difference between quadratic and qubic fit. You can go ahead and write script taking third degree polynomial to fit  to data, or run snippet prepared in Jupyter Notebook. Both polynomials comparison should look similiar to this:
+As it was mentioned, there is minimal difference between quadratic and cubic fit. You can go ahead and write script taking third degree polynomial to fit  to data, or run snippet prepared in Jupyter Notebook. Both polynomials comparison should look similar to this:
 
 ![polynomials comparison-linear-fit][poly_comp]
 
@@ -465,7 +465,14 @@ array([  21.47501868,  103.41541963])
 
 {% endhighlight %}
 
-For absorbance equal 0.5 program returned two values: 21.47501868, 103.41541963. Quick look at the graph shows that value we are looking for is 21.475.
+For absorbance equal 0.5 program returned two values: 21.47501868 and 103.41541963. Quick look at the graph shows that value we are looking for is 21.475. 
+
+But why there are two values and how to identify correct one? It is easy If we o back to the fitting and check what kind of function was used to fit data. I used parabola (quadratic), ascending arm of the parabola to be exact. Therefore for each point within x range (5-70) one can expect that quadratic function will have additional solution from descending arm, outside of the x scope. In reality our fitting function looks like this:
+
+![quadratic fit full][quad_fit]
+
+That is why only points fitted within x data range make sense and rest is irrelevant. There is one concern, which is related to the maximum point, which may be placed within x data range and then plateau data may suffer from that, giving wrong results. Possibly for this data set. logarithmic function would be perfect. However from Beer-Lambert law we know, that only linear growth phase from 0.05 to 0.7 absorbance is relevant, thus accuracy of the asymptotic region can be neglected.
+
 
 <br>
 
@@ -509,3 +516,4 @@ Example Jupyter notebook can be downloaded from [GitHub][github].
 [cal_lin]:    /assets/03-03-2017/calibration-linear-fit.png
 [cal_poly]:   /assets/03-03-2017/calibration-polynomial-fit.png
 [poly_comp]:  /assets/03-03-2017/polynomial-comparison.png
+[quad_fit]:   /assets/03-03-2017/quadratic_fit.png
