@@ -442,15 +442,58 @@ As it was mentioned, there is minimal difference between quadratic and cubic fit
 
 #### Concnetration interpolation
 
-Interpolation of the unknown sample is simple as resolving one of the functions in respect to x. In case of linear regression transformation is trivial (rounded to four digits after the ):
+Interpolation of the unknown sample is simple as resolving one of the functions in respect to x. In case of linear regression transformation is trivial (rounded to four decimal places):
 
 $$ x = \frac{(absorbance - intercept)}{slope} = \frac{(absorbance - 0.176)}{0.0124}$$
 
 Lets calculate concentration for 0.5 absorbance:
 
-$$ x =  \frac{(0.5 - 0.176)}{0.0124} = 26.129 $$ 
+$$ x =  \frac{(0.5 - 0.176)}{0.0124} = 26.129 $$
 
-For second degree polynomial it is little bit more complicated. We can use well known math formula for quadratic equation roots, or ask numpy to calculate it for us. I will solve the equation \\(f(x) - y = 0\\) using `np.roots`, where \\(f(x)\\) is our polynomial:
+Althought this is fairly simple algebra, it can also be replaced by python computations. `sympy` module allows to perform symbolic math operations like this:
+
+{% highlight python %}
+import sympy as smp
+smp.init_printing(use_unicode=True)
+
+x, y = smp.symbols('x y')
+A, b = smp.symbols('A b', float=True)
+
+y = A*x+b
+
+smp.solveset(y, x)
+{% endhighlight %}
+
+$$  \left\{- \frac{b}{A}\right\} $$
+
+What this lines do? First two import sympy package and set some printing options. Next identify notrmal python variables x, y, A, b as sympy `Symbol()` objects. Further expression is set and solved against x. This approach calculates exact x for y equal 0. If I substitute y with some value, I will have to change expression to:
+
+{% highlight python %}
+expr = (A*x+b)-y
+
+smp.solveset(expr, x)
+{% endhighlight %}
+
+
+$$  \left\{- \frac{1}{A} \left(b - y\right)\right\} $$
+
+For second degree polynomial it is little bit more complicated. We can use well known math formula for quadratic equation roots, or ask sympy and numpy to calculate it for us. 
+
+To get exact symbolic solution:
+
+{% highlight python %}
+x, y = smp.symbols('x y')
+a1, a2, a3 = smp.symbols('a1 a2 a3', float=True)
+
+expr = (a1*x**2 + a2*x + a3) - y
+smp.solveset(expr, x)
+{% endhighlight %}
+
+Which results in:
+
+$$ \left\{- \frac{a_{2}}{2 a_{1}} - \frac{1}{2 a_{1}} \sqrt{- 4 a_{1} a_{3} + a_{2}^{2}}, - \frac{a_{2}}{2 a_{1}} + \frac{1}{2 a_{1}} \sqrt{- 4 a_{1} a_{3} + a_{2}^{2}}\right\} $$
+
+For numeric solution I will solve the equation \\(f(x) - y = 0\\) using `np.roots`, where \\(f(x)\\) is our polynomial:
 
 
 {% highlight python %}
@@ -467,7 +510,7 @@ array([  21.47501868,  103.41541963])
 
 For absorbance equal 0.5 program returned two values: 21.47501868 and 103.41541963. Quick look at the graph shows that value we are looking for is 21.475. 
 
-But why there are two values and how to identify correct one? It is easy If we o back to the fitting and check what kind of function was used to fit data. I used parabola (quadratic), ascending arm of the parabola to be exact. Therefore for each point within x range (5-70) one can expect that quadratic function will have additional solution from descending arm, outside of the x scope. In reality our fitting function looks like this:
+But why there are two values and how to identify correct one? It is easy If we go back to the fitting and check what kind of function was used to fit data. I used parabola (quadratic), ascending arm of the parabola to be exact. Therefore for each point within x range (5-70) one can expect that quadratic function will have additional solution from descending arm, outside of the x scope. In reality our fitting function looks like this:
 
 ![quadratic fit full][quad_fit]
 
