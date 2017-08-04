@@ -651,7 +651,7 @@ Scala programs compile to JVM bytecodes. Their
 run-time performance is usually on par with Java programs. Scala code can
 call Java methods, access Java fields, inherit from Java classes, and implement Java interfaces. 
 
-
+TODO
 
 
 ## Using all kernels
@@ -660,7 +660,7 @@ Jupyter notebook is language agnostic platform. It is able to support nearly 100
 
 https://jupyter-client.readthedocs.io/en/latest/kernels.html#kernelspecs
 
-
+TODO: NICE EXAMPLES
 
 https://ipython.readthedocs.io/en/latest/install/kernel_install.html
 
@@ -683,7 +683,7 @@ Available kernels:
 
 ## Summary
 
-There we are. Versatile, multi-language prototyping environment in the browser.
+Now we have versatile, multi-language prototyping environment in the browser.
 
 If you struggle between using python Julia, Scala or R, don't! Use all of them! At the same time in the same notebook, passing data structures between languages and perform analysis with the best tools they can offer. With Jupyter notebook it is all possible. It is possible to add even more players to the game. Julia, Haskel, Lua, bash, Octave... Pick whatever you can... Currently Jupyter supports nearly 100 different kernels (check [here][kernels]).
 
@@ -709,6 +709,6 @@ If you struggle between using python Julia, Scala or R, don't! Use all of them! 
 
 <!-- Images -->
 
-[bothkernels]:     /assets/23-04-2017-two-kernels.png
-[withrkernel]:     /assets/23-04-2017-r-kernel.png
-[withjuliakernel]: /assets/23-04-2017-julia-kernel.png
+[bothkernels]:     /assets/23-04-2017/two-kernels.png
+[withrkernel]:     /assets/23-04-2017/r-kernel.png
+[withjuliakernel]: /assets/23-04-2017/julia-kernel.png
