@@ -357,7 +357,7 @@ Consider the following example involving a set of six standard points (5, 10, 25
 
 
 <br>
-We can plot it to visualize data and get some general overview of the data shape, like that:
+It is quite easy to plot this points to visualize data and get some general overview of their shape, like that:
 
 
 {% highlight python %}
@@ -378,7 +378,7 @@ Not bad, six lines of code and plot is ready.
 
 #### Linear fit
 
-To fit our data to the line scipy tool will be used. Linear fit means we will try to find function with general definition:
+To fit the data to the line I will use `scipy` package. Linear fit means I will try to find function with general definition:
 
 $$y = Ax + b$$
 
@@ -387,7 +387,7 @@ where:
 * \\(A\\) - is slope
 * \\(b\\) - is intercept 
 
-Our specific function will have minimal error fitted for all points:
+and specific function will have minimal error value fitted for all points with least square regression.
 
 {% highlight python %}
 from scipy import stats
@@ -396,7 +396,7 @@ slope, intercept, r_value, p_value, std_err = stats.linregress(concentration, ab
 {% endhighlight %}
 
 
-Now plot points and line, that was fitted to them:
+Now I will visualize standard curve points and line fitted to them:
 
 {% highlight python %}
 # plot of fitted line
@@ -409,11 +409,11 @@ plt.grid(alpha=0.8)
 
 ![calibration-points][cal_lin]
 
-For this set of points linear regression fitting seems to be suboptimal choice. \\(R^2 = 0.8754454029810919\\). Lets try other type of function - polynomial.
+For this set of points linear fitting seems to be suboptimal choice. \\(R^2 = 0.8754454029810919\\). Lets try other type of function - polynomial.
 
 #### Polynomial fit
 
-Polynomial fitting will better reflect character of the points. In this data set there is step increase region with more flat part at the top, which makes line bat choice. It would be much better to fit other type of function, which will bent and reflect plateau at the end. Such functions are polynomials or logarithmic functions. Increasing polynomial degree increases fitting accuracy, however at some point gain of accuracy is negligible, while calculations become more complex. In this case second degree polynomial is sufficient. Fitting function creates list of coefficients for least-squares fit of the data points to the polynomial function described in general as: \\(p(x) = c_0 + c_1 x + ... + c_n x_n\\). I shall fit data to the second and third degree polynomial functions.
+Polynomial fitting may better reflect character of the points. In above data set there is step increase region with more flat part at the top. It would be much better to fit other type of function, which will be able to reflect plateau at the end. Such properties have polynomials or logarithmic functions. Lets try with second degree polynomial known as quadratic function. In this case second degree polynomial is sufficient. Fitting function creates list of coefficients for least-squares fit of the data points to the polynomial function described in general as: \\(p(x) = c_0 + c_1 x + ... + c_n x_n\\):
 
 {% highlight python %}
 #polynomial fit
@@ -431,12 +431,12 @@ plt.grid(alpha=0.8)
 ![calibration-linear-fit][cal_poly]
 
 
-Coefficients are: -0.03969222  0.03034985  -0.00024301. Therefore polynomial has form:
+Coefficients are: -0.03969222, 0.03034985, -0.00024301. Therefore polynomial has form:
 
 
-$$ y = -0.0396x^2 + 0.0303x - 0.00024$$
+$$ y = -0.0396x^2 + 0.0303x - 0.00024 $$
 
-As it was mentioned, there is minimal difference between quadratic and cubic fit. You can go ahead and write script taking third degree polynomial to fit  to data, or run snippet prepared in Jupyter Notebook. Both polynomials comparison should look similar to this:
+You can go ahead and write script taking third degree polynomial to fit the data, or run snippet prepared in Jupyter Notebook. As I mentioned before, there is minimal difference between quadratic and cubic fit. Both polynomials comparison should look similar to this:
 
 ![polynomials comparison-linear-fit][poly_comp]
 
@@ -450,7 +450,7 @@ Lets calculate concentration for 0.5 absorbance:
 
 $$ x =  \frac{(0.5 - 0.176)}{0.0124} = 26.129 $$
 
-Althought this is fairly simple algebra, it can also be replaced by python computations. `sympy` module allows to perform symbolic math operations like this:
+Althought this is very simple algebra, it can also be replaced by python computations. `sympy` module allows to perform symbolic math operations like this:
 
 {% highlight python %}
 import sympy as smp

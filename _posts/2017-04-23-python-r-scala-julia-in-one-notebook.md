@@ -8,7 +8,7 @@ categories: python R Scala Julia jupyter-notebook
 keywords:   python, R, Scala, Julia, jupyter notebook, data science
 ---
 
-Shall I use R, Julia, Scala or Python? The answer is: **Yes!** How to create versatile environment, in which different languages are available and able to communicate with each other? Without changing program you work in and where data may be passed between specific structures characteristic for the language? This post will show you how to do it with four most powerful languages used in Data Science: __Python__, __R__, __Scala__ and __Julia__.
+Use R, Julia, Scala or Python? The answer is: **Yes!** How to create versatile environment, in which different languages are available and able to communicate with each other? Without changing program you work in and where data may be passed between specific structures characteristic for the language? This post will show you how to do it with four most powerful languages used in Data Science: __Python__, __R__, __Scala__ and __Julia__.
 
 
 ## Introduction
