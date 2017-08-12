@@ -13,7 +13,9 @@ comments: true
     <p class="post-meta"><time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ page.date | date: "%b %-d, %Y" }}</time>{% if page.author %} • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{ page.author }}</span></span>{% endif %}{% if page.categories != empty %} • {% include category_links.html categories=page.categories %}{% endif %}</p>
   </header>
 
+  {% include read_time.html %}
   <div class="post-content" itemprop="articleBody">
+
     {{ content }}
   </div>
 {% include share.html %}

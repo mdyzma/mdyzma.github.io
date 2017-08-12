@@ -1,17 +1,17 @@
 ---
 layout:     post
 author:     Michal Dyzma
-title:      Setting Jenkins for python application
-date:       2017-03-23 01:15:08
+title:      Setting Jenkins CI for python application
+date:       2017-08-11 14:53:32
 comments:   true
 mathjakx:   false
 categories: python devops Jenkins
 keywords:   python, devops, Jenkins
 ---
 
-Jenkins is a self-contained, open source automation server which can be used to automate all sorts of tasks such as building, testing, and deploying software. Jenkins can be installed through native system packages, Docker, or even run standalone by any machine with the Java Runtime Environment installed.
+Jenkins is a open source automation server which can run any task we can think of. It is used to automate all sorts of tasks such as building, testing, and deploying software. Jenkins can be installed through native system packages, Docker, or even run standalone by any machine with the Java Runtime Environment installed. In this article I will show how to set up complete CI/CD pipeline for python application using Jenkins.
 
-Installing Jenkins
+## Installing Jenkins & plugins
 
 Installing the Git plugin
 

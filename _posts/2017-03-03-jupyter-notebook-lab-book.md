@@ -54,7 +54,7 @@ Anaconda will install nearly 200 packages (182 to be exact), including most impo
 
 # Anaconda channels
 
-`conda` is built in Anaconda package manager, which uses default, maintained by Contunuum Analytics python packages repository. Some packages are distributed in repositories owned by groups other than Anaconda team. Repositories are called channels. One can indicate channel simply by choosing `-c` or `--channel` flag during invoking `conda install` command. Some of the channels are supported by continuum Analytics, like `conda-forge`, `omnia` or `r`. They are full of excellent packages developed by Anaconda community. Every time I mention I want to use other channel than default, conda will check this repositories for available packages. It is possible to add this channels to the `.condarc` file (see: [here][condarc]). First config file must be created by running `conda config` command. If other version of this file is placed in Anaconda installation root directory it will override  users home configuration. to notify package manager, that every time  I want to install something this channels should be checked. Order of repositories is important. In case packages are deployed to both repositories listed in channels section, last repository super-seeds all above it. Example file looks like this:
+`conda` is built in Anaconda package manager, which uses default, maintained by Continuum Analytics python packages repository. Some packages are distributed in repositories owned by groups other than Anaconda team. Repositories are called channels. One can indicate channel simply by choosing `-c` or `--channel` flag during invoking `conda install` command. Some of the channels are supported by continuum Analytics, like `conda-forge`, `omnia` or `r`. They are full of excellent packages developed by Anaconda community. Every time I mention I want to use other channel than default, conda will check this repositories for available packages. It is possible to add this channels to the `.condarc` file (see: [here][condarc]). First config file must be created by running `conda config` command. If other version of this file is placed in Anaconda installation root directory it will override  users home configuration. to notify package manager, that every time  I want to install something this channels should be checked. Order of repositories is important. In case packages are deployed to both repositories listed in channels section, last repository super-seeds all above it. Example file looks like this:
 
 {% highlight bash %}
 
@@ -340,7 +340,7 @@ Knowing epsilon just simply solve standard Beer-Lamber equation for \\(c\\). Ano
 
 #### Calibration curve
 
-Consider the following example involving a set of six standard points (5, 10, 25, 30, 40, 50, 60, and 70 µg/mL). Absorbance: (0.106, 0.236, 0.544, 0.690, 0.791, 0.861, 0.882, 0.911). I have two collumns of x and y values of the calibration curve points.
+Consider the following example involving a set of six standard points (5, 10, 25, 30, 40, 50, 60, and 70 µg/mL). Absorbance: (0.106, 0.236, 0.544, 0.690, 0.791, 0.861, 0.882, 0.911). I have two columns of x and y values of the calibration curve points.
 
 |-----+-+--------:|
 |Conc.| | Abs.    |
@@ -466,7 +466,7 @@ smp.solveset(y, x)
 
 $$  \left\{- \frac{b}{A}\right\} $$
 
-What this lines do? First two import sympy package and set some printing options. Next identify notrmal python variables x, y, A, b as sympy `Symbol()` objects. Further expression is set and solved against x. This approach calculates exact x for y equal 0. If I substitute y with some value, I will have to change expression to:
+What this lines do? First two import sympy package and set some printing options. Next identify normal python variables x, y, A, b as sympy `Symbol()` objects. Further expression is set and solved against x. This approach calculates exact x for y equal 0. If I substitute y with some value, I will have to change expression to:
 
 {% highlight python %}
 expr = (A*x+b)-y
