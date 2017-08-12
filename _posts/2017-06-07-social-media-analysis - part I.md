@@ -345,12 +345,12 @@ class DevConfiguration(BaseConfiguration):
 
 We can always add other values like API keys later.
 
-Having configuration classes we can tell flask app to manage it dynamically. To do that we have to set environmental variable `APP_SETTINGS` with value related to the environment app is running. On Heroku server it will be `config.ProdConfiguration` on development environment it will be `config.DevConfiguration`. To set environmental variable in linux type: `export APP_SETTINGS="config.<NameOfClass>`. If we are going to employ environmental variable governing type of configuration, our `app.py` will be:
+Having configuration classes we can tell flask app to manage it dynamically. To do that we have to set environmental variable `APP_SETTINGS` with value related to the environment app is running. On Heroku server it will be `config.ProdConfiguration` on development environment it will be `config_app.DevConfiguration`. To set environmental variable in linux type: `export APP_SETTINGS=config_app.<NameOfClass> (i.e. export APP_SETTINGS=config_app.DevConfiguration) If we are going to employ environmental variable governing type of configuration, our `app.py` will be:
 
 {% highlight python %}
 import os
 from flask import Flask
-import config
+import config_app
 
 
 app = Flask(__name__)
@@ -465,7 +465,7 @@ Creating md-analytics-stage... done, region is eu
 https://md-analytics-stage.herokuapp.com/ | https://git.heroku.com/md-analytics-stage.git
 {% endhighlight %}
 
-Order in which apps are created is relevant, because HerokuCLI will add extra remote repository link for our app git, which will point to the heroku. In fact it is important only if we push changes to Heroku manually (travis has specified app and branch in yml file), but it is good to know which environment is being updated:
+Order in which apps are created is relevant, because HerokuCLI will add extra remote repository link for our app git, which will point to the Heroku. In fact it is important only if we push changes to Heroku manually (travis has specified app and branch in .yml file), but it is good to know which environment is being updated:
 
 
 {% highlight bash %}
@@ -494,9 +494,9 @@ Created apps are empty. All we have is default Heroku message, that our WSGI pyt
 Now we have to set environmental variables, our app relies on and upload application files to the remote location:
 
 {% highlight bash %}
-(md_analytics) [mdyzma@devbox md_analytics]$ heroku config:set --app md-analytics-stage APP_SETTINGS=config.ProdConfiguration
+(md_analytics) [mdyzma@devbox md_analytics]$ heroku config:set --app md-analytics-stage APP_SETTINGS=config_app.ProdConfiguration
 Setting APP_SETTINGS... done
-APP_SETTINGS: config.ProdConfiguration
+APP_SETTINGS: config_app.ProdConfiguration
 {% endhighlight %}
 
 To upload files directly from local master branch to remote heroku repo type:
@@ -574,9 +574,9 @@ Because app was launched without errors, I will promote staging environment to p
 Unfortunately promoting app does not copy environment's variables, therefore we have to set app specific variables for production as well:
 
 {% highlight bash %}
-(md_analytics) [mdyzma@devbox md_analytics]$ heroku config:set --app md-analytics APP_SETTINGS=config.ProdConfiguration
+(md_analytics) [mdyzma@devbox md_analytics]$ heroku config:set --app md-analytics APP_SETTINGS=config_app.ProdConfiguration
 Setting APP_SETTINGS and restarting md-analytics... done, v4
-APP_SETTINGS: config.ProdConfiguration
+APP_SETTINGS: config_app.ProdConfiguration
 {% endhighlight %}
 
 Now both - staging and production environments run Flask app flawlessly.
