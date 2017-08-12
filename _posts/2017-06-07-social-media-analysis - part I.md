@@ -9,7 +9,7 @@ categories: python social-media Flask machine-learning
 keywords:   python, twitter, Flask, machine-learning
 ---
 
-Flask application presenting social media accounts analysis in form of dashboard.  Application implements "oAuth sign in mechanisms", specific account data analysis (statistics, EDA, machine learning). It transforms various data sources into clear and concise report. Draws followers and friends network. It is Heroku-deployable. Under version control, tested and CI/CD ready.
+Flask application presenting social media accounts analysis in form of dashboard.  Application implements "oAuth sign in mechanisms", specific account data analysis (statistics, EDA, machine learning). It transforms various data sources into clear and concise report. Draws followers and friends networks. It is Heroku-deployable. Under version control, tested and CI/CD ready.
 
 
 -----
@@ -41,7 +41,7 @@ Flask application presenting social media accounts analysis in form of dashboard
 
 # Application description
 
-Web application displaying properties of the twitter account. Analyzed properties include:
+Web application displaying summary of the social media account. Analyzed properties include:
 
 - time-line statistics
 - posts semantic analysis
@@ -53,7 +53,7 @@ Web application displaying properties of the twitter account. Analyzed propertie
 ## Roles specification
 
 Story to implement:
-As a user I want to see results of my twitter account analysis in form of dashboard page.
+As a user I want to see results of my social media account analysis in form of dashboard page.
 Steps:
 
 1. I go to “/” page
@@ -70,7 +70,7 @@ Steps:
 6. I follow oAuth flow authorization
 7. I get redirected to “/dashboard/user/[SocialMediaName] page
 8. I see :
-    - timeline statistics (number of my posts, re-tweeted posts)
+    - timeline statistics (number of my posts, % of posts wit response etc.)
     - general assessment of all my posts (positive, neutral, negative)
     - social network analysis i.e. followers and/or friends statistics (counts of both groups)
     - a drop-down menu to display list of my:
@@ -85,7 +85,7 @@ Steps:
     - followers graph (users as nodes, connections as edges)
     - friends graph (users as nodes, connections as edges)
 9. I can export chosen list to the JSON or CVS file
-10. I can export chosen graph to 
+10. I can export chosen graph to JSON or CVS
 9. I can log out from the session
 10. When I log out I am directed to "/" page
 
@@ -104,7 +104,7 @@ Steps:
 
 # Setting up a development environment
 
-Flask is written in Python, so before we can start writing Flask apps we must ensure that Python is installed. After Python we have to make sure we have all necessary packages. Simple `pip list` will show all installed packages. New Python distributions come with basic package manager `pip` and tools helping in packages distribution: `setuptools` and `wheel`.
+Make sure that Python is installed. After Python we have to make sure we have all necessary packages. Simple `pip list` will show all installed packages. New Python distributions come with basic package manager `pip` and tools helping in packages distribution: `setuptools` and `wheel`.
 
 {% highlight bash %}
 [mdyzma@devbox ~]$ pip list
@@ -128,7 +128,7 @@ Successfully installed virtualenv-15.1.0
 
 ## Virtual environments management
 
-Now that we have the proper tools installed, we are ready to create our first Flask application. First of all we need virtual environment specific for our application. It is a good practice to separate environment working directory and application folder, to avoid putting large folders under version control. What I do usually is to create `.envs` folder in user's home directory and keep all virtual envs there.
+Now that we have the proper tools installed, we are ready to create our first Flask application. First of all we need virtual environment specific for our application. It is a good practice to separate environment working directory and application folder, to avoid putting heavy folders under version control (some virtual environments can have hundreds of MB). What I do usually is to create `.envs` folder in user's home directory and keep all virtual envs there.
 
 {% highlight bash %}
 [mdyzma@devbox /]$ virtualenv ~/.envs/md_analytics
@@ -158,7 +158,7 @@ Setting flask app is a multi-step process, which can be automated with some awes
 
 ## Basic file/folder structure
 
-It is not required from Flask application to follow particular folder structure like Django application. Only thing is, files should keep names understood by Flask. Although it is not required, it is advised to structure app a bit to speed up development, testing etc. Our twitter app follows this setup:
+It is not required from Flask application to follow particular folder structure like Django application. Only thing is, files should keep names understood by Flask. Although it is not required, it is advised to structure app a bit to speed up development, testing etc. Our app structure is as follows:
 
 
 {% highlight python %}
@@ -168,7 +168,7 @@ It is not required from Flask application to follow particular folder structure 
 |-- .travis.yml
 |-- app.json
 |-- app.py
-|-- config.py
+|-- config_app.py
 |-- docs
 |   |-- make.bat
 |   |-- Makefile
@@ -238,9 +238,9 @@ Collecting Flask
 Successfully installed Flask-0.12.2 Jinja2-2.9.6 MarkupSafe-1.0 Werkzeug-0.12.2 click-6.7 itsdangerous-0.24
 {% endhighlight %}
 
-Flask and its dependencies were installed. It is good to keep requirements in separate file, to ensure all necessary packages can be installed automatically and do not pollute application directory. 
+Flask and its dependencies were installed. It is good to keep requirements in separate file, to ensure all necessary packages can be installed automatically with a single command and to not pollute application directory. 
 
-Currently we have enough to run basic flask application. To test our environment lets write "Hello Flask" tryout. It will use basic routing mechanism to show "Hello Flask!" on the page. Create `md_analytics` folder and `app.py` file in it. In the app Python file type:
+Currently we have enough to run basic flask application. To test our environment lets write "Hello Flask" tryout. It will use basic routing mechanism to show "Hello Flask!" on the page. First Create `md_analytics` folder and `app.py` file in it. In the app Python file type:
 
 
 {% highlight python %}
@@ -256,7 +256,7 @@ if __name__ == '__main__':
     app.run(debug=True)
 {% endhighlight %}
 
-This code creates instance of `Flask` class which is the central object in any Flask project. It has all utilities necessary to create dynamic WSGI app. Running it will initiate local server with single route answering all requests. Name of the view is index, since it is default name, that is looked up by browsers. When we enter domain address (127.0.0.1:5000 in this case) flask will make sure that `index` view is presented in response. Index view is whatever stands after `index()` return statement. If statement on the other hand is Python convention that ensures that the app will run properly when it is called as a Python script from bash.
+This code creates instance of `Flask` class which is the central object in any Flask project. It has all utilities necessary to start dynamic WSGI app. Running it will initiate local server with single route "/" answering all requests. Name of the view is index, since it is default name, that is looked up by all browsers. When we enter domain address (127.0.0.1:5000 in this case) flask will make sure that `index` view is presented in response. Index view is whatever stands after `index()` function return statement. If statement at the end of the file is Python convention that ensures that the app will run properly when it is called as a Python script from bash.
 
 {% highlight bash %}
 (md_analytics) [mdyzma@devbox md_analytics]$ python app.py
@@ -299,8 +299,17 @@ Now we will link `requirements/prod.txt` to the `requirements/dev.txt`, so that 
 {% highlight bash %}
 # requirements/prod.txt
 
+# Everything needed in production
+# Flask
 Flask==0.12.2
+
+# Deployment
+gunicorn==19.7.1
+
 {% endhighlight %}
+
+We will add more dependencies with app growth.
+
 
 {% highlight bash %}
 # requirements/dev.txt
@@ -324,7 +333,7 @@ Calling main requirements is enough to get application up and running, however f
 
 ## Configuration management
 
-Configuration package will manage different collections of application settings. Basic config class sets just some basic values. Environment specific setting are set in children classes.
+Configuration package will manage different collections of application settings. Basic config class sets just some basic values common for all dev and production environments. Environment specific settings are set in children classes.
 
 {% highlight python %}
 # config.py
@@ -332,6 +341,7 @@ import os
 
 class BaseConfiguration(object):
     APPLICATION_DIR = os.path.dirname(os.path.realpath(__file__))
+    # temporary SQLite db -> will switch to Postgress on Heroku
     SQLALCHEMY_DATABASE_URI = 'sqlite:///{}/twa.db'.format(APPLICATION_DIR)
     DEBUG = False
     SECRET_KEY = os.urandom(24)
@@ -345,7 +355,7 @@ class DevConfiguration(BaseConfiguration):
 
 We can always add other values like API keys later.
 
-Having configuration classes we can tell flask app to manage it dynamically. To do that we have to set environmental variable `APP_SETTINGS` with value related to the environment app is running. On Heroku server it will be `config.ProdConfiguration` on development environment it will be `config_app.DevConfiguration`. To set environmental variable in linux type: `export APP_SETTINGS=config_app.<NameOfClass> (i.e. export APP_SETTINGS=config_app.DevConfiguration) If we are going to employ environmental variable governing type of configuration, our `app.py` will be:
+Having configuration classes we can tell flask app to manage it dynamically. To do that we have to set environmental variable `APP_SETTINGS` which value will be dependent on the environment our app is running. On Heroku server it will be `config_app.ProdConfiguration` on development environment it will be `config_app.DevConfiguration`. To set environmental variable in Linux type: `export APP_SETTINGS=config_app.<NameOfClass>` (i.e. export APP_SETTINGS=config_app.DevConfiguration). To make it permanent we should place export statement in `~/.bashrc` file. On Windows instead of export we will use `set APP_SETTINGS=config_app.<NameOfClass>`. If we are going to employ environmental variable governing type of configuration, our `app.py` should change:
 
 {% highlight python %}
 import os
@@ -371,9 +381,9 @@ if __name__ == '__main__':
 
 # Continuous integration
 
-We will use TravisCI, however it is also possible to build automatic system with GitLab, Jenkins or BuildBot. There are separate articles on this blog describing specific CI/CD options.
+We will use TravisCI, but it is also possible to build automatic system with GitLab, Jenkins or BuildBot. There are (or will be) separate articles on this blog describing specific CI/CD options.
 
-To set TravisCI we have to place `.travis.yaml` file in the application root directory. It will contain instructions for TravisCI service what language we use (Python), which versions (2.7, 3.6 and nightly build), how to test application, how to create basic metrics (like test coverage, which will be further processed by [Coveralls.io](https://coveralls.io) service) and finally how to deploy it to the Heroku upon successfully finishing all steps (for detail description of Heroku deployment, see [here](#heroku)). `.travis.yml` file will look similar to this:
+To set TravisCI we have to place `.travis.yml` file in the application root directory. It will contain instructions for TravisCI service what language we use (Python), which versions (2.7, 3.6 and nightly build), how to test application, how to create basic metrics (like test coverage, which will be further processed by [Coveralls.io](https://coveralls.io) service) and finally how to deploy it to the Heroku upon successfully finishing all steps (for detail description of Heroku deployment, see [here](#heroku)). ".travis.yml" file will look similar to this:
 
 {% highlight yml %}
 # .travis.yml
@@ -426,15 +436,53 @@ This appended `.travis.yml` file with encoded. The only thing left to be done is
 # Heroku deployment
 
 
-For deployment we will use Heroku service. It is good practice to stage changes first and check consistency, and after acceptance tests are over promote stage application to the deployment, where it is accessible for users.
+For deployment we will use Heroku service. It is good practice to stage changes first and check consistency, and after acceptance tests pass, promote staged application to the production, where it is accessible for users. To achieve that we have to create two separate applications. But first we have to add to our application files required by Heroku:
 
-To achieve that we have to create two separate applications. It can be done via Heroku web interface or command line interface. First we need to make sure [HerokuCLI](https://toolbelt.heroku.com) is installed. From my experience as Fedora user it is better to install Heroku official standalone version, instead of Heroku Ruby gem. After successful installation we can proceed and use it to create two separate applications. I called mine: `md-analytics-staging` for staging environment, where app is "finally tested" and `md-analytics` for production environment (app released for users). We will do it in three steps:
+{% highlight bash %}
+# app.json - for "single-button" deployment
 
-1. With HerokuCLI: create apps
-2. create pipeline add apps to the pipeline 
+{
+  "name": "MD Analytics",
+  "description": "Python-Flask app, which displays social media accounts data analysis.",
+  "image": "heroku/python",
+  "repository": "https://github.com/mdyzma/md_analytics.git",
+  "env": {
+    "APP_SETTINGS":{
+      "description": "Application configuration setting.",
+      "value": "config_app.ProdConfiguration"
+    }
+  },
+  "keywords": ["python", "heroku", "social-media"]
+}
+{% endhighlight %}
+
+{% highlight bash %}
+# Procfile - uses gunicorn to launch python app
+
+web: gunicorn app:app
+
+# launching app:
+# $ heroku local
+{% endhighlight %}
+
+... and because gunicorn works only on "nix" systems, we need simple app call for windows
+
+{% highlight bash %}
+# Procfile.windows
+
+web: python app.py
+
+# launching app:
+# $ heroku local -f Procfile.windows
+{% endhighlight %}
+
+App creation can be done via Heroku web interface or command line tool. First we need to make sure [HerokuCLI](https://toolbelt.heroku.com) is installed. Piece of advice for Fedora users: from my experience it is better to install Heroku official, standalone version, instead of Heroku Ruby gem. It causes less problems. After successful HerokuCLI installation we can proceed and use it to create two separate applications. I called mine: `md-analytics-stage` for staging environment, where app undergoes "acceptance tests" and `md-analytics` for production environment (app released for users). We will do it in three steps:
+
+1. Create __md-analytics__ and __md-analytics-stage__ apps
+2. Create __md-analytics__ pipeline (group of applications sharing same codebase) and add apps to it
 2. push files manually to Heroku (later CI system will deploy app to the staging environment upon success. Then after inspecting it app can be manually promoted to `md-analytics`. 
 
-Lets create applications on Heroku service and bind them with a pipeline (group of applications sharing same codebase). I assume we have an application running on local machine. First login to Heroku service:
+I assume we have an application running on local machine. Lets create applications on Heroku service and bind them with a pipeline. First login to Heroku service:
 
 {% highlight bash %}
 [mdyzma@devbox md_analytics]$ heroku login
@@ -445,7 +493,7 @@ Two-factor code: ******
 Logged in as mdyzma@gmail.com
 {% endhighlight %}
 
-First lets pull GitHub repository. Files will be pushed to the created Heroku application manually (once we configure Travis, it will be done automatically):
+Pull GitHub repository. Later on files will be pushed to the created Heroku application manually (once we configure Travis, it will be done automatically):
 
 {% highlight bash %}
 (md_analytics) [mdyzma@devbox ~]$ git clone https://github.com/mdyzma/md_analytics.git
@@ -465,8 +513,7 @@ Creating md-analytics-stage... done, region is eu
 https://md-analytics-stage.herokuapp.com/ | https://git.heroku.com/md-analytics-stage.git
 {% endhighlight %}
 
-Order in which apps are created is relevant, because HerokuCLI will add extra remote repository link for our app git, which will point to the Heroku. In fact it is important only if we push changes to Heroku manually (travis has specified app and branch in .yml file), but it is good to know which environment is being updated:
-
+Order in which apps were created is relevant, because HerokuCLI will add extra remote address to our app's git. Address will point to the app repository on Heroku, which was created last and we want it to be stage (remember that production promotion is done manually).
 
 {% highlight bash %}
 (md_analytics) [mdyzma@devbox md_analytics]$ git remote -v
