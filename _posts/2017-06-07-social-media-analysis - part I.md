@@ -24,20 +24,24 @@ Flask application presenting social media accounts analysis in form of dashboard
 
 ## Part I
 
-0. [Application description](#description)
-1. [Setting up a development environment](#setting)
-3. [Setting Flask application](#set_flask)
-    * [Basic file/folder structure](#flask_structure)
-    * [Install & test Flask](#install_test_flask)
+0. [Application description](#application-description)
+1. [Setting up a development environment](#setting-up-a-development-environment)
+2. [Basic file structure](#basic-file-structure)
+3. [Documentation](#documentation)
+4. [Setting Flask application](#setting-flask-application)
+    * [Install Flask](#install-flask)
     * [Requirements](#requirements)
-    * [Configuration management](#config_management)
+    * [Configuration management](#configuration-management)
+    * [Flask app factory](#flask-app-factory)
+    * [Test Flask app](#test-flask-app)
 
-4. [Continuous integration](#set_cicd)
-5. [Heroku deployment](#heroku)
+5. [Continuous integration](#continuous-integration)
+6. [Heroku deployment](#heroku-deployment)
+7. [Summary](#summary)
 
 -----
 
-<a name="description"></a>
+<!-- <a name="description"></a> -->
 
 # Application description
 
@@ -100,7 +104,7 @@ Steps:
 
 
 
-<a name="setting"></a>
+<!-- <a name="setting"></a> -->
 
 # Setting up a development environment
 
@@ -147,84 +151,116 @@ Now we can activate `md_analytics` virtual environment:
 From now on, whenever we want to work on our app and environment is not activated, we have to activate it first. Changed prompt will inform us that now we use "local" python. All packages installed in active environment will be connected to it. To deactivate environment simply type `source deactivate`.
 
 
-<a name="set_flask"></a>
+<!-- <a name="flask_structure"></a> -->
+
+# Basic file structure
+
+It is not required from Flask application to follow particular folder structure like Django application. Only thing is, files should keep names understood by Flask. Although it is not required, it is advised to structure app a bit to ensure maximum modularity and speed up development, testing etc. Our app structure comprises of three large parts: 
+
+* __docs__ - package documentation linked to [ReadTheDocs](http://md-analytics.readthedocs.io/en/latest/?badge=latest)
+* __md_analytics__ module - the app itself wih login, register and dashboard mechanics
+* __requirements__ - dependencies for each environment
+* __tests__ - suit of test for entire app
+* boilerplate files for version control, coverage metrics and deployment
+
+General structure is listed below:
+
+{% highlight python %}
+(md_analytics) [mdyzma@devbox md_analytics]$ tree .
+.
+|
+|-- docs/
+|   |-- make.bat
+|   |-- Makefile
+|   `-- source/
+|       |-- _static/
+|       |-- _templates/
+|       |-- conf.py
+|       `-- index.rst
+|
+|-- md_analytics/
+|   |-- static/
+|   |-- templates/
+|   |-- __init__.py
+|   |-- app.py
+|   `-- settings.py
+|
+|-- requirements/
+|   |-- dev.txt
+|   `-- prod.txt
+|
+|-- tests/
+|   `-- md_analytics/
+|       |-- test_app.py
+|       `-- test_settings.py
+|
+|-- __init__.py
+|-- .gitignore
+|-- .travis.yml
+|-- app.json
+|-- LICENSE
+|-- manage.py
+|-- Procfile
+|-- Procfile.windows
+|-- README.md
+`-- requirements.txt
+{% endhighlight %}
+
+Most of the files in this make up are self-explanatory. There are several files like `app.json` or `Procfile`which are elements of [Heroku](https://www.heroku.com) machinery. Rest belong to the elements of VCS or CI  and ensure smooth development. Detailed description is given in table:
+
+|--------------------------+-+----------------------------------------------------------------|
+|File                      | | Description                                                    |
+|:-------------------------|-|:---------------------------------------------------------------|
+| app.json                 | | Orchestrates steps involved in automatic deployment on Heroku. |
+| Procfile                 | | Declares commands run by application on the Heroku platform.   |
+| manage.py                | | Entry-point for executing our application                      |
+| .travis.yml              | | Instructions for TravisCI service                              |
+| docs/conf.py             | | Sphinx configuration                                           |
+| md_analytics/app.py      | | Flask app factory                                              |
+| md_analytics/settings.py | | Flask application configuration variables                      |
+|--------------------------+-+----------------------------------------------------------------|
+
+<!-- <a name="docs"></a> -->
+## Documentation
+
+Project documentation is place in `docs` folder and is based on excelent Python `Sphinx` module. Folder is linked to [ReadTheDocs](http://md-analytics.readthedocs.io/en/latest/?badge=latest), so that every change in GitHub repository initiates documentation rebuild. Hearth of the documentation is `conf.py` file, where all extensions and static pages generator properties are configured. To manually start rebuild type:
+
+{% highlight bash %}
+(md_analytics) [mdyzma@devbox md_analytics]$ make html
+
+Running Sphinx v1.5.6
+making output directory...
+loading pickled environment... not yet created
+building [mo]: targets for 0 po files that are out of date
+building [html]: targets for 1 source files that are out of date
+updating environment: 1 added, 0 changed, 0 removed
+reading sources... [100%] index
+looking for now-outdated files... none found
+pickling environment... done
+checking consistency... done
+preparing documents... done
+writing output... [100%] index
+generating indices... genindex
+writing additional pages... search
+copying static files... done
+copying extra files... done
+dumping search index in English (code: en) ... done
+dumping object inventory... done
+build succeeded.
+
+Build finished. The HTML pages are in build\html.
+{% endhighlight %}
+
+Content is written in __reStructuredText__ markup language. For more check [here](http://www.sphinx-doc.org/en/stable/rest.html).
+
 
 # Setting Flask application
 
 Setting flask app is a multi-step process, which can be automated with some awesome python tools like [cookiecutter](https://github.com/audreyr/cookiecutter#python), but here we will go step by step to learn it in detail. First we will plan basic application structure, install Flask and test installation, then create automatic configuration mechanism, semi-automatic dependencies installation and finally continuous integration and deployment of the app on Heroku. All tested and under version control (on GitHub).
 
 
-<a name="flask_structure"></a>
 
-## Basic file/folder structure
-
-It is not required from Flask application to follow particular folder structure like Django application. Only thing is, files should keep names understood by Flask. Although it is not required, it is advised to structure app a bit to speed up development, testing etc. Our app structure is as follows:
-
-
-{% highlight python %}
-(md_analytics) [mdyzma@devbox md_analytics]$ tree .
-.
-|-- .gitignore
-|-- .travis.yml
-|-- app.json
-|-- app.py
-|-- config_app.py
-|-- docs
-|   |-- make.bat
-|   |-- Makefile
-|   `-- source
-|       |-- conf.py
-|       |-- index.rst
-|       |-- _static
-|       `-- _templates
-|-- LICENSE
-|-- Procfile
-|-- Procfile.windows
-|-- README.md
-|-- requirements.txt
-|-- requirements
-|   |-- dev.txt
-|   `-- prod.txt
-|-- static
-|-- templates
-|   |-- footer.html
-|   |-- layout.html
-|   `-- nav.html
-|-- tests
-|   |-- test_app.py
-|   |-- test_config.py
-|   `-- md_analytics
-|       |-- test_acquisition.py
-|       |-- test_followers.py
-|       |-- test_friends.py
-|       |-- test_oauth.py
-|       `-- test_timeline.py
-|       
-`-- md_analytics
-    |-- __init__.py
-    |-- acquisition.py
-    |-- followers.py
-    |-- friends.py
-    |-- oauth.py
-    `-- timeline.py
-{% endhighlight %}
-
-Most of the files in this make up are self-explanatory. There are several files like `app.json` or `Procfile`which are elements of [Heroku](https://www.heroku.com) machinery. Rest belong to the elements of CI, which ensures consistency and regression compatibility. Detailed description is given in table below:
-
-|-------------+-+--------------------------------------------------------------------------------------------|
-|File         | | Description                                                                                |
-|:------------|-|:-------------------------------------------------------------------------------------------|
-| app.json    | | Orchestrates the different steps involved in getting an application deployed on Heroku.    |
-| Procfile    | | Declares what commands are run by application on the Heroku platform.                      |
-| app.py      | | Flask app                                                                                  |
-| config.py   | | Flask configuration settings                                                               |
-| .travis.yml | | Instructions for TravisCI service                                                          |
-|-------------+-+--------------------------------------------------------------------------------------------|
-
-
-<a name="install_test_flask"></a>
-
-## Install & test Flask
+## Install Flask
 
 Activate virtual environment and install `Flask` locally (command bellow will install this package and it's dependencies):
 
@@ -240,11 +276,13 @@ Successfully installed Flask-0.12.2 Jinja2-2.9.6 MarkupSafe-1.0 Werkzeug-0.12.2 
 
 Flask and its dependencies were installed. It is good to keep requirements in separate file, to ensure all necessary packages can be installed automatically with a single command and to not pollute application directory. 
 
-Currently we have enough to run basic flask application. To test our environment lets write "Hello Flask" tryout. It will use basic routing mechanism to show "Hello Flask!" on the page. First Create `md_analytics` folder and `app.py` file in it. In the app Python file type:
+Currently we have enough to run basic flask application. To test our environment lets write "Hello Flask" tryout. It will use basic routing mechanism to show "Hello Flask!" on the page. First Create `md_analytics` package and `app.py` file in it. In the app Python file type:
 
 
 {% highlight python %}
-from flask import Flask, 
+# app.py
+from flask import Flask
+from flask import Flask
 
 app = Flask(__name__)
 
@@ -254,9 +292,10 @@ def index():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 {% endhighlight %}
 
-This code creates instance of `Flask` class which is the central object in any Flask project. It has all utilities necessary to start dynamic WSGI app. Running it will initiate local server with single route "/" answering all requests. Name of the view is index, since it is default name, that is looked up by all browsers. When we enter domain address (127.0.0.1:5000 in this case) flask will make sure that `index` view is presented in response. Index view is whatever stands after `index()` function return statement. If statement at the end of the file is Python convention that ensures that the app will run properly when it is called as a Python script from bash.
+This "toy" code creates instance of `Flask` class which is the central object in any Flask project. It has all utilities necessary to start dynamic WSGI app. Running it will initiate local server with single route "/" answering all requests. Name of the view is index, since it is default name, that is looked up by all browsers. When we enter domain address (127.0.0.1:5000 in this case) flask will make sure that `index` view is presented in response. Index view is whatever stands after `index()` function return statement. If statement at the end of the file is Python convention that ensures that the app will run properly when it is called as a Python script from bash.
 
 {% highlight bash %}
 (md_analytics) [mdyzma@devbox md_analytics]$ python app.py
@@ -272,7 +311,6 @@ This code creates instance of `Flask` class which is the central object in any F
 
 Worked! We are ready to create "real" application and real unit tests. 
 
-<a name="requirements"></a>
 
 ## Requirements
 
@@ -290,12 +328,14 @@ Worked! We are ready to create "real" application and real unit tests.
 
 Now we will link `requirements/prod.txt` to the `requirements/dev.txt`, so that installing development dependencies will also install all required in production (which means when application runs after deployment).
 
+__requirements.txt__
 {% highlight bash %}
 # requirements.txt
 
 -r requirements/prod.txt
 {% endhighlight %}
 
+__requirements/prod.txt__
 {% highlight bash %}
 # requirements/prod.txt
 
@@ -306,15 +346,25 @@ Flask==0.12.2
 # Deployment
 gunicorn==19.7.1
 
+# App command line
+Flask-Script==2.0.5
 {% endhighlight %}
 
-We will add more dependencies with app growth.
+We will add more dependencies while app grows.
 
-
+__requirements/dev.txt__
 {% highlight bash %}
 # requirements/dev.txt
 
 -r prod.txt
+
+# Debug
+Flask-DebugToolbar==0.10.1
+
+# Test
+coveralls==1.1
+pytest==3.2.1
+pytest-cov==2.5.1
 {% endhighlight %}
 
 Installing requirements is easy as calling:
@@ -329,55 +379,178 @@ Calling main requirements is enough to get application up and running, however f
 (md_analytics) [mdyzma@devbox md_analytics]$ pip install -r requirements/dev.txt
 {% endhighlight %}
 
-<a name="config_management"></a>
 
 ## Configuration management
 
-Configuration package will manage different collections of application settings. Basic config class sets just some basic values common for all dev and production environments. Environment specific settings are set in children classes.
+Configurations are kept in `settings.py` in main app folder. It will store different collections of application settings. Basic config class sets just some basic values common for all dev and production environments. Environment specific settings are set in children classes.
 
 {% highlight python %}
-# config.py
+# -*- coding: utf-8 -*-
 import os
 
-class BaseConfiguration(object):
-    APPLICATION_DIR = os.path.dirname(os.path.realpath(__file__))
-    # temporary SQLite db -> will switch to Postgress on Heroku
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///{}/twa.db'.format(APPLICATION_DIR)
-    DEBUG = False
+
+class Config(object):
     SECRET_KEY = os.urandom(24)
+    APP_DIR = os.path.abspath(os.path.dirname(__file__))  # This directory
+    PROJECT_ROOT = os.path.abspath(os.path.join(APP_DIR, os.pardir))
+    BCRYPT_LOG_ROUNDS = 13
+    ASSETS_DEBUG = False
+    DEBUG_TB_ENABLED = False  # Disable Debug toolbar
+    DEBUG_TB_INTERCEPT_REDIRECTS = False
+    CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
 
-class ProdConfiguration(BaseConfiguration):
+
+class ProdConfig(Config):
+    """Production configuration."""
+    ENV = 'prod'
     DEBUG = False
+    SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/example'  # TODO: Change me
+    DEBUG_TB_ENABLED = False  # Disable Debug toolbar
 
-class DevConfiguration(BaseConfiguration):
+
+class DevConfig(Config):
+    """Development configuration."""
+    ENV = 'dev'
     DEBUG = True
+    DB_NAME = 'dev.db'
+    # Put the db file in project root
+    DB_PATH = os.path.join(Config.PROJECT_ROOT, DB_NAME)
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(DB_PATH)
+    DEBUG_TB_ENABLED = True
+    ASSETS_DEBUG = True  # Don't bundle/minify static assets
+    CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
+
+
+class TestConfig(Config):
+    TESTING = True
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite://'
+    BCRYPT_LOG_ROUNDS = 1  # For faster tests
+    WTF_CSRF_ENABLED = False  # Allows form testing
+
 {% endhighlight %}
 
 We can always add other values like API keys later.
 
-Having configuration classes we can tell flask app to manage it dynamically. To do that we have to set environmental variable `APP_SETTINGS` which value will be dependent on the environment our app is running. On Heroku server it will be `config_app.ProdConfiguration` on development environment it will be `config_app.DevConfiguration`. To set environmental variable in Linux type: `export APP_SETTINGS=config_app.<NameOfClass>` (i.e. export APP_SETTINGS=config_app.DevConfiguration). To make it permanent we should place export statement in `~/.bashrc` file. On Windows instead of export we will use `set APP_SETTINGS=config_app.<NameOfClass>`. If we are going to employ environmental variable governing type of configuration, our `app.py` should change:
+Having configuration classes we can tell flask app to manage it dynamically. To do that we have to set environmental variable `APP_SETTINGS` which value will be dependent on the environment our app is running. On Heroku server it will be `setting.ProdConfig` on development environment it will be `setting.DevConfig`. To set environmental variable in Linux type: `export APP_SETTINGS=setting.<NameOfClass>` (i.e. export APP_SETTINGS=setting.DevConfig). To make it permanent we should place export statement in `~/.bashrc` file. On Windows instead of export we will use `set APP_SETTINGS=setting.<NameOfClass>`. If we are going to employ environmental variable governing type of configuration, our `app.py` should change. 
 
+
+## Flask app factory
+
+We will use app factory pattern and `Flask-Script` extension to build our app foundations. `app.py` from main app directory contains Flask factory, which is a simple function wrapping Flask object creation. `manage.py` from root directory contains application manager with all command line .  This way we can create multiple instances with different parameters (i.e. app settings). It is time to expand our toy "Hello Flask!" example to employ this pattern. 
+
+__md_analytics/app.py__
 {% highlight python %}
 import os
 from flask import Flask
-import config_app
+from myapp.settings import ProdConfig 
 
 
-app = Flask(__name__)
-app.config.from_object(os.environ["APP_SETTINGS"])
+def create_app(config_object=ProdConfig):
+    """An application factory, see here: http://flask.pocoo.org/docs/patterns/appfactories/.
 
+    :param config_object: The configuration object to use.
+    """
+    app = Flask(__name__)
+    app.config.from_object(config_object)
 
-@app.route('/')
-def index():
-    return '<h1>Welcome to Social media analytic tool</h1>'
+    @app.route('/')
+    def index():
+        return '<h1>Welcome to Social media analytic tool</h1>'
 
-
-if __name__ == '__main__':
-    app.run()
+    return app
 {% endhighlight %}
 
+This application still doesn't do much, except displaying 'Welcome to Social media analytic tool' from index view. In nearest future we will swap h1 header to landing page and dashboard blueprints. For now simple text is enough to test page routing logic, settings management and deployment.
 
-<a name="set_cicd"></a>
+__manage.py__
+{% highlight python %}
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from flask_script import Manager, Shell, Server
+
+from myapp.app import create_app
+from myapp.settings import DevConfig, ProdConfig
+
+app = create_app(DevConfig)
+
+manager = Manager(app)
+
+manager.add_command("runserver", Server())
+
+if __name__ == "__main__":
+    manager.run()
+{% endhighlight %}
+
+`manage.py` uses Flask-Script to register command-line tasks outside web application (from bash level). There are several build in commands like `Server()`, which runs the Flask development server. Still `manage.py` is not the only way to run our app locally. We can use HerokuCLI to do that (see [Heroku deployment](#heroku-deployment)).
+
+
+## Test Flask app
+
+It is time to write some decent unit tests. This should also clear situation with continuous integration service, which requires test to run smoothly to finish all green. Lets update `manage.py` to run some tests from command-line. First locate test folder in relation to `manage.py` and write simple function running tests using excellent Python library `pytest`.
+
+__manage.py__
+{% highlight python %}
+HERE = os.path.abspath(os.path.dirname(__file__))
+TEST_PATH = os.path.join(HERE, 'tests')
+
+@manager.command
+def test():
+    """Run the tests."""
+    import pytest
+    exit_code = pytest.main([TEST_PATH, '--verbose'])
+    return exit_code
+{% endhighlight %}
+
+This allows to call `python manage.py test` from the app root directory. Result depends on battery of tests we currently have. Pytest convention places unit-tests in `tests` directory, which resembles structure of the tested application. Also files should have "test" phrase in the name so that pytest can collect them without any problems. For now we will write two simple tests for settings:
+
+__tests/md_analytics/test_settings.py__
+{% highlight python %}
+"""Test configs."""
+from md_analytics.app import create_app
+from md_analytics.settings import DevConfig, ProdConfig, TestConfig
+
+
+def test_production_config():
+    """Production config."""
+    app = create_app(ProdConfig)
+    assert app.config['ENV'] == 'prod'
+    assert app.config['DEBUG'] is False
+    assert app.config['DEBUG_TB_ENABLED'] is False
+
+
+def test_dev_config():
+    """Development config."""
+    app = create_app(DevConfig)
+    assert app.config['ENV'] == 'dev'
+    assert app.config['DEBUG'] is True
+
+
+def test_testing_config():
+    """Basic config"""
+    app = create_app(TestConfig)
+    assert app.config['ENV'] == 'test'
+{% endhighlight %}
+
+{% highlight bash %}
+(md_analytics) [mdyzma@devbox md_analytics]$ python manage.py test
+
+Now we can call test suit via app manager and see results:
+
+============================= test session starts =============================
+platform win32 -- Python 3.6.1, pytest-3.2.1, py-1.4.33, pluggy-0.4.0 -- C:\Users\Alicja\Anaconda3\python.exe
+cachedir: .cache
+rootdir: C:\Users\Alicja\Documents\GitHub\md_analytics, inifile:
+plugins: cov-2.5.1
+collected 3 items
+
+tests/md_analytics/test_settings.py::test_production_config PASSED
+tests/md_analytics/test_settings.py::test_dev_config PASSED
+tests/md_analytics/test_settings.py::test_testing_config PASSED
+
+========================== 3 passed in 0.08 seconds ===========================
+{% endhighlight %}
+
 
 # Continuous integration
 
@@ -431,7 +604,7 @@ This appended `.travis.yml` file with encoded. The only thing left to be done is
 
 
 
-<a name="heroku"></a>
+<!-- <a name="heroku"></a> -->
 
 # Heroku deployment
 
@@ -627,23 +800,20 @@ APP_SETTINGS: config_app.ProdConfiguration
 {% endhighlight %}
 
 Now both - staging and production environments run Flask app flawlessly.
-<a name="landing"></a>
+
+
+<!-- <a name="summary"></a> -->
 
 # Summary
 
-What we have is a Flask application with complete continuous integration and continuous deployment workflow up and running. Basic elements of the system are:
+What we have is a Flask application with complete continuous integration and continuous deployment work-flow up and running. Basic elements of the system are:
 
 1. Code repository placed on [GitHub](https://github.com/mdyzma/md_analytics)
 2. TravisCI continuous integration running pytests and passing app further
-3. Two deployment environments on Heroku: [stage](https://git.heroku.com/md-analytics-stage.git) and [production](https://git.heroku.com/md-analytics.git) grouped in one pipeline
+3. Two deployment environments on Heroku: [stage](http://md-analytics-stage.herokuapp.com) and [production](https://md-analytics.herokuapp.com) grouped in one pipeline
 
-Application access for both environments:
 
-* [https://md-analytics-stage.herokuapp.com](http://md-analytics-stage.herokuapp.com)
-* [https://md-analytics.herokuapp.com](https://md-analytics.herokuapp.com)
-
-Continue in:
-
+To continue:
 ### [Part 2: Social media analysis with Flask, Part II]({{site.url}}/2017/07/12/social-media-analysis-part-ii/)
 
 
@@ -651,8 +821,7 @@ Continue in:
 {% endhighlight %}
 
 
-{% highlight python %}
-{% endhighlight %}
+
 
 
 
