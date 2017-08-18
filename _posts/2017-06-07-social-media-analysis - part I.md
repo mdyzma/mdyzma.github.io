@@ -2,7 +2,7 @@
 layout:     post
 author:     Michal Dyzma
 title:      Social media analysis with Flask, Part I
-date:       2017-06-07 16:11:47
+date:       2017-06-07 11:11:47
 comments:   true
 mathjax:    false
 categories: python social-media Flask machine-learning
@@ -11,12 +11,14 @@ keywords:   python, twitter, Flask, machine-learning
 
 Flask application presenting social media accounts analysis in form of dashboard.  Application implements "oAuth sign in mechanisms", specific account data analysis (statistics, EDA, machine learning). It transforms various data sources into clear and concise report. Draws followers and friends networks. It is Heroku-deployable. Under version control, tested and CI/CD ready.
 
+<br>
+{% include note.html content="Source files from this article can be downloaded from this [GitHub repository](https://github.com/mdyzma/md_analytics/releases/tag/v0.0.2)" %}
 
 -----
 
 ## Series consists of:
 
-* [Social media analysis with Flask, Part I]({{site.url}}/2017/06/07/social-media-analysis-part-I/)
+* [Social media analysis with Flask, Part I]({{site.url}}/2017/06/07/social-media-analysis-part-I/) (Setting environment, flask, Travis CI/Heroku CD )
 * Social media analysis with Flask, Part II (coming soon)
 
 <!-- * [Social media analysis with Flask, Part II]({{site.url}}/2017/07/12/social-media-analysis-part-ii/) (unfinished) -->
@@ -34,9 +36,8 @@ Flask application presenting social media accounts analysis in form of dashboard
     * [Configuration management](#configuration-management)
     * [Flask app factory](#flask-app-factory)
     * [Test Flask app](#test-flask-app)
-
-5. [Continuous integration](#continuous-integration)
-6. [Heroku deployment](#heroku-deployment)
+5. [Heroku deployment](#heroku-deployment)
+6. [Continuous integration](#continuous-integration)
 7. [Summary](#summary)
 
 -----
@@ -206,7 +207,7 @@ General structure is listed below:
 `-- requirements.txt
 {% endhighlight %}
 
-Most of the files in this make up are self-explanatory. There are several files like `app.json` or `Procfile`which are elements of [Heroku](https://www.heroku.com) machinery. Rest belong to the elements of VCS or CI  and ensure smooth development. Detailed description is given in table:
+Most of the files in this make up are self-explanatory. There are some files like `app.json` or `Procfile`which are elements of [Heroku](https://www.heroku.com) machinery and will be described in detail later. Rest belong to the elements of VCS or CI  and ensure smooth development. Table with files description is given below:
 
 |--------------------------+-+----------------------------------------------------------------|
 |File                      | | Description                                                    |
@@ -223,7 +224,7 @@ Most of the files in this make up are self-explanatory. There are several files 
 <!-- <a name="docs"></a> -->
 ## Documentation
 
-Project documentation is place in `docs` folder and is based on excelent Python `Sphinx` module. Folder is linked to [ReadTheDocs](http://md-analytics.readthedocs.io/en/latest/?badge=latest), so that every change in GitHub repository initiates documentation rebuild. Hearth of the documentation is `conf.py` file, where all extensions and static pages generator properties are configured. To manually start rebuild type:
+Project's documentation is place in `docs` folder and is based on excellent Python `Sphinx` module. Folder is linked to [ReadTheDocs](http://md-analytics.readthedocs.io/en/latest/?badge=latest), so that every change in GitHub repository initiates documentation rebuild. Hearth of the documentation is `conf.py` file, where all extensions and static pages generator properties are configured. To manually start rebuild type:
 
 {% highlight bash %}
 (md_analytics) [mdyzma@devbox md_analytics]$ make html
@@ -256,8 +257,7 @@ Content is written in __reStructuredText__ markup language. For more check [here
 
 # Setting Flask application
 
-Setting flask app is a multi-step process, which can be automated with some awesome python tools like [cookiecutter](https://github.com/audreyr/cookiecutter#python), but here we will go step by step to learn it in detail. First we will plan basic application structure, install Flask and test installation, then create automatic configuration mechanism, semi-automatic dependencies installation and finally continuous integration and deployment of the app on Heroku. All tested and under version control (on GitHub).
-
+Setting flask app is a multi-step process, which can be automated with some awesome python tools like [cookiecutter](https://github.com/audreyr/cookiecutter#python), but here we will go step by step to learn it in detail. First we have planed basic application structure, now let's install Flask and test installation, then create automatic configuration mechanism, semi-automatic dependencies installation and finally continuous integration and deployment of the app on Heroku. All tested and under version control (on GitHub).
 
 
 ## Install Flask
@@ -278,9 +278,8 @@ Flask and its dependencies were installed. It is good to keep requirements in se
 
 Currently we have enough to run basic flask application. To test our environment lets write "Hello Flask" tryout. It will use basic routing mechanism to show "Hello Flask!" on the page. First Create `md_analytics` package and `app.py` file in it. In the app Python file type:
 
-
+__md_analytics/app.py__
 {% highlight python %}
-# app.py
 from flask import Flask
 from flask import Flask
 
@@ -292,7 +291,6 @@ def index():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
 {% endhighlight %}
 
 This "toy" code creates instance of `Flask` class which is the central object in any Flask project. It has all utilities necessary to start dynamic WSGI app. Running it will initiate local server with single route "/" answering all requests. Name of the view is index, since it is default name, that is looked up by all browsers. When we enter domain address (127.0.0.1:5000 in this case) flask will make sure that `index` view is presented in response. Index view is whatever stands after `index()` function return statement. If statement at the end of the file is Python convention that ensures that the app will run properly when it is called as a Python script from bash.
@@ -314,7 +312,7 @@ Worked! We are ready to create "real" application and real unit tests.
 
 ## Requirements
 
- CI services (including Heroku) need requirements file in application root folder. There is `requirements.txt` in our application, which contains link to requirements folder with several files specifying separate sets of packages for different environments in which application runs. Link leads specifically to the `requirements/prod.txt`. However during development we will install packages listed in `requirements/dev.txt`, which of course includes production dependencies:
+Requirements help speeding up application deployment. When source code is cloned from the pubic repository, all application dependencies are grouped in `requirements.txt` file. Moreover CI services (including Heroku) need requirements file in application root folder to run app properly. The `requirements.txt` in our application contains link to requirements folder with several files specifying separate sets of dependencies for different environments in which application can run. Link leads specifically to the `requirements/prod.txt`. However during development we will install packages listed in `requirements/dev.txt`, which of course includes production dependencies:
 
 {% highlight bash %}
 (md_analytics) [mdyzma@devbox md_analytics]$ tree .
@@ -326,7 +324,7 @@ Worked! We are ready to create "real" application and real unit tests.
 `-- requirements.txt
 {% endhighlight %}
 
-Now we will link `requirements/prod.txt` to the `requirements/dev.txt`, so that installing development dependencies will also install all required in production (which means when application runs after deployment).
+Now we will link `requirements/prod.txt` to the `requirements/dev.txt`, so that installing development dependencies will also install all required in production (which means when application is accessible for users).
 
 __requirements.txt__
 {% highlight bash %}
@@ -367,7 +365,7 @@ pytest==3.2.1
 pytest-cov==2.5.1
 {% endhighlight %}
 
-Installing requirements is easy as calling:
+Installing requirements is easy:
 
 {% highlight bash %}
 (md_analytics) [mdyzma@devbox md_analytics]$ pip install -r requirements.txt
@@ -384,6 +382,7 @@ Calling main requirements is enough to get application up and running, however f
 
 Configurations are kept in `settings.py` in main app folder. It will store different collections of application settings. Basic config class sets just some basic values common for all dev and production environments. Environment specific settings are set in children classes.
 
+__md_analytics/settings.py__
 {% highlight python %}
 # -*- coding: utf-8 -*-
 import os
@@ -432,12 +431,12 @@ class TestConfig(Config):
 
 We can always add other values like API keys later.
 
-Having configuration classes we can tell flask app to manage it dynamically. To do that we have to set environmental variable `APP_SETTINGS` which value will be dependent on the environment our app is running. On Heroku server it will be `setting.ProdConfig` on development environment it will be `setting.DevConfig`. To set environmental variable in Linux type: `export APP_SETTINGS=setting.<NameOfClass>` (i.e. export APP_SETTINGS=setting.DevConfig). To make it permanent we should place export statement in `~/.bashrc` file. On Windows instead of export we will use `set APP_SETTINGS=setting.<NameOfClass>`. If we are going to employ environmental variable governing type of configuration, our `app.py` should change. 
+Having configuration classes we can tell flask app to manage it dynamically. To do that we have to set environmental variable `APP_SETTINGS` which value will be dependent on the environment our app is running. On Heroku server it will be `settings.ProdConfig` on development environment it will be `settings.DevConfig`. To set environmental variable in Linux type: `export APP_SETTINGS=settings.<NameOfClass>` (i.e. export APP_SETTINGS=settings.DevConfig). To make it permanent we should place export statement in `~/.bashrc` file. On Windows instead of export we will use `set APP_SETTINGS=settings.<NameOfClass>`. If we are going to employ environmental variable governing type of configuration, our `app.py` should change. 
 
 
 ## Flask app factory
 
-We will use app factory pattern and `Flask-Script` extension to build our app foundations. `app.py` from main app directory contains Flask factory, which is a simple function wrapping Flask object creation. `manage.py` from root directory contains application manager with all command line .  This way we can create multiple instances with different parameters (i.e. app settings). It is time to expand our toy "Hello Flask!" example to employ this pattern. 
+We will use app factory pattern and `Flask-Script` extension to build our app foundations. The `md_annalytics/app.py` contains Flask factory, which is just a simple function wrapped around Flask object creation. `manage.py` from root directory contains application manager with all command-line directives.  This way we can create multiple instances with different parameters (i.e. app settings). It is time to expand our toy "Hello Flask!" example to employ this pattern. 
 
 __md_analytics/app.py__
 {% highlight python %}
@@ -551,60 +550,8 @@ tests/md_analytics/test_settings.py::test_testing_config PASSED
 ========================== 3 passed in 0.08 seconds ===========================
 {% endhighlight %}
 
+It is nice feature, but our application will be tested on TravisCI server using command from `.travis.yml` (see [here](#continuous-integration)).
 
-# Continuous integration
-
-We will use TravisCI, but it is also possible to build automatic system with GitLab, Jenkins or BuildBot. There are (or will be) separate articles on this blog describing specific CI/CD options.
-
-To set TravisCI we have to place `.travis.yml` file in the application root directory. It will contain instructions for TravisCI service what language we use (Python), which versions (2.7, 3.6 and nightly build), how to test application, how to create basic metrics (like test coverage, which will be further processed by [Coveralls.io](https://coveralls.io) service) and finally how to deploy it to the Heroku upon successfully finishing all steps (for detail description of Heroku deployment, see [here](#heroku)). ".travis.yml" file will look similar to this:
-
-{% highlight yml %}
-# .travis.yml
-
-language: python
-
-python:
-    - "2.7"
-    - "3.5"
-    - "3.6"
-    - "nightly"
-
-# command to install dependencies
-install: "pip install -r requirements.txt"
-# command to run tests
-script: python -m pytest
-
-after_success:
-    - pip install coveralls
-    - coverage run --source=flask_oauthlib setup.py -q nosetests
-    - coveralls
-
-branches:
-  only:
-    - master
-
-deploy:
-  provider: heroku
-  api_key:
-    secure: j6wSWWI9Exgdi5B1sST5gOR/mPzJFtllnQVHcB5DeinDpN/XdJUWIzfP5FJVDtUF1qM3N/gdnhN4JkEgeHLNY+vDjhtI9/k8qOn2Gs5yah8a8vSW3/+p4r/WUNQWb3oh6KXc9mzVgV6EFUvLa205WZz0MDF/XPTbTbJqbYKfJxVSjUtHKEo3mmigkjB3bqF8i3QoAmkZX99K3C7mNFrgcGVpeC0EQSgN9Iqdkprlfy8dI6clirwsW6kOIq7zvFIsDTHeBK2piz+lQTPf7yFwmdnxL77K9UwBECmf2IOCpNnNwVevOP/8v1BZGTNhpgvan1OX4t1cd1q2u1nSN3UvC2WDVoDFOAm8wiY4eqcit/GHe9vdaVZKXTjqZ6p7s5FMah1za5hFSdbTUuTkJzUy1mJm7BgU5jnhN2IAf7A+ZZpYrgTrHqxK7b8qfX7sBoVJzbam1gHR7/SAw7qlc43rnEmr/rgWQmnQmHbiaRP1snybY2C5mMTXy4kRTcscYyslqvzn+OLHu/CKyyVaLk9kFDuXL0CjbO++F+W7CRcv9ssngJMFAvTXiX7L34spZk73C1gAqYmptwJglCrtAI29XjKW6uxxsSFbZV368T9BDSzlcZ+nMbYjDtD7ghkjmoHnTq/4qrYghbuFLf4gIX3lPWRZjc9j0rNarNZqZ0F5nuQ=
-
-  app: md-analytics-stage
-{% endhighlight %}
-
-YML files are pretty simple to read, I suppose, the only mysterious part is deploy -> api_key. Lets examine this. Once you have registered to Heroku, you will be given API key (Heroku -> account settings). It is unwise to paste your key just like that to the `.travis.yml`. Therefore we will use Travis ruby gem to encrypt it (must have Ruby installed):
-
-{% highlight python %}
-(md_analytics) [mdyzma@devbox md_analytics]$ gem install travis
-...
-12 gems installed
-(md_analytics) [mdyzma@devbox md_analytics]$ travis encrypt $(heroku auth:token) --add deploy.api_key
-{% endhighlight %}
-
-This appended `.travis.yml` file with encoded. The only thing left to be done is to connect `md_analytics` GitHub with TravisCI service:
-
-
-
-<!-- <a name="heroku"></a> -->
 
 # Heroku deployment
 
@@ -622,7 +569,7 @@ For deployment we will use Heroku service. It is good practice to stage changes 
   "env": {
     "APP_SETTINGS":{
       "description": "Application configuration setting.",
-      "value": "config_app.ProdConfiguration"
+      "value": "settings.ProdConfiguration"
     }
   },
   "keywords": ["python", "heroku", "social-media"]
@@ -802,28 +749,92 @@ APP_SETTINGS: config_app.ProdConfiguration
 Now both - staging and production environments run Flask app flawlessly.
 
 
-<!-- <a name="summary"></a> -->
+# Continuous integration
+
+We will use TravisCI, but it is also possible to build automatic system with GitLab, Jenkins or BuildBot. There are (or will be) separate articles on this blog describing specific CI/CD options.
+
+To set TravisCI we have to place `.travis.yml` file in the application root directory. It will contain instructions for TravisCI service what language we use (Python), which versions (2.7, 3.6 and nightly build), how to test application, how to create basic metrics (like test coverage, which will be further processed by [Coveralls.io](https://coveralls.io) service) and finally how to deploy it to the Heroku upon successfully finishing all steps (for detail description of Heroku deployment, see [here](#heroku)). ".travis.yml" file will look similar to this:
+
+{% highlight yml %}
+# .travis.yml
+
+language: python
+
+python:
+    - "2.7"
+    - "3.5"
+    - "3.6"
+    - "nightly"
+
+# command to install dependencies
+install: "pip install -r requirements/dev.txt"
+# command to run tests
+script: python -m pytest
+
+after_success:
+    - pip install coveralls
+    - coverage run --source=flask_oauthlib setup.py -q nosetests
+    - coveralls
+
+branches:
+  only:
+    - master
+
+deploy:
+  provider: heroku
+  api_key:
+    secure: hqJqe/oeO5nQuX8WZkuxlu+Vwr/6OJYFCLN3CCSmaJ1LTaaxlqu89b/chj0evLadykgQMHLmsehW6v6WZlR44ZNxqsMRBk3ypn380jTH+4DNBtPQLEV5UySUGGRlKDBg6UHjNUmhb44vypE0+NpdjbEyYfwxjNXJhT3oogVMlOEiUsOfx/Tor9QA54bu92HhKQTvMHmCxzh4vq2e/e/YiB+x1pPFGqVE3G+KlGTBtjF8rRA7alrjfXUqVLS897tKjwJHtGQt84XNEcXPijlhZSk+M22LZbGo061oP6emhJBDvKqHcIcwa5pR4i9zVbv3XrLPU3icD7qvkSwvdtxnd6Goz4Ybomy4dB/iat46fWnPS0WUmlDHRFo4iKXQMnFLJ79ET/0/gfRrVi54sM/Dru4opFoh4zjld3lwjSAyoAJFlO61hakjtxAM8L3NVMeuiZvXkKjgFIgfCiLlDpK5xyDUhzLqwcOO5UazHwo/pXD32bJgzPbDHaoF1m1QMEhe4HnzHhQJveqaHHPzIXuImBwEJhrCgZjGLDxGx+D93KNY/dDDFItOOQ3493V2CUKjer35c9NOk6cr2kloDVIg4Qfe9Pzg3w9C5n0dakQuaVpHSEnG+oz6PjIIeIItgnYXzJBF5wvU0dWXUcZWmYiQuhjKwFnAfODDMAfPGXC/Yh8=
+  app: md-analytics-stage
+{% endhighlight %}
+
+YML files are pretty simple to read, I suppose, the only mysterious part is deploy -> api_key. Lets examine this. Once you have registered to Heroku, you will be given API key (Heroku -> account settings). It is unwise to paste your key just like that to the `.travis.yml`. Therefore we will use Travis ruby gem to encrypt it (must have Ruby installed):
+
+{% highlight python %}
+(md_analytics) [mdyzma@devbox md_analytics]$ gem install travis
+...
+12 gems installed
+(md_analytics) [mdyzma@devbox md_analytics]$ travis encrypt $(heroku auth:token) --add deploy.api_key
+{% endhighlight %}
+
+This appended `.travis.yml` file with encrypted API token read by HerokuCLI. The only thing left to be done is to connect `md_analytics` GitHub with TravisCI service:
+
+![connect-github-to-travis-ci][travis_ci]
+
+
+Now when we upload new commit Travis will sense changes and run all tasks described in YML automatically. In this case it should perform tests on three python instances (2.7, 3.6 and 3.7-DEV). In all pythons it should install requirements and run tests (including test coverage report). Upon success it should deploy our app to the ataging environment on Heroku service.
+
+![travis-dashboard][travis_board]
+
+
+And it failed... We can inspect build console log and track reason. Looks like tests run great, but there is a problem with Heroku deployment. Some error in API key encryption. We used travis ruby gem to extract authorization token and encrypt it with: `travis encrypt`. Obviously it did not go well.
+
+![travis-error-log-console][travis_log]
+
+
+All right. For some reason `$(heroku auth:token) returned strange data (need to read more about Heroku authentication mechanism). I have some "initialization" scripts connected to the console and they might have interfered with travisCLI. I had to work around it and provide HEROKU API TOKEN directly: 
+
+{% highlight bash %}
+travis encrypt "[SECRET]" --add deploy.api_key
+{% endhighlight %}
+
+... which fixed deployment problem. According to [THiS](https://github.com/yunojuno/heroku-tools/issues/7) another approach could be creating environmental variable `HEROKU_API_TOKEN` on Travis an paste secret token there.
+
+![travis-ci-fixed][travis_green]
+
 
 # Summary
 
 What we have is a Flask application with complete continuous integration and continuous deployment work-flow up and running. Basic elements of the system are:
 
 1. Code repository placed on [GitHub](https://github.com/mdyzma/md_analytics)
-2. TravisCI continuous integration running pytests and passing app further
+2. TravisCI continuous integration running pytest and passing app further
 3. Two deployment environments on Heroku: [stage](http://md-analytics-stage.herokuapp.com) and [production](https://md-analytics.herokuapp.com) grouped in one pipeline
 
 
 To continue:
-### [Part 2: Social media analysis with Flask, Part II]({{site.url}}/2017/07/12/social-media-analysis-part-ii/)
+### [Social media analysis with Flask, Part II]({{site.url}}/2017/07/12/social-media-analysis-part-ii/)
 
-
-{% highlight python %}
-{% endhighlight %}
-
-
-
-
-
+Landing page, login mechanism, dashboard
 
 <!-- Images -->
 
@@ -835,4 +846,7 @@ To continue:
 [h_empty]:       /assets/07-06-2017/heroku-empty-app.png
 [h_first]:       /assets/07-06-2017/heroku-first-deployment.png
 [h_conn_gh]:     /assets/07-06-2017/heroku-connect-github.png
-
+[travis_ci]:     /assets/07-06-2017/connect-github-travis-ci.png
+[travis_board]:  /assets/07-06-2017/travis-ci-project.png
+[travis_log]:    /assets/07-06-2017/travis-ci-fail-report.png
+[travis_green]:  /assets/07-06-2017/travis-ci-green.png
