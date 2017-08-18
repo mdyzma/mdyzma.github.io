@@ -257,7 +257,7 @@ Content is written in __reStructuredText__ markup language. For more check [here
 
 # Setting Flask application
 
-Setting flask app is a multi-step process, which can be automated with some awesome python tools like [cookiecutter](https://github.com/audreyr/cookiecutter#python), but here we will go step by step to learn it in detail. First we have planed basic application structure, now let's install Flask and test installation, then create automatic configuration mechanism, semi-automatic dependencies installation and finally continuous integration and deployment of the app on Heroku. All tested and under version control (on GitHub).
+Setting flask app is a multi-step process, which can be automated with some awesome python tools like [cookiecutter](https://github.com/audreyr/cookiecutter#python), but here we will go step by step to learn it in detail. First we have planed basic application structure, now let's install Flask and test installation, then create automatic configuration mechanism, semi-automatic dependencies installation and finally continuous integration and deployment of the app on TravisCI and Heroku. All tested and under version control (on GitHub).
 
 
 ## Install Flask
@@ -380,7 +380,7 @@ Calling main requirements is enough to get application up and running, however f
 
 ## Configuration management
 
-Configurations are kept in `settings.py` in main app folder. It will store different collections of application settings. Basic config class sets just some basic values common for all dev and production environments. Environment specific settings are set in children classes.
+Configurations are kept in `settings.py` in main app folder. It will store different collections of application settings. Basic config class sets just some values common for all dev and production environments. Environment specific settings are set in children classes.
 
 __md_analytics/settings.py__
 {% highlight python %}
@@ -431,7 +431,7 @@ class TestConfig(Config):
 
 We can always add other values like API keys later.
 
-Having configuration classes we can tell flask app to manage it dynamically. To do that we have to set environmental variable `APP_SETTINGS` which value will be dependent on the environment our app is running. On Heroku server it will be `settings.ProdConfig` on development environment it will be `settings.DevConfig`. To set environmental variable in Linux type: `export APP_SETTINGS=settings.<NameOfClass>` (i.e. export APP_SETTINGS=settings.DevConfig). To make it permanent we should place export statement in `~/.bashrc` file. On Windows instead of export we will use `set APP_SETTINGS=settings.<NameOfClass>`. If we are going to employ environmental variable governing type of configuration, our `app.py` should change. 
+For now I will input configuration manualy, but having configuration classes we can tell flask app to manage it dynamically. For example: set environmental variable `APP_SETTINGS` which value will be dependent on the environment our app is running. On Heroku server it will be `settings.ProdConfig` on development environment it will be `settings.DevConfig` and so on. To set environmental variable in Linux type: `export APP_SETTINGS=settings.<NameOfClass>` (i.e. export APP_SETTINGS=settings.DevConfig). To make it permanent we should place export statement in `~/.bashrc` file. On Windows instead of export we will use `set APP_SETTINGS=settings.<NameOfClass>`. If we are going to employ environmental variable governing type of configuration, our `app.py` should change. 
 
 
 ## Flask app factory
@@ -442,7 +442,7 @@ __md_analytics/app.py__
 {% highlight python %}
 import os
 from flask import Flask
-from myapp.settings import ProdConfig 
+from md_analytics.settings import ProdConfig 
 
 
 def create_app(config_object=ProdConfig):
@@ -455,7 +455,7 @@ def create_app(config_object=ProdConfig):
 
     @app.route('/')
     def index():
-        return '<h1>Welcome to Social media analytic tool</h1>'
+        return '<h1>Welcome to Social media analytic tool</h1><br>Uou are in {} mode'
 
     return app
 {% endhighlight %}
@@ -466,10 +466,11 @@ __manage.py__
 {% highlight python %}
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import os
 from flask_script import Manager, Shell, Server
 
-from myapp.app import create_app
-from myapp.settings import DevConfig, ProdConfig
+from md_analytics.app import create_app
+from md_analytics.settings import DevConfig, ProdConfig
 
 app = create_app(DevConfig)
 
@@ -801,7 +802,7 @@ This appended `.travis.yml` file with encrypted API token read by HerokuCLI. The
 ![connect-github-to-travis-ci][travis_ci]
 
 
-Now when we upload new commit Travis will sense changes and run all tasks described in YML automatically. In this case it should perform tests on three python instances (2.7, 3.6 and 3.7-DEV). In all pythons it should install requirements and run tests (including test coverage report). Upon success it should deploy our app to the ataging environment on Heroku service.
+Now when we upload new commit Travis will sense changes and run all tasks described in YML automatically. In this case it should perform tests on three python instances (2.7, 3.6 and 3.7-DEV). In all pythons it should install requirements and run tests (including test coverage report). Upon success it should deploy our app to the staging environment on Heroku service.
 
 ![travis-dashboard][travis_board]
 
@@ -811,7 +812,7 @@ And it failed... We can inspect build console log and track reason. Looks like t
 ![travis-error-log-console][travis_log]
 
 
-All right. For some reason `$(heroku auth:token) returned strange data (need to read more about Heroku authentication mechanism). I have some "initialization" scripts connected to the console and they might have interfered with travisCLI. I had to work around it and provide HEROKU API TOKEN directly: 
+All right. For some reason `$(heroku auth:token)` returned strange data (need to read more about Heroku authentication mechanism). I have some "initialization" scripts connected to the console and they might have interfered with travisCLI. I had to work around it and provide HEROKU API TOKEN directly: 
 
 {% highlight bash %}
 travis encrypt "[SECRET]" --add deploy.api_key
@@ -834,7 +835,7 @@ What we have is a Flask application with complete continuous integration and con
 To continue:
 ### [Social media analysis with Flask, Part II]({{site.url}}/2017/07/12/social-media-analysis-part-ii/)
 
-Landing page, login mechanism, dashboard
+Landing page, login/register mechanism, dashboard
 
 <!-- Images -->
 
