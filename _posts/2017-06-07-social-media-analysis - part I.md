@@ -9,10 +9,10 @@ categories: python social-media Flask machine-learning
 keywords:   python, twitter, Flask, machine-learning
 ---
 
-Flask application presenting social media accounts analysis in form of dashboard.  Application implements "oAuth sign in mechanisms", specific account data analysis (statistics, EDA, machine learning). It transforms various data sources into clear and concise report. Draws followers and friends networks. It is Heroku-deployable. Under version control, tested and CI/CD ready.
+Flask application presenting social media accounts analysis in form of dashboard.  Application implements "oAuth sign in mechanisms", specific account data analysis (statistics, EDA, machine learning). It transforms various data sources into clear and concise report. This part describes backbone of the application, which is basic Flask configuration, Travis Continuous Integration (with tests and test coverage report) and Heroku Continuous Deployment to multiple environments with a single button. It is under version control, tested and CI/CD ready.
 
 <br>
-{% include note.html content="Source files from this article can be downloaded from this [GitHub repository](https://github.com/mdyzma/md_analytics/releases/tag/v0.0.2)" %}
+{% include note.html content="Source files for this article can be downloaded from this [GitHub repository](https://github.com/mdyzma/md_analytics/releases/tag/v0.0.2)" %}
 
 -----
 
@@ -46,14 +46,15 @@ Flask application presenting social media accounts analysis in form of dashboard
 
 # Application description
 
-Web application displaying summary of the social media account. Analyzed properties include:
+Web application displaying summary of the social media account analysis. Analyzed properties include:
 
 - time-line statistics
 - posts semantic analysis
 - account followers list (names, number of connections)
 - account friends list (names, number of connections)
-- followers graph (TBD)
-- friends graph (TBD)
+- followers graph
+- friends graph
+- friends/followers cross-check between different services
 
 ## Roles specification
 
@@ -166,7 +167,7 @@ It is not required from Flask application to follow particular folder structure 
 
 General structure is listed below:
 
-{% highlight python %}
+{% highlight bash %}
 (md_analytics) [mdyzma@devbox md_analytics]$ tree .
 .
 |
@@ -221,10 +222,45 @@ Most of the files in this make up are self-explanatory. There are some files lik
 | md_analytics/settings.py | | Flask application configuration variables                      |
 |--------------------------+-+----------------------------------------------------------------|
 
-<!-- <a name="docs"></a> -->
+
+## GitHub
+
+We use git to version control. Basics of git are beyond scope of this article. Please refer to excellent [git tutorial](https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control). Here I would like to focus on GitHub aspects related to project management. GitHub offers issues and projects support. Issues are more about specific bugs or features reported by users/developers, while project shows general status of all issues. Issues can be grouped in milestones, which usually denote specific software release.
+
+Here are some issues, which are "enchancements" of the md_analytics app from version 0.0.2 (working skeleton integrated with Travis and Heroku) to the pre-released alpha with landing page and dashboard functionalities (v0.1.0).
+
+![github-issues][github_issues]
+
+
 ## Documentation
 
 Project's documentation is place in `docs` folder and is based on excellent Python `Sphinx` module. Folder is linked to [ReadTheDocs](http://md-analytics.readthedocs.io/en/latest/?badge=latest), so that every change in GitHub repository initiates documentation rebuild. Hearth of the documentation is `conf.py` file, where all extensions and static pages generator properties are configured. To manually start rebuild type:
+
+Creating basic documentation stub out of the box.
+
+{% highlight bash %}
+(md_analytics) [mdyzma@devbox md_analytics]$ sphinx-quickstart
+Welcome to the Sphinx 1.6.3 quickstart utility.
+
+Please enter values for the following settings (just press Enter to
+accept a default value, if one is given in brackets).
+
+...
+Creating file ./source/conf.py.
+Creating file ./source/index.rst.
+Creating file ./Makefile.
+Creating file ./make.bat.
+
+Finished: An initial directory structure has been created.
+
+You should now populate your master file ./source/index.rst and create other documentation
+source files. Use the Makefile to build the docs, like so:
+   make builder
+where "builder" is one of the supported builders, e.g. html, latex or linkcheck.
+{% endhighlight %}
+
+
+Following quick-start help, lets build basic html documentation:
 
 {% highlight bash %}
 (md_analytics) [mdyzma@devbox md_analytics]$ make html
@@ -249,7 +285,7 @@ dumping search index in English (code: en) ... done
 dumping object inventory... done
 build succeeded.
 
-Build finished. The HTML pages are in build\html.
+Build finished. The HTML pages are in build/html.
 {% endhighlight %}
 
 Content is written in __reStructuredText__ markup language. For more check [here](http://www.sphinx-doc.org/en/stable/rest.html).
@@ -363,7 +399,11 @@ Flask-DebugToolbar==0.10.1
 coveralls==1.1
 pytest==3.2.1
 pytest-cov==2.5.1
+
+# Documentation
+Sphinx==1.6.3
 {% endhighlight %}
+
 
 Installing requirements is easy:
 
@@ -431,19 +471,18 @@ class TestConfig(Config):
 
 We can always add other values like API keys later.
 
-For now I will input configuration manualy, but having configuration classes we can tell flask app to manage it dynamically. For example: set environmental variable `APP_SETTINGS` which value will be dependent on the environment our app is running. On Heroku server it will be `settings.ProdConfig` on development environment it will be `settings.DevConfig` and so on. To set environmental variable in Linux type: `export APP_SETTINGS=settings.<NameOfClass>` (i.e. export APP_SETTINGS=settings.DevConfig). To make it permanent we should place export statement in `~/.bashrc` file. On Windows instead of export we will use `set APP_SETTINGS=settings.<NameOfClass>`. If we are going to employ environmental variable governing type of configuration, our `app.py` should change. 
+For now I will input configuration manualy, but having configuration classes we can tell flask app to manage it dynamically. For example, to set environmental variable `APP_SETTINGS` which value will be dependent on the environment our app is running. On Heroku server it will be `ProdConfig` on development environment it will be `DevConfig` and so on. To set environmental variable in Linux type: `export APP_SETTINGS=<NameOfClass>` (i.e. export APP_SETTINGS=DevConfig). To make it permanent we should place export statement in `~/.bashrc` file. On Windows instead of export we will use `set APP_SETTINGS=<NameOfClass>`. If we are going to employ environmental variable governing type of configuration, our `app.py` should change. 
 
 
 ## Flask app factory
 
-We will use app factory pattern and `Flask-Script` extension to build our app foundations. The `md_annalytics/app.py` contains Flask factory, which is just a simple function wrapped around Flask object creation. `manage.py` from root directory contains application manager with all command-line directives.  This way we can create multiple instances with different parameters (i.e. app settings). It is time to expand our toy "Hello Flask!" example to employ this pattern. 
+We will use app factory pattern and `Flask-Script` extension to build our app foundations. The `md_analytics/app.py` contains Flask factory, which is just a simple function wrapped around Flask object creation. File `manage.py` from root directory contains application manager with all command-line directives.  This way we can create multiple instances of the app, using different parameters (i.e. app settings). It is time to expand our toy "Hello Flask!" example to employ this pattern. 
 
 __md_analytics/app.py__
 {% highlight python %}
 import os
 from flask import Flask
-from md_analytics.settings import ProdConfig 
-
+from md_analytics.settings import ProdConfig
 
 def create_app(config_object=ProdConfig):
     """An application factory, see here: http://flask.pocoo.org/docs/patterns/appfactories/.
@@ -455,12 +494,12 @@ def create_app(config_object=ProdConfig):
 
     @app.route('/')
     def index():
-        return '<h1>Welcome to Social media analytic tool</h1><br>Uou are in {} mode'
+        return '<h1>Welcome to Social media analytic tool</h1>'
 
     return app
 {% endhighlight %}
 
-This application still doesn't do much, except displaying 'Welcome to Social media analytic tool' from index view. In nearest future we will swap h1 header to landing page and dashboard blueprints. For now simple text is enough to test page routing logic, settings management and deployment.
+This application still doesn't do much, except displaying 'Welcome to Social media analytic tool' from index view. It takes production configuration as default, however here we specify to use development environment instead. In next part we will swap h1 header to landing page and dashboard blueprints. For now simple text is enough to test page routing logic, settings management and deployment.
 
 __manage.py__
 {% highlight python %}
@@ -487,7 +526,7 @@ if __name__ == "__main__":
 
 ## Test Flask app
 
-It is time to write some decent unit tests. This should also clear situation with continuous integration service, which requires test to run smoothly to finish all green. Lets update `manage.py` to run some tests from command-line. First locate test folder in relation to `manage.py` and write simple function running tests using excellent Python library `pytest`.
+It is time to write some unit tests. This should also clear situation with continuous integration service, which requires test to run smoothly to finish all green. Lets update `manage.py` to run some tests from command-line. First locate test folder in relation to `manage.py` and write simple function running tests using excellent Python library `pytest`. Add following snippet to `manage.py`:
 
 __manage.py__
 {% highlight python %}
@@ -502,7 +541,7 @@ def test():
     return exit_code
 {% endhighlight %}
 
-This allows to call `python manage.py test` from the app root directory. Result depends on battery of tests we currently have. Pytest convention places unit-tests in `tests` directory, which resembles structure of the tested application. Also files should have "test" phrase in the name so that pytest can collect them without any problems. For now we will write two simple tests for settings:
+This allows to call `python manage.py test` from the app root directory. Result depends on battery of tests we currently have. Pytest convention places unit-tests in `tests` directory, which resembles structure of the tested application. Also files should have "test" phrase in the name so that pytest can collect them without any problems. For now we will write three simple tests for our configurations:
 
 __tests/md_analytics/test_settings.py__
 {% highlight python %}
@@ -532,15 +571,16 @@ def test_testing_config():
     assert app.config['ENV'] == 'test'
 {% endhighlight %}
 
-{% highlight bash %}
-(md_analytics) [mdyzma@devbox md_analytics]$ python manage.py test
 
 Now we can call test suit via app manager and see results:
 
+{% highlight bash %}
+(md_analytics) [mdyzma@devbox md_analytics]$ python manage.py test
+
 ============================= test session starts =============================
-platform win32 -- Python 3.6.1, pytest-3.2.1, py-1.4.33, pluggy-0.4.0 -- C:\Users\Alicja\Anaconda3\python.exe
+platform linux -- Python 3.6.1, pytest-3.2.1, py-1.4.33, pluggy-0.4.0 -- /home/mdyzma/.envs/md_analytics/bin/python
 cachedir: .cache
-rootdir: C:\Users\Alicja\Documents\GitHub\md_analytics, inifile:
+rootdir: /home/mdyzma/Documents/GitHub/md_analytics, inifile:
 plugins: cov-2.5.1
 collected 3 items
 
@@ -551,17 +591,23 @@ tests/md_analytics/test_settings.py::test_testing_config PASSED
 ========================== 3 passed in 0.08 seconds ===========================
 {% endhighlight %}
 
-It is nice feature, but our application will be tested on TravisCI server using command from `.travis.yml` (see [here](#continuous-integration)).
+We can alway launch tests manually:
+
+{% highlight bash %}
+(md_analytics) [mdyzma@devbox md_analytics]$ python -m pytest
+{% endhighlight %}
+
+Additionally we can add `--cov=md_analytics tests/` flag, which indicate source code location and tests location for test coverage package. Flag instructs pytest to create test coverage report, which can be further used by third party software (i.e. Jenkins or special services like [coveralls.io](https://coveralls.io)). 
+
+Having all command line features integrated into one common interface is alway a good thing and helps other developers to understand code and join the project faster. However at this point our application will be tested on TravisCI server using command from `.travis.yml` (see [here](#continuous-integration)).
 
 
 # Heroku deployment
 
+For deployment we will use Heroku service. It is good practice to stage changes first and check consistency and after acceptance tests pass, to promote staged application to the production. Production is "live" application accessible for users. To achieve that we have to create two separate applications. Heroku implemented "quick deploy" button, which is specified in root directory. File `app.json` contains all information necessary to copy files and deploy application.
 
-For deployment we will use Heroku service. It is good practice to stage changes first and check consistency, and after acceptance tests pass, promote staged application to the production, where it is accessible for users. To achieve that we have to create two separate applications. But first we have to add to our application files required by Heroku:
-
-{% highlight bash %}
-# app.json - for "single-button" deployment
-
+__app.json__
+{% highlight json %}
 {
   "name": "MD Analytics",
   "description": "Python-Flask app, which displays social media accounts data analysis.",
@@ -570,34 +616,60 @@ For deployment we will use Heroku service. It is good practice to stage changes 
   "env": {
     "APP_SETTINGS":{
       "description": "Application configuration setting.",
-      "value": "settings.ProdConfiguration"
+      "value": "ProdConfig"
     }
   },
   "keywords": ["python", "heroku", "social-media"]
 }
 {% endhighlight %}
 
+Another file, we will need is `Procfile`. It instructs Heroku platform how to run our app. Because Heroku allows to deploy php, js, java, ruby and python applications, we have to be specific what software should be used by platform. We have t be specific also about the location of our running function. We do not need development server on Heroku, therefore we will point it to the place, where WSGI will pick up code execution.
+
 {% highlight bash %}
 # Procfile - uses gunicorn to launch python app
 
-web: gunicorn app:app
+web: gunicorn md_analytics.app:create_app\(\)
 
 # launching app:
 # $ heroku local
 {% endhighlight %}
 
-... and because gunicorn works only on "nix" systems, we need simple app call for windows
+... and because gunicorn works only on "nix" systems, we need simple app call for windows (in case we want to develop on Windows machine):
 
 {% highlight bash %}
 # Procfile.windows
 
-web: python app.py
+web: python manage.py runserver
 
 # launching app:
 # $ heroku local -f Procfile.windows
 {% endhighlight %}
 
-App creation can be done via Heroku web interface or command line tool. First we need to make sure [HerokuCLI](https://toolbelt.heroku.com) is installed. Piece of advice for Fedora users: from my experience it is better to install Heroku official, standalone version, instead of Heroku Ruby gem. It causes less problems. After successful HerokuCLI installation we can proceed and use it to create two separate applications. I called mine: `md-analytics-stage` for staging environment, where app undergoes "acceptance tests" and `md-analytics` for production environment (app released for users). We will do it in three steps:
+Both should produce following output:
+
+{% highlight bash %}
+(md_analytics) [mdyzma@devbox md_analytics]$ heroku local
+
+13:31:13 web.1   |   * Restarting with linuxapi reloader
+13:31:22 web.1   |   * Debugger is active!
+13:31:22 web.1   |   * Debugger PIN: 471-898-880
+13:31:22 web.1   |   * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+13:31:25 web.1   |  127.0.0.1 - - [07/July/2017 13:31:25] "GET / HTTP/1.1" 200 -
+13:31:25 web.1   |  127.0.0.1 - - [07/July/2017 13:31:25] "GET /favicon.ico HTTP/1.1" 404 -
+{% endhighlight %}
+
+App creation can be done via Heroku web interface or command line tool, but first we need to make sure [HerokuCLI](https://toolbelt.heroku.com) is installed. Type:
+
+{% highlight bash %}
+(md_analytics) [mdyzma@devbox md_analytics]$ heroku --version
+
+heroku-cli/6.12.9-d4bf599 (linux-x64) node-v8.1.4
+{% endhighlight %}
+
+
+Piece of advice for Fedora users: from my experience it is better to install Heroku official, standalone version, instead of Heroku Ruby gem. It causes less problems.
+
+After successful HerokuCLI installation we can proceed and use it to create two separate applications. I called mine: `md-analytics-stage` for staging environment, where app undergoes "acceptance tests" and `md-analytics` for production environment (app released for users). We will do it in three steps:
 
 1. Create __md-analytics__ and __md-analytics-stage__ apps
 2. Create __md-analytics__ pipeline (group of applications sharing same codebase) and add apps to it
@@ -606,7 +678,7 @@ App creation can be done via Heroku web interface or command line tool. First we
 I assume we have an application running on local machine. Lets create applications on Heroku service and bind them with a pipeline. First login to Heroku service:
 
 {% highlight bash %}
-[mdyzma@devbox md_analytics]$ heroku login
+(md_analytics) [mdyzma@devbox md_analytics]$ heroku login
 Enter your Heroku credentials:
 Email: mdyzma@gmail.com
 Password: ************
@@ -622,13 +694,16 @@ Pull GitHub repository. Later on files will be pushed to the created Heroku appl
 (md_analytics) [mdyzma@devbox md_analytics]$
 {% endhighlight %}
 
+
+Create apps:
+
 {% highlight bash %}
-# staging 
+# production 
 (md_analytics) [mdyzma@devbox md_analytics]$ heroku create --region eu --buildpack heroku/python md-analytics
 Creating md-analytics... done, region is eu
 https://md-analytics.herokuapp.com/ | https://git.heroku.com/md-analytics.git
 
-# ...and production
+# ...and stage
 (md_analytics) [mdyzma@devbox md_analytics]$ heroku create --region eu --buildpack heroku/python md-analytics-stage
 Creating md-analytics-stage... done, region is eu
 https://md-analytics-stage.herokuapp.com/ | https://git.heroku.com/md-analytics-stage.git
@@ -659,12 +734,12 @@ Created apps are empty. All we have is default Heroku message, that our WSGI pyt
 
 ![heroku_empty_app][h_empty]
 
-Now we have to set environmental variables, our app relies on and upload application files to the remote location:
+Now we have to set environmental variables and upload application files to the remote location:
 
 {% highlight bash %}
-(md_analytics) [mdyzma@devbox md_analytics]$ heroku config:set --app md-analytics-stage APP_SETTINGS=config_app.ProdConfiguration
+(md_analytics) [mdyzma@devbox md_analytics]$ heroku config:set --app md-analytics-stage APP_SETTINGS=ProdConfig
 Setting APP_SETTINGS... done
-APP_SETTINGS: config_app.ProdConfiguration
+APP_SETTINGS: ProdConfig
 {% endhighlight %}
 
 To upload files directly from local master branch to remote heroku repo type:
@@ -704,9 +779,9 @@ And voila! App is running in our stage environment:
 
 ![heroku-first-stage-deployment][h_first]
 
-After creating apps we can bind hem together in single pipeline. Lets do it from CLI tool. In order to work CLI  requires additional plug-in. Lets install it:
+After creating apps we can bind hem together in single pipeline. To do it from HeokuCLI we need additional plug-in. Lets install it:
 
-{% highlight python %}
+{% highlight bash %}
 (md_analytics) [mdyzma@devbox md_analytics]$ heroku plugins:install heroku-pipelines
 Installing plugin heroku-pipelines... done
 {% endhighlight %}
@@ -742,9 +817,9 @@ Because app was launched without errors, I will promote staging environment to p
 Unfortunately promoting app does not copy environment's variables, therefore we have to set app specific variables for production as well:
 
 {% highlight bash %}
-(md_analytics) [mdyzma@devbox md_analytics]$ heroku config:set --app md-analytics APP_SETTINGS=config_app.ProdConfiguration
+(md_analytics) [mdyzma@devbox md_analytics]$ heroku config:set --app md-analytics APP_SETTINGS=ProdConfig
 Setting APP_SETTINGS and restarting md-analytics... done, v4
-APP_SETTINGS: config_app.ProdConfiguration
+APP_SETTINGS: ProdConfig
 {% endhighlight %}
 
 Now both - staging and production environments run Flask app flawlessly.
@@ -756,9 +831,8 @@ We will use TravisCI, but it is also possible to build automatic system with Git
 
 To set TravisCI we have to place `.travis.yml` file in the application root directory. It will contain instructions for TravisCI service what language we use (Python), which versions (2.7, 3.6 and nightly build), how to test application, how to create basic metrics (like test coverage, which will be further processed by [Coveralls.io](https://coveralls.io) service) and finally how to deploy it to the Heroku upon successfully finishing all steps (for detail description of Heroku deployment, see [here](#heroku)). ".travis.yml" file will look similar to this:
 
+__.travis.yml__
 {% highlight yml %}
-# .travis.yml
-
 language: python
 
 python:
@@ -770,7 +844,7 @@ python:
 # command to install dependencies
 install: "pip install -r requirements/dev.txt"
 # command to run tests
-script: python -m pytest
+script: python -m pytest --cov=md_analytics tests/
 
 after_success:
     - pip install coveralls
@@ -788,7 +862,7 @@ deploy:
   app: md-analytics-stage
 {% endhighlight %}
 
-YML files are pretty simple to read, I suppose, the only mysterious part is deploy -> api_key. Lets examine this. Once you have registered to Heroku, you will be given API key (Heroku -> account settings). It is unwise to paste your key just like that to the `.travis.yml`. Therefore we will use Travis ruby gem to encrypt it (must have Ruby installed):
+YML files are designed to be simple to read by humans. Options are defined using `key: value` pairs with nested structure. I suppose, the only mysterious part is `deploy -> api_key`. Lets examine this entry. Once registered to Heroku, I was given API key (Heroku -> account settings). It is unwise to paste your key just like that to the `.travis.yml`. Therefore we will use Travis ruby gem to encrypt it (must have Ruby installed):
 
 {% highlight python %}
 (md_analytics) [mdyzma@devbox md_analytics]$ gem install travis
@@ -818,7 +892,7 @@ All right. For some reason `$(heroku auth:token)` returned strange data (need to
 travis encrypt "[SECRET]" --add deploy.api_key
 {% endhighlight %}
 
-... which fixed deployment problem. According to [THiS](https://github.com/yunojuno/heroku-tools/issues/7) another approach could be creating environmental variable `HEROKU_API_TOKEN` on Travis an paste secret token there.
+... which fixed deployment problem. According to [this GitHub issue](https://github.com/yunojuno/heroku-tools/issues/7) another approach could be creating environmental variable `HEROKU_API_TOKEN` on Travis an paste secret token there.
 
 ![travis-ci-fixed][travis_green]
 
@@ -842,6 +916,7 @@ Landing page, login/register mechanism, dashboard
 [tw_create_app]: /assets/07-06-2017/twitter-create-app.png
 [tw_settings]:   /assets/07-06-2017/twitter-app-settings.png
 [tw_tokens]:     /assets/07-06-2017/twitter-app-tokens.png
+[github_issues]: /assets/07-06-2017/github-issues.png
 [hello_flask]:   /assets/07-06-2017/hello-flask.png
 [h_pipeline]:    /assets/07-06-2017/heroku-pipeline.png
 [h_empty]:       /assets/07-06-2017/heroku-empty-app.png
