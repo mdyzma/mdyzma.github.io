@@ -12,7 +12,7 @@ keywords:   python, twitter, Flask, machine-learning
 Flask application presenting social media accounts analysis in form of dashboard.  Application implements "oAuth sign in mechanisms", specific account data analysis (statistics, EDA, machine learning). It transforms various data sources into clear and concise report. This part describes backbone of the application, which is basic Flask configuration, Travis Continuous Integration (with tests and test coverage report) and Heroku Continuous Deployment to multiple environments with a single button. It is under version control, tested and CI/CD ready.
 
 <br>
-{% include note.html content="Source files for this article can be downloaded from this [GitHub repository](https://github.com/mdyzma/md_analytics/releases/tag/v0.0.2)" %}
+{% include note.html content="Source files for this article can be downloaded from this [GitHub repository](https://github.com/mdyzma/md_analytics/releases/tag/v0.0.3)" %}
 
 -----
 
