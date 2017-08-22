@@ -650,12 +650,12 @@ Both should produce following output:
 {% highlight bash %}
 (md_analytics) [mdyzma@devbox md_analytics]$ heroku local
 
-13:31:13 web.1   |   * Restarting with linuxapi reloader
-13:31:22 web.1   |   * Debugger is active!
-13:31:22 web.1   |   * Debugger PIN: 471-898-880
-13:31:22 web.1   |   * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
-13:31:25 web.1   |  127.0.0.1 - - [07/July/2017 13:31:25] "GET / HTTP/1.1" 200 -
-13:31:25 web.1   |  127.0.0.1 - - [07/July/2017 13:31:25] "GET /favicon.ico HTTP/1.1" 404 -
+[WARN] No ENV file found
+13:31:25 web.1   |  [2017-07-06 13:31:25 +0200] [3400] [INFO] Starting gunicorn 19.7.1
+13:31:25 web.1   |  [2017-07-06 13:31:25 +0200] [3400] [INFO] Listening at: http://0.0.0.0:5000 (3400)
+13:31:25 web.1   |  [2017-07-06 13:31:25 +0200] [3400] [INFO] Using worker: sync
+13:31:25 web.1   |  [2017-07-06 13:31:25 +0200] [3403] [INFO] Booting worker with pid: 3403
+
 {% endhighlight %}
 
 App creation can be done via Heroku web interface or command line tool, but first we need to make sure [HerokuCLI](https://toolbelt.heroku.com) is installed. Type:

@@ -645,29 +645,22 @@ But we want to add IJulia kernel to existing Jupyter installation. to do that yo
 
 #### IScala kernel
 
-https://datasciencevademecum.wordpress.com/2016/01/28/6-points-to-compare-python-and-scala-for-data-science-using-apache-spark/
+We will clone one of the kernels offering Scala support from GitHub:
 
-Scala programs compile to JVM bytecodes. Their
-run-time performance is usually on par with Java programs. Scala code can
-call Java methods, access Java fields, inherit from Java classes, and implement Java interfaces. 
+{% highlight julia %}
+[mdyzma@devbox mdyzma]$ git clone https://github.com/jupyter-scala/
 
-TODO
+Cloning into 'jupyter-scala'...
+remote: Counting objects: 2129, done.
+remote: Total 2129 (delta 0), reused 0 (delta 0), pack-reused 2129
+Receiving objects: 100% (2129/2129), 405.59 KiB | 837.00 KiB/s, done.
+Resolving deltas: 100% (758/758), done.
+{% endhighlight %}
 
+Simply run `sh` script prepared by the author and Scala should be added to the list of available kernels:
 
-## Using all kernels
+![scala-kernel][scala_kernel]
 
-Jupyter notebook is language agnostic platform. It is able to support nearly 100 different languages (check [here][kernels]) via kernels, which provide is kernel is execution backend for Jupyter to invoke specifics language commands and direct response back to the browser. By default only ipython kernel is installed and runs out of the box. Other kernels must be installed and activated by user. By default installing Jupyter also installs `ipykernel` appropriate to your interpreter version. 
-
-https://jupyter-client.readthedocs.io/en/latest/kernels.html#kernelspecs
-
-TODO: NICE EXAMPLES
-
-https://ipython.readthedocs.io/en/latest/install/kernel_install.html
-
-
-
-
-## One to rule them all...
 
 Once all kernels are installed, you can print all available kernels using Jupyter function:
 
@@ -684,6 +677,7 @@ Available kernels:
 ## Summary
 
 Now we have versatile, multi-language prototyping environment in the browser.
+
 
 If you struggle between using python Julia, Scala or R, don't! Use all of them! At the same time in the same notebook, passing data structures between languages and perform analysis with the best tools they can offer. With Jupyter notebook it is all possible. It is possible to add even more players to the game. Julia, Haskel, Lua, bash, Octave... Pick whatever you can... Currently Jupyter supports nearly 100 different kernels (check [here][kernels]).
 
@@ -712,3 +706,4 @@ If you struggle between using python Julia, Scala or R, don't! Use all of them! 
 [bothkernels]:     /assets/23-04-2017/two-kernels.png
 [withrkernel]:     /assets/23-04-2017/r-kernel.png
 [withjuliakernel]: /assets/23-04-2017/julia-kernel.png
+[scala_kernel]:    /assets/23-04-2017/scala-kernel.png
