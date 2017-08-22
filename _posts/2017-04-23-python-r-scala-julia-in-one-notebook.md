@@ -667,10 +667,11 @@ Once all kernels are installed, you can print all available kernels using Jupyte
 {% highlight bash %}
 [mdyzma@devbox mdyzma]$ jupyter kernelspec list
 Available kernels:
-    julia-0.5    /home/mdyzma/.jupyter/kernels/julia-0.7
-    python2      /home/mdyzma/.jupyter/kernels/python2
-    python3      /home/mdyzma/.jupyter/kernels/python3
-    ir           /home/mdyzma/.jupyter/kernels/ir
+  julia-0.7    /home/mdyzma/.local/share/jupyter/kernels/julia-0.7
+  python2      /home/mdyzma/.local/share/jupyter/kernels/python2
+  scala        /home/mdyzma/.local/share/jupyter/kernels/scala
+  ir           /home/mdyzma/anaconda3/share/jupyter/kernels/ir
+  python3      /home/mdyzma/anaconda3/share/jupyter/kernels/python3
 {% endhighlight %}
 
 
