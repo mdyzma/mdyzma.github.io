@@ -704,7 +704,7 @@ If you struggle between using python Julia, Scala or R, don't! Use all of them! 
 
 <!-- Images -->
 
-[bothkernels]:     /assets/23-04-2017/two-kernels.png
-[withrkernel]:     /assets/23-04-2017/r-kernel.png
-[withjuliakernel]: /assets/23-04-2017/julia-kernel.png
-[scala_kernel]:    /assets/23-04-2017/scala-kernel.png
+[bothkernels]:     /assets/2017-04-23/two-kernels.png
+[withrkernel]:     /assets/2017-04-23/r-kernel.png
+[withjuliakernel]: /assets/2017-04-23/julia-kernel.png
+[scala_kernel]:    /assets/2017-04-23/scala-kernel.png

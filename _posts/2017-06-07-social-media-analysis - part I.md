@@ -9,6 +9,8 @@ categories: python social-media Flask machine-learning
 keywords:   python, twitter, Flask, machine-learning
 ---
 
+![banner][banner]
+
 Flask application presenting social media accounts analysis in form of dashboard.  Application implements "oAuth sign in mechanisms", specific account data analysis (statistics, EDA, machine learning). It transforms various data sources into clear and concise report. This part describes backbone of the application, which is basic Flask configuration, Travis Continuous Integration (with tests and test coverage report) and Heroku Continuous Deployment to multiple environments with a single button. It is under version control, tested and CI/CD ready.
 
 <br>
@@ -913,16 +915,17 @@ Landing page, login/register mechanism, dashboard
 
 <!-- Images -->
 
-[tw_create_app]: /assets/07-06-2017/twitter-create-app.png
-[tw_settings]:   /assets/07-06-2017/twitter-app-settings.png
-[tw_tokens]:     /assets/07-06-2017/twitter-app-tokens.png
-[github_issues]: /assets/07-06-2017/github-issues.png
-[hello_flask]:   /assets/07-06-2017/hello-flask.png
-[h_pipeline]:    /assets/07-06-2017/heroku-pipeline.png
-[h_empty]:       /assets/07-06-2017/heroku-empty-app.png
-[h_first]:       /assets/07-06-2017/heroku-first-deployment.png
-[h_conn_gh]:     /assets/07-06-2017/heroku-connect-github.png
-[travis_ci]:     /assets/07-06-2017/connect-github-travis-ci.png
-[travis_board]:  /assets/07-06-2017/travis-ci-project.png
-[travis_log]:    /assets/07-06-2017/travis-ci-fail-report.png
-[travis_green]:  /assets/07-06-2017/travis-ci-green.png
+[banner]:        /assets/2017-06-07/banner.png
+[tw_create_app]: /assets/2017-06-07/twitter-create-app.png
+[tw_settings]:   /assets/2017-06-07/twitter-app-settings.png
+[tw_tokens]:     /assets/2017-06-07/twitter-app-tokens.png
+[github_issues]: /assets/2017-06-07/github-issues.png
+[hello_flask]:   /assets/2017-06-07/hello-flask.png
+[h_pipeline]:    /assets/2017-06-07/heroku-pipeline.png
+[h_empty]:       /assets/2017-06-07/heroku-empty-app.png
+[h_first]:       /assets/2017-06-07/heroku-first-deployment.png
+[h_conn_gh]:     /assets/2017-06-07/heroku-connect-github.png
+[travis_ci]:     /assets/2017-06-07/connect-github-travis-ci.png
+[travis_board]:  /assets/2017-06-07/travis-ci-project.png
+[travis_log]:    /assets/2017-06-07/travis-ci-fail-report.png
+[travis_green]:  /assets/2017-06-07/travis-ci-green.png

@@ -551,12 +551,12 @@ Example Jupyter notebook can be downloaded from [GitHub][github].
 
 <!-- Images -->
 
-[notebook]:   /assets/03-03-2017/jupyter-notebook.png
-[lab]:        /assets/03-03-2017/jupyter-lab.png
-[nbext-view]: /assets/03-03-2017/nbextensions.png
-[lambda]:     /assets/03-03-2017/lambda_max.png
-[cal]:        /assets/03-03-2017/calibration-points.png
-[cal_lin]:    /assets/03-03-2017/calibration-linear-fit.png
-[cal_poly]:   /assets/03-03-2017/calibration-polynomial-fit.png
-[poly_comp]:  /assets/03-03-2017/polynomial-comparison.png
-[quad_fit]:   /assets/03-03-2017/quadratic_fit.png
+[notebook]:   /assets/2017-03-03/jupyter-notebook.png
+[lab]:        /assets/2017-03-03/jupyter-lab.png
+[nbext-view]: /assets/2017-03-03/nbextensions.png
+[lambda]:     /assets/2017-03-03/lambda_max.png
+[cal]:        /assets/2017-03-03/calibration-points.png
+[cal_lin]:    /assets/2017-03-03/calibration-linear-fit.png
+[cal_poly]:   /assets/2017-03-03/calibration-polynomial-fit.png
+[poly_comp]:  /assets/2017-03-03/polynomial-comparison.png
+[quad_fit]:   /assets/2017-03-03/quadratic_fit.png
