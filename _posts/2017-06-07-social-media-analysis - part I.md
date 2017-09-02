@@ -9,9 +9,8 @@ categories: python social-media Flask machine-learning
 keywords:   python, twitter, Flask, machine-learning
 ---
 
-![banner][banner]
-
-Flask application presenting social media accounts analysis in form of dashboard.  Application implements "oAuth sign in mechanisms", specific account data analysis (statistics, EDA, machine learning). It transforms various data sources into clear and concise report. This part describes backbone of the application, which is basic Flask configuration, Travis Continuous Integration (with tests and test coverage report) and Heroku Continuous Deployment to multiple environments with a single button. It is under version control, tested and CI/CD ready.
+![banner][banner]<br><br>
+Flask application presenting social media accounts analysis in form of dashboard. It transforms various data sources into clear and concise report. __This part__ describes backbone of the application, which is basic Flask configuration, Travis Continuous Integration (with tests) and Heroku Continuous Deployment to multiple environments with a single button. It is under version control, tested and CI/CD ready.
 
 <br>
 {% include note.html content="Source files for this article can be downloaded from this [GitHub repository](https://github.com/mdyzma/md_analytics/releases/tag/v0.0.3)" %}
@@ -21,9 +20,7 @@ Flask application presenting social media accounts analysis in form of dashboard
 ## Series consists of:
 
 * [Social media analysis with Flask, Part I]({{site.url}}/2017/06/07/social-media-analysis-part-I/) (Setting environment, flask, Travis CI/Heroku CD )
-* Social media analysis with Flask, Part II (coming soon)
-
-<!-- * [Social media analysis with Flask, Part II]({{site.url}}/2017/07/12/social-media-analysis-part-ii/) (unfinished) -->
+* [Social media analysis with Flask, Part II]({{site.url}}/2017/07/12/social-media-analysis-part-ii/) (templates, login/register mechanism, data storage)
 
 
 ## Part I
@@ -46,7 +43,7 @@ Flask application presenting social media accounts analysis in form of dashboard
 
 <!-- <a name="description"></a> -->
 
-# Application description
+## Application description
 
 Web application displaying summary of the social media account analysis. Analyzed properties include:
 
@@ -58,7 +55,7 @@ Web application displaying summary of the social media account analysis. Analyze
 - friends graph
 - friends/followers cross-check between different services
 
-## Roles specification
+### Roles specification
 
 Story to implement:
 As a user I want to see results of my social media account analysis in form of dashboard page.
@@ -97,7 +94,7 @@ Steps:
 9. I can log out from the session
 10. When I log out I am directed to "/" page
 
-## Other requirements
+### Other requirements
 
 1. Application should be Heroku-deployable (please provide a link to the working deployment in the README).
 2. Application should be documented.
@@ -110,7 +107,7 @@ Steps:
 
 <!-- <a name="setting"></a> -->
 
-# Setting up a development environment
+## Setting up a development environment
 
 Make sure that Python is installed. After Python we have to make sure we have all necessary packages. Simple `pip list` will show all installed packages. New Python distributions come with basic package manager `pip` and tools helping in packages distribution: `setuptools` and `wheel`.
 
@@ -134,7 +131,7 @@ Installing collected packages: virtualenv
 Successfully installed virtualenv-15.1.0
 {% endhighlight %}
 
-## Virtual environments management
+### Virtual environments management
 
 Now that we have the proper tools installed, we are ready to create our first Flask application. First of all we need virtual environment specific for our application. It is a good practice to separate environment working directory and application folder, to avoid putting heavy folders under version control (some virtual environments can have hundreds of MB). What I do usually is to create `.envs` folder in user's home directory and keep all virtual envs there.
 
@@ -155,9 +152,7 @@ Now we can activate `md_analytics` virtual environment:
 From now on, whenever we want to work on our app and environment is not activated, we have to activate it first. Changed prompt will inform us that now we use "local" python. All packages installed in active environment will be connected to it. To deactivate environment simply type `source deactivate`.
 
 
-<!-- <a name="flask_structure"></a> -->
-
-# Basic file structure
+## Basic file structure
 
 It is not required from Flask application to follow particular folder structure like Django application. Only thing is, files should keep names understood by Flask. Although it is not required, it is advised to structure app a bit to ensure maximum modularity and speed up development, testing etc. Our app structure comprises of three large parts: 
 
@@ -293,12 +288,12 @@ Build finished. The HTML pages are in build/html.
 Content is written in __reStructuredText__ markup language. For more check [here](http://www.sphinx-doc.org/en/stable/rest.html).
 
 
-# Setting Flask application
+## Setting Flask application
 
 Setting flask app is a multi-step process, which can be automated with some awesome python tools like [cookiecutter](https://github.com/audreyr/cookiecutter#python), but here we will go step by step to learn it in detail. First we have planed basic application structure, now let's install Flask and test installation, then create automatic configuration mechanism, semi-automatic dependencies installation and finally continuous integration and deployment of the app on TravisCI and Heroku. All tested and under version control (on GitHub).
 
 
-## Install Flask
+### Install Flask
 
 Activate virtual environment and install `Flask` locally (command bellow will install this package and it's dependencies):
 
@@ -348,7 +343,7 @@ This "toy" code creates instance of `Flask` class which is the central object in
 Worked! We are ready to create "real" application and real unit tests. 
 
 
-## Requirements
+### Requirements
 
 Requirements help speeding up application deployment. When source code is cloned from the pubic repository, all application dependencies are grouped in `requirements.txt` file. Moreover CI services (including Heroku) need requirements file in application root folder to run app properly. The `requirements.txt` in our application contains link to requirements folder with several files specifying separate sets of dependencies for different environments in which application can run. Link leads specifically to the `requirements/prod.txt`. However during development we will install packages listed in `requirements/dev.txt`, which of course includes production dependencies:
 
@@ -420,7 +415,7 @@ Calling main requirements is enough to get application up and running, however f
 {% endhighlight %}
 
 
-## Configuration management
+### Configuration management
 
 Configurations are kept in `settings.py` in main app folder. It will store different collections of application settings. Basic config class sets just some values common for all dev and production environments. Environment specific settings are set in children classes.
 
@@ -476,7 +471,7 @@ We can always add other values like API keys later.
 For now I will input configuration manualy, but having configuration classes we can tell flask app to manage it dynamically. For example, to set environmental variable `APP_SETTINGS` which value will be dependent on the environment our app is running. On Heroku server it will be `ProdConfig` on development environment it will be `DevConfig` and so on. To set environmental variable in Linux type: `export APP_SETTINGS=<NameOfClass>` (i.e. export APP_SETTINGS=DevConfig). To make it permanent we should place export statement in `~/.bashrc` file. On Windows instead of export we will use `set APP_SETTINGS=<NameOfClass>`. If we are going to employ environmental variable governing type of configuration, our `app.py` should change. 
 
 
-## Flask app factory
+### Flask app factory
 
 We will use app factory pattern and `Flask-Script` extension to build our app foundations. The `md_analytics/app.py` contains Flask factory, which is just a simple function wrapped around Flask object creation. File `manage.py` from root directory contains application manager with all command-line directives.  This way we can create multiple instances of the app, using different parameters (i.e. app settings). It is time to expand our toy "Hello Flask!" example to employ this pattern. 
 
@@ -526,7 +521,7 @@ if __name__ == "__main__":
 `manage.py` uses Flask-Script to register command-line tasks outside web application (from bash level). There are several build in commands like `Server()`, which runs the Flask development server. Still `manage.py` is not the only way to run our app locally. We can use HerokuCLI to do that (see [Heroku deployment](#heroku-deployment)).
 
 
-## Test Flask app
+### Test Flask app
 
 It is time to write some unit tests. This should also clear situation with continuous integration service, which requires test to run smoothly to finish all green. Lets update `manage.py` to run some tests from command-line. First locate test folder in relation to `manage.py` and write simple function running tests using excellent Python library `pytest`. Add following snippet to `manage.py`:
 
@@ -604,7 +599,7 @@ Additionally we can add `--cov=md_analytics tests/` flag, which indicate source 
 Having all command line features integrated into one common interface is alway a good thing and helps other developers to understand code and join the project faster. However at this point our application will be tested on TravisCI server using command from `.travis.yml` (see [here](#continuous-integration)).
 
 
-# Heroku deployment
+## Heroku deployment
 
 For deployment we will use Heroku service. It is good practice to stage changes first and check consistency and after acceptance tests pass, to promote staged application to the production. Production is "live" application accessible for users. To achieve that we have to create two separate applications. Heroku implemented "quick deploy" button, which is specified in root directory. File `app.json` contains all information necessary to copy files and deploy application.
 
@@ -827,7 +822,7 @@ APP_SETTINGS: ProdConfig
 Now both - staging and production environments run Flask app flawlessly.
 
 
-# Continuous integration
+## Continuous integration
 
 We will use TravisCI, but it is also possible to build automatic system with GitLab, Jenkins or BuildBot. There are (or will be) separate articles on this blog describing specific CI/CD options.
 
@@ -899,7 +894,7 @@ travis encrypt "[SECRET]" --add deploy.api_key
 ![travis-ci-fixed][travis_green]
 
 
-# Summary
+## Summary
 
 What we have is a Flask application with complete continuous integration and continuous deployment work-flow up and running. Basic elements of the system are:
 
@@ -908,10 +903,9 @@ What we have is a Flask application with complete continuous integration and con
 3. Two deployment environments on Heroku: [stage](http://md-analytics-stage.herokuapp.com) and [production](https://md-analytics.herokuapp.com) grouped in one pipeline
 
 
+<br>
 To continue:
-### [Social media analysis with Flask, Part II]({{site.url}}/2017/07/12/social-media-analysis-part-ii/)
-
-Landing page, login/register mechanism, dashboard
+### [Social media analysis with Flask, Part II]({{site.url}}/2017/07/12/social-media-analysis-part-ii/) 
 
 <!-- Images -->
 
