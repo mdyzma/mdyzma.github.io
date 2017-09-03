@@ -4,8 +4,8 @@ author:     Michal Dyzma
 title:      "Python, R, Scala and Julia in one Notebook"
 date:       2017-04-23 14:51:25 +0200
 comments:   true
-categories: python R Scala Julia jupyter-notebook
-keywords:   python, R, Scala, Julia, jupyter notebook, data science
+categories: python R Scala Julia jupyter-notebook, data-science
+keywords:   python, R, Scala, Julia, jupyter-notebook, data science
 ---
 
 Use R, Julia, Scala or Python? The answer is: **Yes!** How to create versatile environment, in which different languages are available and able to communicate with each other? Without changing program you work in and where data may be passed between specific structures characteristic for the language? This post will show you how to do it with four most powerful languages used in Data Science: __Python__, __R__, __Scala__ and __Julia__.

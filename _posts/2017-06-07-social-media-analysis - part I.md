@@ -5,8 +5,8 @@ title:      Social media analysis with Flask, Part I
 date:       2017-06-07 11:11:47
 comments:   true
 mathjax:    false
-categories: python social-media Flask machine-learning
-keywords:   python, twitter, Flask, machine-learning
+categories: python social-media Flask TravisCI Heroku
+keywords:   python, social-media, Flask, TravisCI, Heroku
 ---
 
 ![banner][banner]<br><br>

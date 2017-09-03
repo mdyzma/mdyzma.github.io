@@ -5,8 +5,8 @@ title:      Jupyter Notebook - python based lab book
 date:       2017-03-03 17:28:54 +0200
 comments:   true
 mathjax:    true
-categories: python jupyter-notebook data
-keywords:   python, jupyter notebook, data
+categories: python jupyter-notebook data-science
+keywords:   python, jupyter-notebook, data-science
 ---
 
 Data analysis using **Jupyter Notebook**. Natural sciences more and more rely on skills related to Data Science. Experiments produce more and more data, and skilled researcher has to know how to deal with variety of data and sometime very large datasets. **Anaconda** Python Distribution offers large set of great tools to manipulate any kind of data "out of the box". Multitude of community packages allows to read, analyze and report all kinds of data produced by science. It is caused mostly by simple fact, that scientific community is developing it's tools mostly in Python. How to work with small and large data in python and make Jupyter Notebook your lab-book? Check this article. 
