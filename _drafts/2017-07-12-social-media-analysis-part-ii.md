@@ -97,7 +97,7 @@ Finally lest focus a bit on the stack of tools which will be used in this applic
 
 Most used Jinja elements, which structure template skeleton are {% raw %}`{% ... %}`{% endraw %} (statements) and {% raw %}`{{ ... }}`{% endraw %} (expressions). Statements provide different means of the work-flow control, for example `if`, `with` conditionals or `for` loops and some pre-defined Jinja tags i.e. `block`, `include`, `call`. Expressions, on the other hand, display dictionary based variables passed to the engine via Flask context mechanism. For more details, please refer to the [Jinja documentation][jinja].
 
-In our template we have specified four large code blocks, which will be filled with details in child templates. The most basic template, the architectural foundation for each page on our site, is called `base.html`. It must contain all elements required by the browser and links to the framework files used in the project. From our point of view most important sections are: 
+In our template we have specified four large code blocks, which will be filled with details in children templates. The most basic template, the architectural foundation for each page on our site, is called `base.html`. It must contain all elements required by the browser to serve some layout common for entire project. It also includes links to the framework files used in the project (`css` and `js`). From our point of view most important sections are: 
 
 * __head__ section - with necessary metadata for proper SEO and responsive design directives
 * __body__
@@ -107,17 +107,15 @@ In our template we have specified four large code blocks, which will be filled w
   * __footer__ section - basic structural element with javascript links for all pages and extended footer information like site map, and other links
 
 
-Base template includes all the links to partial templates and blocks. Some fragments of HTML are moved to separate files (includes), because they can be quite large and would affect template readability. Complete base page layout should look similar to this:
+Base template with all the links to partial templates and code blocks should look similar to this:
 
 __base.html__
 {% highlight html linenos %}
 <!DOCTYPE html>
 <html lang="en">
-    <!--[if lt IE 7]>  <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-    <!--[if IE 7]>     <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-    <!--[if IE 8]>     <html class="no-js lt-ie9"> <![endif]-->
     <head>
         <title>{% raw %}{% block title %}{% endblock %}{% endraw %} | MD-Analytics</title>
+        <!-- Head section meta from include -->
         {% raw %}{% include {{ url_for('templates', filename='includes/head.html') }}{% endraw %}
         {% raw %}{% block seo %}{% endblock %}{% endraw %}  
     </head>
@@ -134,9 +132,9 @@ __base.html__
 </html>
 {% endhighlight %}
 
-Following base includes are located in `md_analytics/templates/includes/` and should contain at least this.
+Some fragments of HTML are moved to separate `html` files (includes), to keep main template lean and understandable. Fragments like main navigation bar or footer can be quite large and it could affect template readability. Base includes are located in `md_analytics/templates/includes/` and should contain at least this.
 
-Head include contains meta information common for entire project, like links to the style sheets  or fonts. Special part of page head section is enclosed in separate `seo` block. It will be responsible for SEO meta information (i.e. Google analytics) or  Open Graph tags and other `meta` properties to increase quality of linking pages in social media. 
+Head include contains meta information common for entire project, like links to the style sheets  or fonts. Special part of page head section is enclosed in separate `seo` block. It will be responsible for SEO meta information (i.e. Google analytics) or  Open Graph tags and other `meta` properties used during linking specific page in social media. 
 
 
 __head.html__
@@ -155,7 +153,7 @@ __head.html__
 {% endhighlight %}
 
 
-Main navigation bar will be common for all pages in the app and will be fixed at the top of the site. It is pretty standard navigation based on Bootstrap and MDB with one exception - there is also some Jinja logic to manage login button, which now depends on user's status on the page (authenticated or not).
+Main navigation bar is common for all pages in the app and will be fixed at the top of the site. It is pretty standard navigation bar, based on Bootstrap and MDB, with one exception - there is also some Jinja logic to manage login button, which look depends on user's status on the page (authenticated or not).
 
 
 __nav.html__
@@ -192,7 +190,7 @@ __nav.html__
 {% endhighlight %}
 
 
-Messages box, will display all communicates produced by application. It improves tremendously user experience with the app.
+Messages box, will display all communicates produced by application. It improves tremendously user experience with the app. It consists of simple div and some Jinja logic to manage messages produced by Flask:
 
 __messages.html__
 {% highlight html linenos %}
