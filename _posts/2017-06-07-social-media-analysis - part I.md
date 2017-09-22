@@ -76,7 +76,7 @@ Steps:
     * I am redirected to "/register" page
     * I enter credentials
     * I am redirected to "/dashboard/user" page
-5. I see "Connect <SocialMediaName>  account" button, where SocialMediaName is i.e. Twitter or Facebook
+5. I see "Connect <SocialMediaName>  account" button, where SocialMediaName is i.e. Twitter, Facebook,  GitHub or LinkedIn
 6. I follow oAuth flow authorization
 7. I get redirected to “/dashboard/user/[SocialMediaName] page
 8. I see :
@@ -98,6 +98,7 @@ Steps:
 10. I can export chosen graph to JSON or CVS
 9. I can log out from the session
 10. When I log out I am directed to "/" page
+11. When I am logged in I can see my user settings link and display it in "/user/name" address
 
 ### Other requirements
 
@@ -162,7 +163,7 @@ From now on, whenever we want to work on our app and environment is not activate
 It is not required from Flask application to follow particular folder structure like Django application. Only thing is, files should keep names understood by Flask. Although it is not required, it is advised to structure app a bit to ensure maximum modularity and speed up development, testing etc. Our app structure comprises of three large parts: 
 
 * __docs__ - package documentation linked to [ReadTheDocs](http://md-analytics.readthedocs.io/en/latest/?badge=latest)
-* __md_analytics__ module - the app itself wih login, register and dashboard mechanics
+* __app__ module - the app itself wih login, register and dashboard , user components
 * __requirements__ - dependencies for each environment
 * __tests__ - suit of test for entire app
 * boilerplate files for version control, coverage metrics and deployment
@@ -182,7 +183,7 @@ General structure is listed below:
 |       |-- conf.py
 |       `-- index.rst
 |
-|-- md_analytics/
+|-- app/
 |   |-- static/
 |   |-- templates/
 |   |-- __init__.py
@@ -212,24 +213,24 @@ General structure is listed below:
 
 Most of the files in this make up are self-explanatory. There are some files like `app.json` or `Procfile`which are elements of [Heroku](https://www.heroku.com) machinery and will be described in detail later. Rest belong to the elements of VCS or CI  and ensure smooth development. Table with files description is given below:
 
-|--------------------------+-+----------------------------------------------------------------|
-|File                      | | Description                                                    |
-|:-------------------------|-|:---------------------------------------------------------------|
-| app.json                 | | Orchestrates steps involved in automatic deployment on Heroku. |
-| Procfile                 | | Declares commands run by application on the Heroku platform.   |
-| manage.py                | | Entry-point for executing our application                      |
-| .travis.yml              | | Instructions for TravisCI service                              |
-| docs/conf.py             | | Sphinx configuration                                           |
-| md_analytics/app.py      | | Flask app factory                                              |
-| md_analytics/settings.py | | Flask application configuration variables                      |
-|--------------------------+-+----------------------------------------------------------------|
+|-----------------+-+----------------------------------------------------------------|
+|File             | | Description                                                    |
+|:----------------|-|:---------------------------------------------------------------|
+| app.json        | | Orchestrates steps involved in automatic deployment on Heroku. |
+| Procfile        | | Declares commands run by application on the Heroku platform.   |
+| manage.py       | | Entry-point for executing our application                      |
+| .travis.yml     | | Instructions for TravisCI service                              |
+| docs/conf.py    | | Sphinx configuration                                           |
+| app/app.py      | | Flask app factory                                              |
+| app/settings.py | | Flask application configuration variables                      |
+|-----------------+-+----------------------------------------------------------------|
 
 
 ## GitHub
 
 We use git to version control. Basics of git are beyond scope of this article. Please refer to excellent [git tutorial](https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control). Here I would like to focus on GitHub aspects related to project management. GitHub offers issues and projects support. Issues are more about specific bugs or features reported by users/developers, while project shows general status of all issues. Issues can be grouped in milestones, which usually denote specific software release.
 
-Here are some issues, which are "enchancements" of the md_analytics app from version 0.0.2 (working skeleton integrated with Travis and Heroku) to the pre-released alpha with landing page and dashboard functionalities (v0.1.0).
+Here are some issues, which are "enhancements" of the app from version 0.0.2 (working skeleton integrated with Travis and Heroku) to the pre-released alpha with landing page and dashboard functionalities (v0.0.3).
 
 ![github-issues][github_issues]
 
@@ -314,7 +315,7 @@ Successfully installed Flask-0.12.2 Jinja2-2.9.6 MarkupSafe-1.0 Werkzeug-0.12.2 
 
 Flask and its dependencies were installed. It is good to keep requirements in separate file, to ensure all necessary packages can be installed automatically with a single command and to not pollute application directory. 
 
-Currently we have enough to run basic flask application. To test our environment lets write "Hello Flask" tryout. It will use basic routing mechanism to show "Hello Flask!" on the page. First Create `md_analytics` package and `app.py` file in it. In the app Python file type:
+Currently we have enough to run basic flask application. To test our environment lets write "Hello Flask" tryout. It will use basic routing mechanism to show "Hello Flask!" on the page. First Create `app` package (with `__init__.py`) and `app.py` module in it. In the app.py  file type:
 
 __md_analytics/app.py__
 {% highlight python %}
@@ -334,7 +335,7 @@ if __name__ == '__main__':
 This "toy" code creates instance of `Flask` class which is the central object in any Flask project. It has all utilities necessary to start dynamic WSGI app. Running it will initiate local server with single route "/" answering all requests. Name of the view is index, since it is default name, that is looked up by all browsers. When we enter domain address (127.0.0.1:5000 in this case) flask will make sure that `index` view is presented in response. Index view is whatever stands after `index()` function return statement. If statement at the end of the file is Python convention that ensures that the app will run properly when it is called as a Python script from bash.
 
 {% highlight bash %}
-(md_analytics) [mdyzma@devbox md_analytics]$ python app.py
+(md_analytics) [mdyzma@devbox app]$ python app.py
  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
  * Restarting with stat
  * Debugger is active!
@@ -343,9 +344,7 @@ This "toy" code creates instance of `Flask` class which is the central object in
  127.0.0.1 - - [07/July/2017 13:19:26] "GET /favicon.ico HTTP/1.1" 404 -
 {% endhighlight %}
 
-... should start server on [http://127.0.0.1:5000/](http://127.0.0.1:5000/) saying __Hello, Flask!__ Main page was served properly (code 200) and because we do not have `favicon.ico` file (yet!), browser could not find it, hence 404 error code.
-
-Worked! We are ready to create "real" application and real unit tests. 
+... should start server on [http://127.0.0.1:5000/](http://127.0.0.1:5000/) saying __Hello, Flask!__ Main page was served properly (code 200) and because we do not have `favicon.ico` file (yet!), browser could not find it, hence 404 error code. Although it is possible to start Flask application this way, we will use different mechanism in "real app". This part was just checking if there are any issues with our environment and Flask installation. Luckily it worked! We are ready to create "real" application and real unit tests. 
 
 
 ### Requirements
@@ -424,7 +423,7 @@ Calling main requirements is enough to get application up and running, however f
 
 Configurations are kept in `settings.py` in main app folder. It will store different collections of application settings. Basic config class sets just some values common for all dev and production environments. Environment specific settings are set in children classes.
 
-__md_analytics/settings.py__
+__app/settings.py__
 {% highlight python %}
 # -*- coding: utf-8 -*-
 import os
@@ -473,14 +472,14 @@ class TestConfig(Config):
 
 We can always add other values like API keys later.
 
-For now I will input configuration manualy, but having configuration classes we can tell flask app to manage it dynamically. For example, to set environmental variable `APP_SETTINGS` which value will be dependent on the environment our app is running. On Heroku server it will be `ProdConfig` on development environment it will be `DevConfig` and so on. To set environmental variable in Linux type: `export APP_SETTINGS=<NameOfClass>` (i.e. export APP_SETTINGS=DevConfig). To make it permanent we should place export statement in `~/.bashrc` file. On Windows instead of export we will use `set APP_SETTINGS=<NameOfClass>`. If we are going to employ environmental variable governing type of configuration, our `app.py` should change. 
+For now I will input configuration manually, but having configuration classes we can tell flask app to manage it dynamically. For example, to set environmental variable `APP_SETTINGS` which value will be dependent on the environment our app is running. On Heroku server it will be `ProdConfig` on development environment it will be `DevConfig` and so on. To set environmental variable in Linux type: `export APP_SETTINGS=<NameOfClass>` (i.e. export APP_SETTINGS=DevConfig). To make it permanent we should place export statement in `~/.bashrc` file. On Windows instead of export we will use `set APP_SETTINGS=<NameOfClass>`. If we are going to employ environmental variable governing type of configuration, our `app.py` should change. 
 
 
 ### Flask app factory
 
 We will use app factory pattern and `Flask-Script` extension to build our app foundations. The `md_analytics/app.py` contains Flask factory, which is just a simple function wrapped around Flask object creation. File `manage.py` from root directory contains application manager with all command-line directives.  This way we can create multiple instances of the app, using different parameters (i.e. app settings). It is time to expand our toy "Hello Flask!" example to employ this pattern. 
 
-__md_analytics/app.py__
+__app/app.py__
 {% highlight python %}
 import os
 from flask import Flask
@@ -510,8 +509,8 @@ __manage.py__
 import os
 from flask_script import Manager, Shell, Server
 
-from md_analytics.app import create_app
-from md_analytics.settings import DevConfig, ProdConfig
+from app.app import create_app
+from app.settings import DevConfig, ProdConfig
 
 app = create_app(DevConfig)
 
@@ -548,8 +547,8 @@ This allows to call `python manage.py test` from the app root directory. Result 
 __tests/md_analytics/test_settings.py__
 {% highlight python %}
 """Test configs."""
-from md_analytics.app import create_app
-from md_analytics.settings import DevConfig, ProdConfig, TestConfig
+from app.app import create_app
+from app.settings import DevConfig, ProdConfig, TestConfig
 
 
 def test_production_config():
@@ -599,7 +598,7 @@ We can alway launch tests manually:
 (md_analytics) [mdyzma@devbox md_analytics]$ python -m pytest
 {% endhighlight %}
 
-Additionally we can add `--cov=md_analytics tests/` flag, which indicate source code location and tests location for test coverage package. Flag instructs pytest to create test coverage report, which can be further used by third party software (i.e. Jenkins or special services like [coveralls.io](https://coveralls.io)). 
+Additionally we can add `--cov=app tests/` flag, which indicate source code location and tests location for test coverage package. Flag instructs pytest to create test coverage report, which can be further used by third party software (i.e. Jenkins or special services like [coveralls.io](https://coveralls.io)). 
 
 Having all command line features integrated into one common interface is alway a good thing and helps other developers to understand code and join the project faster. However at this point our application will be tested on TravisCI server using command from `.travis.yml` (see [here](#continuous-integration)).
 
@@ -625,12 +624,12 @@ __app.json__
 }
 {% endhighlight %}
 
-Another file, we will need is `Procfile`. It instructs Heroku platform how to run our app. Because Heroku allows to deploy php, js, java, ruby and python applications, we have to be specific what software should be used by platform. We have t be specific also about the location of our running function. We do not need development server on Heroku, therefore we will point it to the place, where WSGI will pick up code execution.
+Another file, we will need is `Procfile`. It instructs Heroku platform how to run our app. Because Heroku allows to deploy php, js, java, ruby and python applications, we have to be specific what software should be used by platform. We have to be specific also about the location of our running function. We do not need development server on Heroku, therefore we will point it to the place, where WSGI will pick up code execution.
 
 {% highlight bash %}
 # Procfile - uses gunicorn to launch python app
 
-web: gunicorn md_analytics.app:create_app\(\)
+web: gunicorn app.app:create_app\(\)
 
 # launching app:
 # $ heroku local
@@ -657,7 +656,6 @@ Both should produce following output:
 13:31:25 web.1   |  [2017-07-06 13:31:25 +0200] [3400] [INFO] Listening at: http://0.0.0.0:5000 (3400)
 13:31:25 web.1   |  [2017-07-06 13:31:25 +0200] [3400] [INFO] Using worker: sync
 13:31:25 web.1   |  [2017-07-06 13:31:25 +0200] [3403] [INFO] Booting worker with pid: 3403
-
 {% endhighlight %}
 
 App creation can be done via Heroku web interface or command line tool, but first we need to make sure [HerokuCLI](https://toolbelt.heroku.com) is installed. Type:
@@ -846,7 +844,7 @@ python:
 # command to install dependencies
 install: "pip install -r requirements/dev.txt"
 # command to run tests
-script: python -m pytest --cov=md_analytics tests/
+script: python -m pytest --cov=app tests/
 
 after_success:
     - pip install coveralls
@@ -878,7 +876,7 @@ This appended `.travis.yml` file with encrypted API token read by HerokuCLI. The
 ![connect-github-to-travis-ci][travis_ci]
 
 
-Now when we upload new commit Travis will sense changes and run all tasks described in YML automatically. In this case it should perform tests on three python instances (2.7, 3.6 and 3.7-DEV). In all pythons it should install requirements and run tests (including test coverage report). Upon success it should deploy our app to the staging environment on Heroku service.
+Now when we upload new commit Travis will sense changes and run all tasks described in YML automatically. In this case it should perform tests on three python instances (2.7, 3.6 and 3.7-DEV). In all Python environments it should install requirements and run tests (including test coverage report). Upon success it should deploy our app to the staging environment on Heroku service.
 
 ![travis-dashboard][travis_board]
 
