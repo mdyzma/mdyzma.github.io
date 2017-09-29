@@ -317,9 +317,8 @@ Flask and its dependencies were installed. It is good to keep requirements in se
 
 Currently we have enough to run basic flask application. To test our environment lets write "Hello Flask" tryout. It will use basic routing mechanism to show "Hello Flask!" on the page. First Create `app` package (with `__init__.py`) and `app.py` module in it. In the app.py  file type:
 
-__md_analytics/app.py__
+__app/app.py__
 {% highlight python %}
-from flask import Flask
 from flask import Flask
 
 app = Flask(__name__)
@@ -483,13 +482,10 @@ __app/app.py__
 {% highlight python %}
 import os
 from flask import Flask
-from md_analytics.settings import ProdConfig
+from app.settings import ProdConfig
 
 def create_app(config_object=ProdConfig):
-    """An application factory, see here: http://flask.pocoo.org/docs/patterns/appfactories/.
 
-    :param config_object: The configuration object to use.
-    """
     app = Flask(__name__)
     app.config.from_object(config_object)
 
@@ -544,7 +540,7 @@ def test():
 
 This allows to call `python manage.py test` from the app root directory. Result depends on battery of tests we currently have. Pytest convention places unit-tests in `tests` directory, which resembles structure of the tested application. Also files should have "test" phrase in the name so that pytest can collect them without any problems. For now we will write three simple tests for our configurations:
 
-__tests/md_analytics/test_settings.py__
+__tests/app/test_settings.py__
 {% highlight python %}
 """Test configs."""
 from app.app import create_app
@@ -585,9 +581,9 @@ rootdir: /home/mdyzma/Documents/GitHub/md_analytics, inifile:
 plugins: cov-2.5.1
 collected 3 items
 
-tests/md_analytics/test_settings.py::test_production_config PASSED
-tests/md_analytics/test_settings.py::test_dev_config PASSED
-tests/md_analytics/test_settings.py::test_testing_config PASSED
+tests/app/test_settings.py::test_production_config PASSED
+tests/app/test_settings.py::test_dev_config PASSED
+tests/app/test_settings.py::test_testing_config PASSED
 
 ========================== 3 passed in 0.08 seconds ===========================
 {% endhighlight %}
