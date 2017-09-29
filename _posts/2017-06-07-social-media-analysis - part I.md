@@ -195,7 +195,7 @@ General structure is listed below:
 |   `-- prod.txt
 |
 |-- tests/
-|   `-- md_analytics/
+|   `-- app/
 |       |-- test_app.py
 |       `-- test_settings.py
 |
