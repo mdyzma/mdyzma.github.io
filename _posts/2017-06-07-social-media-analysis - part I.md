@@ -496,7 +496,7 @@ def create_app(config_object=ProdConfig):
     return app
 {% endhighlight %}
 
-This application still doesn't do much, except displaying 'Welcome to Social media analytic tool' from index view. It takes production configuration as default, however here we specify to use development environment instead. In next part we will swap h1 header to landing page and dashboard blueprints. For now simple text is enough to test page routing logic, settings management and deployment.
+This application still doesn't do much, except displaying 'Welcome to Social media analytic tool' from index view. It takes production configuration as default, however here we specify to use development environment instead. In next part we will swap `<h1>` header to landing page and dashboard blueprints. For now simple text is enough to test page routing logic, settings management and deployment.
 
 __manage.py__
 {% highlight python %}
@@ -518,7 +518,7 @@ if __name__ == "__main__":
     manager.run()
 {% endhighlight %}
 
-`manage.py` uses Flask-Script to register command-line tasks outside web application (from bash level). There are several build in commands like `Server()`, which runs the Flask development server. Still `manage.py` is not the only way to run our app locally. We can use HerokuCLI to do that (see [Heroku deployment](#heroku-deployment)).
+File `manage.py` uses Flask-Script to register command-line tasks outside web application (from bash level). There are several build in commands like `Server()`, which runs the Flask development server. Still `manage.py` is not the only way to run our app locally. We can use HerokuCLI to do that (see [Heroku deployment](#heroku-deployment)).
 
 
 ### Test Flask app
@@ -726,7 +726,7 @@ md-analytics (eu)
 md-analytics-stage (eu)
 {% endhighlight %}
 
-Created apps are empty. All we have is default Heroku message, that our WSGI python app was launched successfully:
+When we open our apps in the browser: [http://md-analytics-stage.herokuapp.com](http://md-analytics-stage.herokuapp.com),m we would see empty apps created by Heroku service. All we have is default Heroku message, that our WSGI python app was launched successfully:
 
 ![heroku_empty_app][h_empty]
 
