@@ -139,7 +139,7 @@ Successfully installed virtualenv-15.1.0
 
 ### Virtual environments management
 
-Now that we have the proper tools installed, we are ready to create our first Flask application. First of all we need virtual environment specific for our application. It is a good practice to separate environment working directory and application folder, to avoid putting heavy folders under version control (some virtual environments can have hundreds of MB). What I do usually is to create `.envs` folder in user's home directory and keep all virtual envs there.
+Now that we have the proper tools installed, we are ready to create our first Flask application. First of all we need virtual environment specific for our application. It is a good practice to separate environment's working directory (with all installed packages) and application folder, simply to avoid putting heavy folders under version control. Some virtual environments can have hundreds of MB and there is no use to keep track of them. Alternatively we can create virtual environment in projects folder and add this folder to the `.gitignore` file. What I usually do is to create separate `.envs` folder in user's home directory and keep all virtual envs there.
 
 {% highlight bash %}
 [mdyzma@devbox /]$ virtualenv ~/.envs/md_analytics
@@ -216,7 +216,7 @@ Most of the files in this make up are self-explanatory. There are some files lik
 |-----------------+-+----------------------------------------------------------------|
 |File             | | Description                                                    |
 |:----------------|-|:---------------------------------------------------------------|
-| app.json        | | Orchestrates steps involved in automatic deployment on Heroku. |
+| app.json        | | Orchestrates steps involved in automatic deployment to Heroku. |
 | Procfile        | | Declares commands run by application on the Heroku platform.   |
 | manage.py       | | Entry-point for executing our application                      |
 | .travis.yml     | | Instructions for TravisCI service                              |
@@ -228,9 +228,9 @@ Most of the files in this make up are self-explanatory. There are some files lik
 
 ## GitHub
 
-We use git to version control. Basics of git are beyond scope of this article. Please refer to excellent [git tutorial](https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control). Here I would like to focus on GitHub aspects related to project management. GitHub offers issues and projects support. Issues are more about specific bugs or features reported by users/developers, while project shows general status of all issues. Issues can be grouped in milestones, which usually denote specific software release.
+We use git to version control. Basics of git are beyond the scope of this article. Please refer to excellent [git tutorial](https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control). Here I would like to focus on GitHub aspects related to project management. GitHub offers issues and projects support. Issues are more about specific bugs or features reported by users/developers, while project shows general status of the work progress. Issues can be grouped in milestones, which usually denote specific software release. Very useful for time management.
 
-Here are some issues, which are "enhancements" of the app from version 0.0.2 (working skeleton integrated with Travis and Heroku) to the pre-released alpha with landing page and dashboard functionalities (v0.0.3).
+Here are some issues, which are "enhancements" of the app from current version __v0.0.2__ (working skeleton integrated with Travis and Heroku) to the pre-released alpha with landing page and dashboard functionalities __v0.0.3__.
 
 ![github-issues][github_issues]
 
