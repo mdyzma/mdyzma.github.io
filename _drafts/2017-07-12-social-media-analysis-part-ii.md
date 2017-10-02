@@ -110,9 +110,10 @@ In templates we will use several Jinja elements, which will build dynamic struct
 In our template we have specified several large code blocks, which will be filled with details in children templates. The most basic template, the architectural foundation for each page of our application, is called `base.html`. It contains all elements required by the browser to serve modern page and are common for entire project. It also includes links to the framework files used in the project (`.css` and `.js`). From our point of view most important sections are: 
 
 * __head__ section:
+  * __title__ - dynamic tab title
   * __meta__ - with necessary metadata and responsive design directives 
   * __seo__  - for proper SEO information like Open Graph and Twitter cards
-  * __styles__ - place for custom styles present at specific page
+  * __styles__ - place for custom css styles present at specific page
 * __body__ :
   * __nav__ - where we place navigation bar common for all pages
   * __messages__ - part displaying application messages to the user
@@ -149,20 +150,31 @@ __/templates/base.html__
         </main>
             <!-- Footer from include -->
             {% raw %}{% include 'includes/footer.html' ignore missing %}{% endraw %}
-        <!-- jQuery (jQuery may be replaced with other modern JS library to manipulate DOM i.e. `vue.js`) -->
-        <script type="text/javascript" src="{% raw %}{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}{% endraw %}"></script>
-        <!-- popper -->
-        <script type="text/javascript" src="{% raw %}{{ url_for('static', filename='js/popper.min.js') }}{% endraw %}"></script>
-        <!-- Bootstrap core JavaScript -->
-        <script type="text/javascript" src="{% raw %}{{ url_for('static', filename='js/bootstrap.min.js') }}{% endraw %}"></script>
-        <!-- MDB core JavaScript -->
-        <script type="text/javascript" src="{% raw %}{{ url_for('static', filename='js/mdb.min.js') }}{% endraw %}"></script>
-        <!--Google Maps-->
-        <script src="https://maps.google.com/maps/api/js"></script>
-        {% raw %}{% block scripts %}{% endblock %}{% endraw %}
+            <!-- jQuery (jQuery may be replaced with other modern JS library to manipulate DOM i.e. `vue.js`) -->
+            <script type="text/javascript" src="{% raw %}{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}{% endraw %}"></script>
+            <!-- popper -->
+            <script type="text/javascript" src="{% raw %}{{ url_for('static', filename='js/popper.min.js') }}{% endraw %}"></script>
+            <!-- Bootstrap core JavaScript -->
+            <script type="text/javascript" src="{% raw %}{{ url_for('static', filename='js/bootstrap.min.js') }}{% endraw %}"></script>
+            <!-- MDB core JavaScript -->
+            <script type="text/javascript" src="{% raw %}{{ url_for('static', filename='js/mdb.min.js') }}{% endraw %}"></script>
+            <!--Google Maps-->
+            <script src="https://maps.google.com/maps/api/js"></script>
+            {% raw %}{% block scripts %}
+            <!-- Smooth scrolling to the target anchor -->
+                <script>
+                    $('a').click(function(){
+                        $('html, body').animate({
+                            scrollTop: $( $(this).attr('href') ).offset().top
+                        }, 500);
+                        return false;
+                    });
+                </script>
+            {% endblock %}{% endraw %}
     </body>
 </html>
 {% endhighlight %}
+
 
 ### Head section
 
@@ -217,6 +229,9 @@ __/templates/includes/nav.html__
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="https://github.com/mdyzma/md_analytics">GitHub</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#contact">Contact</a>
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
@@ -291,6 +306,8 @@ __/templates/includes/footer.html__
 <!--/.Footer-->
 {% endhighlight %}
 
+This is just example. Exact code for footer can be downloaded from the GitHub repository.
+
 Putting it all together we are ready to create first page for our app - landing page! 
 
 
@@ -342,11 +359,73 @@ __/templates/home.html__
         </div>
     </div>
 </section>
+<!--Section: Contact-->
+<section id="contact pb-5">
+    <div class="row">
+        <!--First column-->
+        <div class="col-md-8 mb-5">
+            <div id="map-container" class="z-depth-1 wow fadeIn" style="height: 300px"></div>
+        </div>
+        <!--/First column-->
+        <!--Second column-->
+        <div class="col-md-4">
+            <ul class="text-center list-unstyled">
+                <li class="wow fadeIn" data-wow-delay="0.2s"><i class="fa fa-map-marker teal-text fa-lg"></i>
+                    <p>Gen. Grochowskiego 10/28</p>
+                    <p>Piaseczno, 05-500 , Poland</p>
+                </li>
+                <li class="wow fadeIn mt-5 pt-2" data-wow-delay="0.3s"><i class="fa fa-phone teal-text fa-lg"></i>
+                    <p>+ 48 570 74 11 75</p>
+                </li>
+                <li class="wow fadeIn mt-5 pt-2" data-wow-delay="0.4s"><i class="fa fa-envelope teal-text fa-lg"></i>
+                    <p>mdyzma@gmail.com</p>
+                </li>
+            </ul>
+        </div>
+        <!--/Second column-->
+    </div>
+</section>
+<!--Section: Contact-->
 {% raw %}{% endblock %}{% endraw %}
 <!-- Content -->
 {% raw %}{% block content %}{% endraw %}
+<div class="container">
+    <div class="divider-new pt-5">
+        <h2 class="h2-responsive wow fadeIn" data-wow-delay="0.2s">About me</h2>
+    </div>
+    <!--Section: About-->
+    <section id="about" class="text-center wow fadeIn" data-wow-delay="0.2s">
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Velit explicabo assumenda eligendi ex exercitationem harum deleniti quaerat beatae ducimus dolor voluptates magnam, reiciendis pariatur culpa tempore quibusdam quidem, saepe eius.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Velit explicabo assumenda eligendi ex exercitationem harum deleniti quaerat beatae ducimus dolor voluptates magnam, reiciendis pariatur culpa tempore quibusdam quidem, saepe eius.</p>
+    </section>
+    <!--Section: About-->
+</div>
+{% raw %}{% endblock %}{% endraw %}
+
+{% raw %}{% block scripts %}{% endraw %}
+    {% raw %}{{ super() }}{% endraw %}
+    <script>
+        function init_map() {
+            var var_location = new google.maps.LatLng(52.0690115, 21.0198418,);
+            var var_mapoptions = {
+                center: var_location,
+                zoom: 15
+            };
+            var var_marker = new google.maps.Marker({
+                position: var_location,
+                map: var_map,
+                title: "New York"
+            });
+            var var_map = new google.maps.Map(document.getElementById("map-container"),
+                var_mapoptions);
+            var_marker.setMap(var_map);
+        }
+        google.maps.event.addDomListener(window, 'load', init_map);
+    </script>
 {% raw %}{% endblock %}{% endraw %}
 {% endhighlight %}
+
+Careful reader noticed `{% raw %}{{ super() }}{% endraw %}` expression in scripts block. We placed some JS code to be present in all pages in base template. Calling `super()` allows to keep all previous content of the block from previous template and append new content to it. So we have smooth scrolling and Google maps map initialization.
 
 
 Later one can add additional content like about section or nice cards with features description. I added About me description and five cards describing project, but it is just exemplary content. What is more important is backend part of the project. 
@@ -371,6 +450,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 
 def create_app(config_object=None):
+    
     app = Flask(__name__)
     app.config.from_object(config_object)
 
