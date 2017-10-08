@@ -21,7 +21,7 @@ Flask application presenting social media accounts analysis in form of dashboard
 
 * [Social media analysis with Flask, Part I]({{site.url}}/2017/06/07/social-media-analysis-part-I/) (Setting environment, flask, Travis CI/Heroku CD )
 * [Social media analysis with Flask, Part II]({{site.url}}/2017/07/12/social-media-analysis-part-ii/) (Templates, login/register mechanism, data storage)
-* [Social media analysis with Flask, Part III]({{site.url}}/2017/08/17/social-media-analysis-part-iii) (Twitter data analysis)
+<!-- * [Social media analysis with Flask, Part III]({{site.url}}/2017/08/17/social-media-analysis-part-iii) (Twitter data analysis) -->
 
 <!-- 
 * [Social media analysis with Flask, Part IV]({{site.url}}/2017/09/09/social-media-analysis-part-iv/) (Twitter data analysis)
@@ -51,20 +51,30 @@ Flask application presenting social media accounts analysis in form of dashboard
 
 Flask uses very powerful and flexible template engine called [__Jinja2__][jinja]. It allows to define website in small blocks, one by one, which then are pieced together, to form complete HTML pages. The power of Jinja relies on possibility to push some portion of logic like iterations over containers or table rows, some flow control with `if` or `while` statements, some text processing capabilities like filtering, even mathematical operations and files handling. All this can be accedes from the web HTML template level. Still most important feature of Jinja is template inheritance mechanism similar to class inheritance in python. Basic layout template provides set of blocks, which can be overridden by the content of the specific page. Also changes, or bugs fixes are much easier, since the HTML for each part of the site exists in one place - template file.  Flask auto-magically finds templates in the app directory, but it is a good idea to structure files a bit. 
 
-From organizational point of view, most preferable is modular packaging of files, that specific parts of our application can be moved and adopted to other projects as a whole with its own routing mechanism, static files and templates. Therefore we will write specific components like dashboard or user management will be placed in separate folders and will adopt Flask blueprints pattern.
+From organizational point of view, most preferable is modular packaging of files, that specific parts of our application can be moved and adopted to other projects as a whole with its own routing mechanism, static files and templates. Therefore we will write specific components like dashboard or user management will be placed in separate folders and will adopt Flask blueprints pattern. So we will have some __public__ component with landing page, accessible for all users and restricted areas (like __user__ or __dashboard__), which will be displayed only to logged users. 
 
-The landing page is bound to the main endpoint of the app. All files related to this view will be placed in `app/` application folder. Additionally some blocks like navigation bar or head block may become quite complicated, therefore it is better to flatten template structure even more and incorporate them as separate files from `templates/includes/`:
+The landing page is bound to the main endpoint of the app `/` and will reside in `public/` folder. Same would be with register page for new users. Additionally some blocks like navigation bar or head block may become quite complicated, therefore it is better to flatten template structure even more and incorporate them as separate files from `templates/includes/`. SO each large component will have it's own folder in the `app/` and `template/`, to make it maximally portable. Each large block will use common set of tools provided by frameworks and stored in `static/`
+`
+<br>
+* __static__: all static files served by the app, including css styles, JavaScript, images or fonts.
+* __templates__: basic layout blueprint and error pages
+    * __dashboard__: templates to the dashboard
+    * __includes__: partial HTML snippets for specific purpose i.e. navigation bar, footer, part of templates folder.
+    * __public__: landing page and login/register templates
+    * __user__:  user profile templates  
 
-* __static__: all static files served by the app, including css styles, javascript, images or fonts.
-* __templates__: folder with HTML blueprints, which allow dynamically generate page content
-    * __includes__: folder containing partial HTML snippets for specific purpose i.e. navigation bar, footer, part of templates folder.
-
-Finally lest focus a bit on the stack of tools which will be used in this application. Obviously back-end is Flask and gunicorn, to the front-end I would like to use two popular frameworks:  [Twitter Bootstrap 4][twb4] to make page responsive and nice without having to write extensive CSS and [Material Design for Bootstrap][mdb], to make things more beautiful. For Bootstrap framework we will need two files: `bootstrap.min.css` and `bootstrap.min.js`. Additionally we can add standard JQuery library `jquery-3.2.1.min.js`. For MDB we will need `mdb.min.css`, `mdb.min.js` and `popper.min.js`. They will spice up our web site and give lots of good solutions and javascript functionalities to it. Files should be placed in appropriate static sub-folders:
+<br>
+Finally lest focus a bit on the stack of tools which will be used in this application. Obviously back-end is Flask and gunicorn, to the front-end I would like to use two popular frameworks:  [Twitter Bootstrap 4][twb4] to make page responsive and nice without having to write extensive CSS and [Material Design for Bootstrap][mdb], to make things more beautiful. For Bootstrap framework we will need two files: `bootstrap.min.css` and `bootstrap.min.js`. Additionally we can add standard JQuery library `jquery-3.2.1.min.js`. For MDB we will need `mdb.min.css`, `mdb.min.js` and `popper.min.js`. They will spice up our web site and give lots of good solutions and JavaScript functionalities to it. Files should be placed in appropriate static sub-folders:
 
 {% highlight bash %}
 (md_analytics) [mdyzma@devbox md_analytics]$ tree .
 .
 |-- app/
+|   |-- public/
+|   |   |-- __init__.py
+|   |   |-- forms.py
+|   |   `-- views.py
+|   |
 |   |-- static/
 |   |   |-- css/
 |   |   |   |-- bootstrap.min.css
@@ -83,21 +93,30 @@ Finally lest focus a bit on the stack of tools which will be used in this applic
 |   |   `-- favicon.ico
 |   |
 |   |-- templates/
+|   |   |
+|   |   |-- dashboard/
+|   |   |
 |   |   |-- includes/
 |   |   |   |-- footer.html
 |   |   |   |-- meta.html
 |   |   |   |-- messages.html
 |   |   |   `-- nav.html
-|   |   |-- base.html
-|   |   |-- home.html
-|   |   |-- login.html
-|   |   `-- register.html
+|   |   |   
+|   |   |-- public/
+|   |   |   |-- home.html
+|   |   |   |-- login.html
+|   |   |   `-- register.html
+|   |   |
+|   |   |-- user/
+|   |   |   `-- profile.html
+|   |   |
+|   |   |-- 404.html
+|   |   `-- layout.html
 |   |
 |   |-- __init__.py
 |   |-- app.py
-|   |-- forms.py
+|   |-- extensions.py
 |   |-- settings.py
-|   `-- views.py
 ...
 {% endhighlight %}
 
@@ -107,7 +126,7 @@ In templates we will use several Jinja elements, which will build dynamic struct
 
 ## Layout
 
-In our template we have specified several large code blocks, which will be filled with details in children templates. The most basic template, the architectural foundation for each page of our application, is called `base.html`. It contains all elements required by the browser to serve modern page and are common for entire project. It also includes links to the framework files used in the project (`.css` and `.js`). From our point of view most important sections are: 
+In our template we have specified several large code blocks, which will be filled with details in children templates. The most basic template, the architectural foundation for each page of our application, is called `layout.html`. It contains all elements required by the browser to serve modern page and are common for entire project. It also includes links to the framework files used in the project (`.css` and `.js`). From our point of view most important sections are: 
 
 * __head__ section:
   * __title__ - dynamic tab title
@@ -124,7 +143,7 @@ In our template we have specified several large code blocks, which will be fille
 
 Base template with all the links to partial templates and code blocks should look similar to this:
 
-__/templates/base.html__
+__/templates/layout.html__
 {% highlight html linenos %}
 <!DOCTYPE html>
 <html lang="en">
@@ -151,13 +170,13 @@ __/templates/base.html__
             <!-- Footer from include -->
             {% raw %}{% include 'includes/footer.html' ignore missing %}{% endraw %}
             <!-- jQuery (jQuery may be replaced with other modern JS library to manipulate DOM i.e. `vue.js`) -->
-            <script type="text/javascript" src="{% raw %}{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}{% endraw %}"></script>
+            <script type="text/JavaScript" src="{% raw %}{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}{% endraw %}"></script>
             <!-- popper -->
-            <script type="text/javascript" src="{% raw %}{{ url_for('static', filename='js/popper.min.js') }}{% endraw %}"></script>
+            <script type="text/JavaScript" src="{% raw %}{{ url_for('static', filename='js/popper.min.js') }}{% endraw %}"></script>
             <!-- Bootstrap core JavaScript -->
-            <script type="text/javascript" src="{% raw %}{{ url_for('static', filename='js/bootstrap.min.js') }}{% endraw %}"></script>
+            <script type="text/JavaScript" src="{% raw %}{{ url_for('static', filename='js/bootstrap.min.js') }}{% endraw %}"></script>
             <!-- MDB core JavaScript -->
-            <script type="text/javascript" src="{% raw %}{{ url_for('static', filename='js/mdb.min.js') }}{% endraw %}"></script>
+            <script type="text/JavaScript" src="{% raw %}{{ url_for('static', filename='js/mdb.min.js') }}{% endraw %}"></script>
             <!--Google Maps-->
             <script src="https://maps.google.com/maps/api/js"></script>
             {% raw %}{% block scripts %}
@@ -246,6 +265,7 @@ __/templates/includes/nav.html__
 </nav>
 {% endhighlight %}
 
+Later we will expand it with some logic for Sign in logging and log-out
 
 Messages box, will display all communicates produced by application. Every feedback improves tremendously user experience with the app. It consists of simple div and some Jinja logic to manage messages produced by Flask:
 
@@ -265,7 +285,8 @@ __/templates/includes/messages.html__
 </div>
 {% endhighlight %}
 
-Footer part will be also common to all pages. It will include some extended information about policies, social media links, site map and other standard "footer content". For now it has only simple copyright tag.  Alongside footer info at the end o the page we will link all necessary JS libraries located in __js__ Jinja code block.
+
+Footer part will be also common to all pages. It will include some extended information about policies, social media links and other standard "footer content". Code snippet bellow is just simple copyright tag and two column structure for extended content. 
 
 
 __/templates/includes/footer.html__
@@ -298,7 +319,7 @@ __/templates/includes/footer.html__
     <!--Copyright-->
     <div class="footer-copyright">
         <div class="container-fluid">
-            © 2015 Copyright: <a href="https://www.MDBootstrap.com"> MDBootstrap.com </a>
+            © 2017 Copyright: <a href="https://www.MDBootstrap.com"> MDBootstrap.com &amp Michal Dyzma</a>
         </div>
     </div>
     <!--/.Copyright-->
@@ -306,19 +327,117 @@ __/templates/includes/footer.html__
 <!--/.Footer-->
 {% endhighlight %}
 
-This is just example. Exact code for footer can be downloaded from the GitHub repository.
+This is just an example from MDB tutorial. Exact code for footer can be downloaded from the [footer template on GitHub](https://github.com/mdyzma/md_analytics/blob/master/app/templates/includes/footer.html).
 
-Putting it all together we are ready to create first page for our app - landing page! 
+Putting it all together we are ready to create first page for our app - the landing page! 
+
 
 
 ## Landing page
 
-Landing page is located in `templates/home.html`. Because it inherits all traits of `base.html` it will contain only elements which differ between this two templates. Rest will be provided from base. First we should tell Jinja what template we are extending and populate current home template with site-specific content.
+It is time to expand main application and put in use templates created above. First we will create web page endpoints, add some basic extensions to it and display everything as a nice, responsive landing page.
 
 
-__/templates/home.html__
+### Blueprint
+
+Earlier, when template mechanism was explained I mentioned all components will reside in their own folders to maximize portability. Landing page (home) resides in `public` folder and this part of the application can be accessed by anyone. Folder contains blueprint for landing page and login/register forms. Folder with the same name was also placed in `templates/`, to store necessary html boilerplate. To move this functionality  to other app one has to copy both public folder to new location and make necessary imports.
+
+Blueprint contains all routing for the pages that have something common. For now  our landing page contains only single rout `/` to render `home.html`. Later we will add more functionalities.
+
+
+__/app/public/views.py__
+{% highlight python linenos %}
+from flask import Blueprint, render_template
+
+
+blueprint = Blueprint('public', __name__, static_folder='../static')
+
+
+@blueprint.route('/')
+def home():
+    """Home page."""
+    return render_template('public/home.html')
+{% endhighlight %}
+
+Once all endpoints and functions are ready, we have to register blueprint with main app.
+
+
+__/app/extensions.py__
+{% highlight python linenos %}
+from flask import Blueprint, render_template
+
+
+blueprint = Blueprint('public', __name__, static_folder='../static')
+
+
+@blueprint.route('/')
+def home():
+    """Home page."""
+    return render_template('public/home.html')
+
+{% endhighlight %}
+
+__/app/extensions.py__
+{% highlight python linenos %}
+from flask_debugtoolbar import DebugToolbarExtension
+
+debug_toolbar = DebugToolbarExtension()
+{% endhighlight %}
+
+
+
+And main application file:
+
+__/app/app.py__
+{% highlight python linenos %}
+# -----------------------------------------------------------------------------
+# Standard Library Imports
+# -----------------------------------------------------------------------------
+import os
+# -----------------------------------------------------------------------------
+# Related Libraries Imports
+# -----------------------------------------------------------------------------
+from flask import Flask, render_template
+# -----------------------------------------------------------------------------
+# Local Imports
+# -----------------------------------------------------------------------------
+from app.extensions import debug_toolbar
+from app import views
+
+def create_app(config_object=None):
+    app = Flask(__name__)
+    app.config.from_object(config_object)
+    register_extensions(app)
+    return app
+
+
+def register_extensions(app):
+    """Register Flask extensions."""
+    debug_toolbar.init_app(app)
+    app.logger.debug("Debug toolbar initialized")
+    return None
+
+
+def register_blueprints(app):
+    """Register Flask blueprints."""
+    app.register_blueprint(public.views.blueprint)
+    return None
+
+{% endhighlight %}
+
+This file instead of displaying simple `h1` tag (like in [Social media analysis with Flask, Part I]({{site.url}}/2017/08/17/social-media-analysis-part-i)) will render full `home.html` page, which should resemble this: 
+
+
+
+
+
+### Template
+
+Landing page template is located in `templates/public/home.html`. Because it inherits all traits of `layout.html` it will contain only elements which differ between this two templates. Rest will be provided from base. First we should tell Jinja what template we are extending and populate current home template with site-specific content. Lets add "intro" for our page:
+
+__/templates/public/home.html__
 {% highlight html linenos %}
-{% raw %}{% extends "base.html" %}{% endraw %}
+{% raw %}{% extends "layout.html" %}{% endraw %}
 <!-- Title for each page -->
 {% raw %}{% block title %}Home{% endblock %}{% endraw %}
 <!-- Site Specific Styles -->
@@ -332,12 +451,6 @@ __/templates/home.html__
         background: url("https://mdbootstrap.com/img/Photos/Horizontal/Work/full page/img%20(2).jpg")no-repeat center center;
         background-size: cover;
     }
-    .navbar .btn-group .dropdown-menu a:hover {
-            color: #000 !important;
-    }
-    .navbar .btn-group .dropdown-menu a:active {
-            color: #fff !important;
-    }
 </style>
 {% raw %}{% endblock %}{% endraw %}
 <!--Intro Section-->
@@ -349,7 +462,7 @@ __/templates/home.html__
                 <li>
                     <h1 class="h1-responsive font-bold wow fadeInDown" data-wow-delay="0.2s">What is your story?</h1></li>
                 <li>
-                    <p class="lead mt-4 mb-5 wow fadeInDown">Learn what kind of impression you left in the web...</p>
+                    <p class="lead mt-4 mb-5 wow fadeInDown">Learn what kind of footprint you created in the web...</p>
                 </li>
                 <li>
                     <a target="_blank" href="https://mdbootstrap.com/getting-started/" class="btn btn-primary btn-lg wow fadeInLeft" data-wow-delay="0.2s" rel="nofollow">Sign up!</a>
@@ -359,39 +472,25 @@ __/templates/home.html__
         </div>
     </div>
 </section>
-<!--Section: Contact-->
-<section id="contact pb-5">
-    <div class="row">
-        <!--First column-->
-        <div class="col-md-8 mb-5">
-            <div id="map-container" class="z-depth-1 wow fadeIn" style="height: 300px"></div>
-        </div>
-        <!--/First column-->
-        <!--Second column-->
-        <div class="col-md-4">
-            <ul class="text-center list-unstyled">
-                <li class="wow fadeIn" data-wow-delay="0.2s"><i class="fa fa-map-marker teal-text fa-lg"></i>
-                    <p>Gen. Grochowskiego 10/28</p>
-                    <p>Piaseczno, 05-500 , Poland</p>
-                </li>
-                <li class="wow fadeIn mt-5 pt-2" data-wow-delay="0.3s"><i class="fa fa-phone teal-text fa-lg"></i>
-                    <p>+ 48 570 74 11 75</p>
-                </li>
-                <li class="wow fadeIn mt-5 pt-2" data-wow-delay="0.4s"><i class="fa fa-envelope teal-text fa-lg"></i>
-                    <p>mdyzma@gmail.com</p>
-                </li>
-            </ul>
-        </div>
-        <!--/Second column-->
-    </div>
-</section>
-<!--Section: Contact-->
 {% raw %}{% endblock %}{% endraw %}
+{% endhighlight %}
+
+Intro should be fully scalable and adjust to the screen width. We can expand page further, adding other typical elements like About section, cards with features, testimonials etc...
+
+
+![intro][intro]
+
+
+`content` block will only have some random __"About"__ section and some __"contact"__ info with simple Google map with a marker. It is just exemplary content from MDB tutorial to show framework's capabilities. I would like to focus this blog series more on back-end part of the project, therefore front will be limited to the bare minimum.
+
+
+__/templates/public/home.html__
+{% highlight html linenos %}
 <!-- Content -->
 {% raw %}{% block content %}{% endraw %}
 <div class="container">
     <div class="divider-new pt-5">
-        <h2 class="h2-responsive wow fadeIn" data-wow-delay="0.2s">About me</h2>
+        <h2 class="h2-responsive wow fadeIn" data-wow-delay="0.2s">About project</h2>
     </div>
     <!--Section: About-->
     <section id="about" class="text-center wow fadeIn" data-wow-delay="0.2s">
@@ -399,9 +498,42 @@ __/templates/home.html__
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Velit explicabo assumenda eligendi ex exercitationem harum deleniti quaerat beatae ducimus dolor voluptates magnam, reiciendis pariatur culpa tempore quibusdam quidem, saepe eius.</p>
     </section>
     <!--Section: About-->
+    <!--Section: Contact-->
+    <section id="contact pb-5">
+        <div class="row">
+            <!--First column-->
+            <div class="col-md-8 mb-5">
+                <div id="map-container" class="z-depth-1 wow fadeIn" style="height: 300px"></div>
+            </div>
+            <!--/First column-->
+            <!--Second column-->
+            <div class="col-md-4">
+                <ul class="text-center list-unstyled">
+                    <li class="wow fadeIn" data-wow-delay="0.2s"><i class="fa fa-map-marker teal-text fa-lg"></i>
+                        <p>Gen. Grochowskiego 55</p>
+                        <p>Piaseczno, 55-555 , Poland</p>
+                    </li>
+                    <li class="wow fadeIn mt-5 pt-2" data-wow-delay="0.3s"><i class="fa fa-phone teal-text fa-lg"></i>
+                        <p>+ 48 555 55 55 55</p>
+                    </li>
+                    <li class="wow fadeIn mt-5 pt-2" data-wow-delay="0.4s"><i class="fa fa-envelope teal-text fa-lg"></i>
+                        <p>mymail@gmail.com</p>
+                    </li>
+                </ul>
+            </div>
+            <!--/Second column-->
+        </div>
+    </section>
+    <!--Section: Contact-->   
 </div>
 {% raw %}{% endblock %}{% endraw %}
+{% endhighlight %}
 
+
+Last but not least, lets add JS script to navigate Google map and place marker in position of our choice. More abou Google maps APIs can be found [here][google-maps-api].
+
+__/templates/public/home.html__
+{% highlight html linenos %}
 {% raw %}{% block scripts %}{% endraw %}
     {% raw %}{{ super() }}{% endraw %}
     <script>
@@ -425,54 +557,18 @@ __/templates/home.html__
 {% raw %}{% endblock %}{% endraw %}
 {% endhighlight %}
 
-Careful reader noticed `{% raw %}{{ super() }}{% endraw %}` expression in scripts block. We placed some JS code to be present in all pages in base template. Calling `super()` allows to keep all previous content of the block from previous template and append new content to it. So we have smooth scrolling and Google maps map initialization.
+You may have noticed `{% raw %}{{ super() }}{% endraw %}` expression in scripts block. In `layout.html` I placed some JS code to be present in all pages. Code is responsible for smooth scrolling to the page internal link. Calling `super()` allows to keep all previous content of the block from previous template and append new content to it. So we have smooth scrolling and Google maps initialization. For now we have only two functions, so it is reasonable to keep them in template code. But when amount of custom JS grows it is better to migrate to separate `.js` file and serve it from static folder same as framework files. 
 
-
-Later one can add additional content like about section or nice cards with features description. I added About me description and five cards describing project, but it is just exemplary content. What is more important is backend part of the project. 
-
-It is time to expand main application to use templates created above. First I will add Flask-debugtoolbar to the app, to get access to very handy tool, which monitors working app.
-
-
-__/app/app.py__
-{% highlight python linenos %}
-# -----------------------------------------------------------------------------
-# Standard Library Imports
-# -----------------------------------------------------------------------------
-import os
-# -----------------------------------------------------------------------------
-# Related Libraries Imports
-# -----------------------------------------------------------------------------
-from flask import Flask, render_template
-from flask_debugtoolbar import DebugToolbarExtension
-# -----------------------------------------------------------------------------
-# Local Imports
-# -----------------------------------------------------------------------------
-
-
-def create_app(config_object=None):
-    
-    app = Flask(__name__)
-    app.config.from_object(config_object)
-
-    toolbar = DebugToolbarExtension(app)
-    app.logger.debug("Debug toolbar activated")
-
-    @app.route('/')
-    def index():
-        return render_template("home.html")
-
-    return app
-
-{% endhighlight %}
-
-This file instead of displaying simple `h1` tag (like in [Social media analysis with Flask, Part I]({{site.url}}/2017/08/17/social-media-analysis-part-i)) will render full `home.html` page, which should resemble this: 
-
-
-![home][home]
 
 Obviously I am no web designer, but this simple stub should do the trick. Also we can see that  Bootstrap and MDB gave us nice look and responsive design (hamburger button which expands to full navigation bar when shrunk below 768 pixels, material style of the buttons and navigation bar). There is additional element on the page - a very nice tool to debug flask web applications called `Flask-debugtoolbar`. It should be listed in dev requirements and install automatically during environment configuration. It appears on the page as a button at the right top corner and allows to track current Flask session including app configuration, requests, routing, variables and many more.
 
 ![home-fdt][home_fdt]
+
+
+
+
+### Testing landing page
+
 
 ## Login, Register forms
 
@@ -486,7 +582,7 @@ First lets create login page with all fields:
 
 __/templates/login.html__
 {% highlight html linenos %}
-{% raw %}{% extends "base.html" %}{% endraw %}
+{% raw %}{% extends "layout.html" %}{% endraw %}
 
 
 
@@ -518,7 +614,7 @@ __/app/forms.py__
 __/templates/register.html__
 {% highlight html linenos %}
 <!-- some code -->
-{% raw %}{% extends "base.html" %}{% endraw %}
+{% raw %}{% extends "layout.html" %}{% endraw %}
 
 {% raw %}{% block content %}{% endblock %}{% endraw %}
 {% endhighlight %}
@@ -555,7 +651,7 @@ __/templates/register.html__
 
 ## Dashboard
 
-Basic structure of the dashboard component is contained in separate folder which gives very high modularity. Each module has its own routing mechanism located in `views.py` and own templates. If it is necessary we can include additional static folder with dashboard related javascript and css styles.
+Basic structure of the dashboard component is contained in separate folder which gives very high modularity. Each module has its own routing mechanism located in `views.py` and own templates. If it is necessary we can include additional static folder with dashboard related JavaScript and css styles.
 
 {% highlight bash %}
 (md_analytics) [mdyzma@devbox md_analytics]$ tree .
@@ -578,7 +674,7 @@ Basic structure of the dashboard component is contained in separate folder which
 
 __/dashboard/templates/dashboard.html__
 {% highlight html linenos %}
-{% raw %}{% extends "base.html" %}{% endraw %}
+{% raw %}{% extends "layout.html" %}{% endraw %}
 
 {% raw %}{% block title %}Dashboard{% endblock %}{% endraw %}
 
@@ -605,9 +701,9 @@ __/dashboard/views.py__
 [twb4]:   http://getbootstrap.com
 [mdb]:    https://mdbootstrap.com/material-design-for-bootstrap/
 [vue]:    https://vuejs.org
-
+[google-maps-api]: https://developers.google.com/maps/documentation/javascript/adding-a-google-map
 <!-- Images -->
 
 [banner]:   /assets/2017-07-12/banner.png
-[home]:     /assets/2017-07-12/home.png
+[intro]:     /assets/2017-07-12/intro.png
 [home_fdt]: /assets/2017-07-12/home-fdt.png
