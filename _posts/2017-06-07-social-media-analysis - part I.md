@@ -139,7 +139,7 @@ Successfully installed virtualenv-15.1.0
 
 ### Virtual environments management
 
-Now that we have the proper tools installed, we are ready to create our first Flask application. First of all we need virtual environment specific for our application. It is a good practice to separate environment working directory and application folder, to avoid putting heavy folders under version control (some virtual environments can have hundreds of MB). What I do usually is to create `.envs` folder in user's home directory and keep all virtual envs there.
+Now that we have the proper tools installed, we are ready to create our first Flask application. First of all we need virtual environment specific for our application. It is a good practice to separate environment's working directory (with all installed packages) and application folder, simply to avoid putting heavy folders under version control. Some virtual environments can have hundreds of MB and there is no use to keep track of them. Alternatively we can create virtual environment in projects folder and add this folder to the `.gitignore` file. What I usually do is to create separate `.envs` folder in user's home directory and keep all virtual envs there.
 
 {% highlight bash %}
 [mdyzma@devbox /]$ virtualenv ~/.envs/md_analytics
@@ -195,7 +195,7 @@ General structure is listed below:
 |   `-- prod.txt
 |
 |-- tests/
-|   `-- md_analytics/
+|   `-- app/
 |       |-- test_app.py
 |       `-- test_settings.py
 |
@@ -216,7 +216,7 @@ Most of the files in this make up are self-explanatory. There are some files lik
 |-----------------+-+----------------------------------------------------------------|
 |File             | | Description                                                    |
 |:----------------|-|:---------------------------------------------------------------|
-| app.json        | | Orchestrates steps involved in automatic deployment on Heroku. |
+| app.json        | | Orchestrates steps involved in automatic deployment to Heroku. |
 | Procfile        | | Declares commands run by application on the Heroku platform.   |
 | manage.py       | | Entry-point for executing our application                      |
 | .travis.yml     | | Instructions for TravisCI service                              |
@@ -228,9 +228,9 @@ Most of the files in this make up are self-explanatory. There are some files lik
 
 ## GitHub
 
-We use git to version control. Basics of git are beyond scope of this article. Please refer to excellent [git tutorial](https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control). Here I would like to focus on GitHub aspects related to project management. GitHub offers issues and projects support. Issues are more about specific bugs or features reported by users/developers, while project shows general status of all issues. Issues can be grouped in milestones, which usually denote specific software release.
+We use git to version control. Basics of git are beyond the scope of this article. Please refer to excellent [git tutorial](https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control). Here I would like to focus on GitHub aspects related to project management. GitHub offers issues and projects support. Issues are more about specific bugs or features reported by users/developers, while project shows general status of the work progress. Issues can be grouped in milestones, which usually denote specific software release. Very useful for time management.
 
-Here are some issues, which are "enhancements" of the app from version 0.0.2 (working skeleton integrated with Travis and Heroku) to the pre-released alpha with landing page and dashboard functionalities (v0.0.3).
+Here are some issues, which are "enhancements" of the app from current version __v0.0.2__ (working skeleton integrated with Travis and Heroku) to the pre-released alpha with landing page and dashboard functionalities __v0.0.3__.
 
 ![github-issues][github_issues]
 
@@ -317,9 +317,8 @@ Flask and its dependencies were installed. It is good to keep requirements in se
 
 Currently we have enough to run basic flask application. To test our environment lets write "Hello Flask" tryout. It will use basic routing mechanism to show "Hello Flask!" on the page. First Create `app` package (with `__init__.py`) and `app.py` module in it. In the app.py  file type:
 
-__md_analytics/app.py__
+__app/app.py__
 {% highlight python %}
-from flask import Flask
 from flask import Flask
 
 app = Flask(__name__)
@@ -483,13 +482,10 @@ __app/app.py__
 {% highlight python %}
 import os
 from flask import Flask
-from md_analytics.settings import ProdConfig
+from app.settings import ProdConfig
 
 def create_app(config_object=ProdConfig):
-    """An application factory, see here: http://flask.pocoo.org/docs/patterns/appfactories/.
 
-    :param config_object: The configuration object to use.
-    """
     app = Flask(__name__)
     app.config.from_object(config_object)
 
@@ -500,7 +496,7 @@ def create_app(config_object=ProdConfig):
     return app
 {% endhighlight %}
 
-This application still doesn't do much, except displaying 'Welcome to Social media analytic tool' from index view. It takes production configuration as default, however here we specify to use development environment instead. In next part we will swap h1 header to landing page and dashboard blueprints. For now simple text is enough to test page routing logic, settings management and deployment.
+This application still doesn't do much, except displaying 'Welcome to Social media analytic tool' from index view. It takes production configuration as default, however here we specify to use development environment instead. In next part we will swap `<h1>` header to landing page and dashboard blueprints. For now simple text is enough to test page routing logic, settings management and deployment.
 
 __manage.py__
 {% highlight python %}
@@ -522,7 +518,7 @@ if __name__ == "__main__":
     manager.run()
 {% endhighlight %}
 
-`manage.py` uses Flask-Script to register command-line tasks outside web application (from bash level). There are several build in commands like `Server()`, which runs the Flask development server. Still `manage.py` is not the only way to run our app locally. We can use HerokuCLI to do that (see [Heroku deployment](#heroku-deployment)).
+File `manage.py` uses Flask-Script to register command-line tasks outside web application (from bash level). There are several build in commands like `Server()`, which runs the Flask development server. Still `manage.py` is not the only way to run our app locally. We can use HerokuCLI to do that (see [Heroku deployment](#heroku-deployment)).
 
 
 ### Test Flask app
@@ -544,7 +540,7 @@ def test():
 
 This allows to call `python manage.py test` from the app root directory. Result depends on battery of tests we currently have. Pytest convention places unit-tests in `tests` directory, which resembles structure of the tested application. Also files should have "test" phrase in the name so that pytest can collect them without any problems. For now we will write three simple tests for our configurations:
 
-__tests/md_analytics/test_settings.py__
+__tests/app/test_settings.py__
 {% highlight python %}
 """Test configs."""
 from app.app import create_app
@@ -585,9 +581,9 @@ rootdir: /home/mdyzma/Documents/GitHub/md_analytics, inifile:
 plugins: cov-2.5.1
 collected 3 items
 
-tests/md_analytics/test_settings.py::test_production_config PASSED
-tests/md_analytics/test_settings.py::test_dev_config PASSED
-tests/md_analytics/test_settings.py::test_testing_config PASSED
+tests/app/test_settings.py::test_production_config PASSED
+tests/app/test_settings.py::test_dev_config PASSED
+tests/app/test_settings.py::test_testing_config PASSED
 
 ========================== 3 passed in 0.08 seconds ===========================
 {% endhighlight %}
@@ -730,7 +726,7 @@ md-analytics (eu)
 md-analytics-stage (eu)
 {% endhighlight %}
 
-Created apps are empty. All we have is default Heroku message, that our WSGI python app was launched successfully:
+When we open our apps in the browser: [http://md-analytics-stage.herokuapp.com](http://md-analytics-stage.herokuapp.com),m we would see empty apps created by Heroku service. All we have is default Heroku message, that our WSGI python app was launched successfully:
 
 ![heroku_empty_app][h_empty]
 
