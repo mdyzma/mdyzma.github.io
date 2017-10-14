@@ -77,6 +77,7 @@ First we need to create GitHub repository (with `LICENSE` and `.gitignore` for e
 │   └── iris.py
 ├── Jenkinsfile
 ├── LICENSE
+├── README.md
 ├── setup.py
 └── tests/
     ├── features
