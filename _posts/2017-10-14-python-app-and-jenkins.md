@@ -463,6 +463,10 @@ Jenkins has very powerful [CoberturaPublisher Plugin](https://wiki.jenkins.io/di
 ...
 {% endhighlight %}
 
+Code coverage report is accessible only from classical Jenkins view. It appears as a link on the left side menu and as a miniature in main project view.
+
+![coverage][coverage]
+
 ### PEP8 & code metrics reports
 
 We can also check code errors and style violations. Unfortunately `pylint` has tendency to return a non-zero exit code even only if a small warning issue was found. Only when everything was fine, 0 is returned. All non-zero steps are signal for Jenkins to fail the pipeline. This is unacceptable in case of small style differences. In this situation I use pylint report as a "tip" and allow it to fail. My shell command will always return true.
@@ -797,5 +801,6 @@ Running entire pipeline results all green, successful run:
 [jenkins_38]:      /assets/2017-10-14/jenkins_38.png
 [jenkins_shell]:   /assets/2017-10-14/jenkins-shell.png
 [tests_tab]:       /assets/2017-10-14/test_tab.png
+[coverage]:        /assets/2017-10-14/coverage.png
 [artifacts]:       /assets/2017-10-14/pipeline_artifacts.png
 [complete]:        /assets/2017-10-14/pipeline_completed.png
