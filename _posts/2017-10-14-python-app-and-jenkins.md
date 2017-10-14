@@ -11,10 +11,8 @@ keywords:   python, devops, Jenkins
 
 Jenkins is an open source automation server. It can run any task with sophisticated set of rules regarding source control and/or dependencies between jobs. It is used to automate all sorts of tasks such as building, testing, and deploying software. Jenkins can be installed through native system packages, Docker, or even run standalone by any machine with the Java Runtime Environment installed. In this article I will show how to set up automatic CI/CD pipelines for python applications using Jenkins.
 
-
 <br>
 {% include note.html content="Source code from the article can be downloaded from this [**GitHub repository** ](https://github.com/mdyzma/jenkins-python-test)" %}
-
 
 ## Jenkins
 
@@ -59,26 +57,45 @@ There are many ways of creating Jenkins pipeline:
 
 In this post, but I will focus only on the last one, most recent and most feature rich and safest option.
 
-Free style jobs chaining is common practice in companies, where there is no designated DevOps engineer and project developers need to orginize their own CI/CD pipeline. Its advantage is simplicity. Click here and there, add bash command to the form on the project page and voila. But wehen project reaches couple dosens of stages communicating them becomes nightmare.
+Free style jobs chaining was common practice before. Its advantage was simplicity. Click here and there, add bash command to the form on the project page and voila. But when project reaches several dozens of stages communicating them becomes nightmare.
 
-Much better approach is to move stages and their logi into separate `groovy` script. In scripted pipelines script is again block of code pasted in the projects form on Jenkins site. Single steps of the pipeline are encoded in Jenkins scripted language resembling `groovy`, so we have part of the pipeline moved to the cohesive script and use Jenkins internal structures, but it shares same disadvantage as previous solution. It exists only in Jenkinses local configuration files. Once your Jenkins installation is gone, so is your pipeline.
+Much better approach is to move stages and their logic into separate `groovy` script. In scripted pipelines script is again block of code pasted in the projects form on Jenkins site. Single steps of the pipeline are encoded in Jenkins scripted language resembling `groovy`, so we have part of the pipeline moved to the cohesive script and use Jenkins internal structures, but it shares same disadvantage as previous solution. It exists only in Jenkinses local configuration files. Once your Jenkins installation is gone, so is your pipeline.
 
-Best solution is to keep everything under version control. In special files describing entire pipeline to any Jenkins instance. This is so called **declarative pipeline**. Lets create special `Jenkinsfile` and put there some basic pipeline from the tutorial.
+Best solution is to keep everything under version control. In special files describing entire pipeline to any Jenkins instance. This is so called **declarative pipeline**. Let's create special `Jenkinsfile` and put there some basic pipeline from the tutorial.
 
 
-## Setting up Github project
+## Setting up GitHub project
 
-First we need to create GitHub repository (with `LICENSE` and `.gitignore` for example) and add `Jenkinsfile` to it. Basic pipeline structure, recommended on [Jenkins pipeline tutorial](https://jenkins.io/doc/pipeline/tour/deployment/) is as follows:
+First we need to create GitHub repository (with `LICENSE` and `.gitignore` for example) and add `Jenkinsfile` to it. For this post I decided to create dummy project deployed to PyPI which will be simple Iris data set classifier. Basic project structure is:
+
+{% highlight bash %}
+.
+├── .behaverc
+├── .gitignore
+├── irisvmpy
+│   ├── __init__.py
+│   └── iris.py
+├── Jenkinsfile
+├── LICENSE
+├── setup.py
+└── tests/
+    ├── features
+    │   ├── environment.py
+    │   ├── iris.feature
+    │   └── steps
+    │       └── iris_steps.py
+    └── test_iris.py
+{% endhighlight %}
+
+Project pushed to the GitHub repository [**H E R E**](https://github.com/mdyzma/jenkins-python-test).
+
+Basic pipeline structure, recommended on [Jenkins pipeline documentation](https://jenkins.io/doc/book/pipeline/) is as follows:
 
 <br>
 __Jenkinsfile__
 {% highlight groovy %}
 pipeline {
     agent any
-
-    options {
-        buildDiscarder(logRotator(numToKeepStr:'10'))
-    }
 
     stages {
         stage('Build') {
@@ -118,11 +135,11 @@ pipeline {
 }
 {% endhighlight %}
 
-Main block of each declarativepipeline is `pipeline{}` block. There are other hierarchical keywords defining groups of steps, each step in detail, their order and connections.
+Main block of each declarative pipeline is `pipeline{}` block. In pipeline one can define `stages{}`, as group of `stage{}` elements. Each containing specific `steps{}`, their order and logic. Beside `stages{}` one can also set pipelines `properties{}`, `options{}` or `environment{}` blocs. Also, some directives to the source control manager concerning frequency of checking GitHub repository for changes in `triggers{}` block (it accepts cron syntax). Check [Crontab Guru](https://crontab.guru) for examples.
 
-Jenkins allows to run jobs on multiple machines in various configurations. So user usually can specify agent, which runs specific step or all steps included in the pipeline. Agent may be local jenkins instance, some virtual machine connected to it or docker container run by host machine.
+Jenkins allows running jobs on multiple machines in various configurations. So user usually can specify agent, which runs specific step or all steps included in the pipeline. Agent may be local jenkins instance, some virtual machine connected to it (and running different OS for example) or docker container run by host machine.
 
-In this pipeline there are three default stages and some messages displayed on the screen after all stages complete (under specific conditions). As name indicates some will always be displayed, some upon success or failure. Post part can be used to communicate with developer to send message about project status.
+In this pipeline there is also extensive `post{}` block with some messages displayed on the screen under specific conditions. As their names indicate, some will always be displayed, some upon success or failure. Post part can be used to communicate with developer to send message about project status.
 
 Three of them will be used in almost every project:
 
@@ -151,7 +168,7 @@ and finally, Jenkins will auto-discover all steps from `Jenkinsfile` present in 
 ![Third-step][creator_3]
 
 <br>
-Jenkins will automatically run the pipeline and display all the messages, which apply, from the `post` section. In this case we will get always, success and changed. 
+Jenkins will automatically run the pipeline and display all the messages, which apply, from the `post` section. In this case we will get green status, since Jenkinsfile is comprised just several echo statements.
 
 There is also a page summarizing statuses of all projects under this jenkins server control. General list of all projects on Jenkins server looks like this:
 
@@ -181,14 +198,14 @@ Traditionally our basic pipeline will comprise of the following elements:
 3. Testing pulled source code
     - unit tests
     - acceptance tests
-4. Building proper python distribution package (`.whl`, `.tar`, `.exe`)
+4. Building proper python distribution package (`.whl`)
 5. Deploying to PyPI
 
 ----
 
 It is time to rebuild our `Jenkinsfile` to reflect steps given above.
 
-## Jenkins user anatomy
+## Jenkins anatomy
 
 Jenkins uses its user service account to create job folders and files, manage workspaces and its plugins. All configuration options are kept in `.xml` files in specific locations in Jenkins `$HOME` directory for jenkins user. On debian derived OS it is placed in `/var/lib/jenkins/` directory. This is location of our agent, so called service account without interactive properties. It means it does not have designated shell, no `/home/jenkins/` folder and one can not login to this account interactively.
 
@@ -236,18 +253,21 @@ There are two bad news about jenkins and python virtual environments:
 1. jenkins user by default uses shell (it means no `source` command)
 2. jenkins user is non-interactive service account. It means it doesn't run through the same set of scripts that alter the PATH environment variable for logged users. There is no `.bashrc` and  neither `/etc/profile` nor `/etc/bash.bashrc` configurations have any effect. As a consequence it usually uses interpreter located in `/usr/bin/python` or something like this (basic default system interpreter). If you have some Anaconda or Miniconda custom python installation in the system, there is a good chance, that jenkins will not see it.
 
-There is also Jenkins special plugin called *Shiny Panda*, which allows to manage python virtual environments in Jenkins, but I do not recommend it. It is easier and safer to configure proper python interpreter and environment using Miniconda and Jenkins settings.
+There is also Jenkins special plugin called *Shiny Panda*, which allows managing python virtual environments in Jenkins, but I do not recommend it. It is easier and safer to configure proper python interpreter and environment using Miniconda and Jenkins settings.
 
-So ... Jenkins does not see our nice system Miniconda installation. 
-We will make Jenkins use python virtual environments accessible in the workspace of the project. The best solution is to install Miniconda and manage environments from the jenkins user level. Miniconda will expose `conda` package manager, which is also capable to easily manage python virtual environments.
+So ... Jenkins does not see our nice system Miniconda installation. We will have to make Jenkins use proper python interpreter and create virtual environments accessible in the workspace of the project every time job is run.
 
-First lets install Miniconda as jenkins user (all sh or bash command invoked in pipeline are executed as jenkins user), therefore we need to switch to the jenkins user and tell system what shell to use, since jenkins has none assigned by design. This set of commands will install latest miniconda in `/var/lib/jenkins/miniconda3/`:
+The best solution is to install Miniconda and manage environments from the jenkins user level. Miniconda will expose `conda` package manager, which is also capable to easily manage python virtual environments.
+
+First, lets install Miniconda as jenkins user (all sh or bash command invoked in pipeline are executed as jenkins user), therefore we need to switch to the jenkins user and tell system what shell to use, since jenkins has none assigned by design. This set of commands will install latest miniconda in `/var/lib/jenkins/miniconda3/`:
 
 
 <br>
 {% highlight bash %}
-[mdyzma@devbox jenkins-python-test]$  sudo -u jenkins sh
+[mdyzma@devbox jenkins-python-test]$ sudo su
 [sudo] password for mdyzma: # sudo pass
+root@devbox:/home/mdyzma/GitHub/jenkins-python-test# su - jenkins
+
 $ cd /var/lib/jenkins # go to jenkins $HOME dir
 $ wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 ...
@@ -276,12 +296,14 @@ to PATH in your /var/lib/jenkins/.bashrc ? [yes|no]
 {% endhighlight %}
 
 <br>
-Modifying `.bashrc` of other environment processing element was pointless. As I mentioned, Jenkins usually connects to the service via non-interactive shell, so neither `/etc/profile` nor `/etc/bash.bashrc` configurations have any effect. To make it work two things need to be done:
+Modifying `.bashrc` of environment processing element was pointless. As I mentioned, Jenkins usually connects to the service via non-interactive shell, so neither `/etc/profile` nor `/etc/bash.bashrc` configurations would have any effect. To make it work two things need to be done:
 
 1. change main Jenkins shell to bash (this will activate `source` command)
 2. make conda binaries to be visible for jenkins user shell from the pipeline
 
-To activate `source` command we need to switch to Bourne-again shell (bash) as default shell. Go to __Manage Jenkins -> Configure System -> Shell -> Shell executable__, and input `/bin/bash` into the form. Save changes. One thing is done.
+To activate `source` command we need to switch to Bourne-again shell (bash) as default shell. Go to __Manage Jenkins -> Configure System -> Shell -> Shell executable__ (or [http://localhost:8080/configure](http://localhost:8080/configure)), and input `/bin/bash` into the form. Save changes.
+
+![jenkins-shell][jenkins_shell]
 
 Still, we have to expose miniconda binaries to the non-login Jenkins profile. Declarative Pipelines support an environment directive, which allows to define environmental variables. Environment directive used in the top-level pipeline block will apply to all steps within the Pipeline (see: [Jenkins documentation](https://jenkins.io/doc/book/pipeline/syntax/#environment)). We will use it to modify PATH variable.
 
@@ -295,11 +317,26 @@ __Jenkinsfile__
 pipeline {
     agent any
 
-    environment{
-      PATH="$HOME/miniconda3/bin:$PATH"
+    triggers {
+        pollSCM('*/5 * * * 1-5')
+    }
+    options {
+        skipDefaultCheckout(true)
+        // Keep the 10 most recent builds
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+        timestamps()
+    }
+    environment {
+      PATH="/var/lib/jenkins/miniconda3/bin:$PATH"
     }
 
     stages {
+
+        stage ("Code pull"){
+            steps{
+                checkout scm
+            }
+        }
         stage('Build environment') {
             steps {
                 sh '''conda create --yes -n ${BUILD_TAG} python
@@ -322,13 +359,18 @@ pipeline {
         always {
             sh 'conda remove --yes -n ${BUILD_TAG} --all'
         }
+        filure {
+            echo "Send e-mail, when failed"
+        }
     }
 }
 {% endhighlight %}
 
-There is also possibility to create separate environment for different python versions (i.e. 2.7 branch). All is needed is python version in create command i.e.: `conda create --yes -n env_name python=2`.
+Basic frames for pipeline was enclosed in the listing above. GitHub is checked with */5 * * * 1-5 frequency (at every 5th minute on every day-of-week from Monday through Friday). Default code checkout was suppressed in pipeline options. In options, we have also established rules regarding keeping old builds (Round Robin rotation of last 10 builds) and we also established, that each log entry will be timestamped. In one stage we create conda environment and install all project dependencies. In second stage we check interpreter localization. There is also possibility to create separate environment for different python versions (i.e. 2.7 branch). All is needed is python version in create command i.e.: `conda create --yes -n env_name python=2`.
 
-`${BUILD_TAG}` is a string creted by Jenkins from combination of `jenkins-${JOB_NAME}-${BUILD_NUMBER}` variables. Convenient to put into a resource file or for easier identification of virtual environment.
+`${BUILD_TAG}` is a string created by Jenkins from combination of `jenkins-${JOB_NAME}-${BUILD_NUMBER}` variables. Convenient to put into a resource file or for easier identification of virtual environment.
+
+Last, but not least is post block for entire pipeline. Always when pipeline finishes (regardless the status), conda environment will be purged from the disk.
 
 Quick peek at conda envs list shows, that system works (38 jobs ran and there is only one - `root` environment):
 
@@ -362,16 +404,14 @@ Pylint can generate its own output files, which can be read by [Violation Column
 
 Radon generates JSON outputs, which are the most problematic of them all. One of possible options is to use allure tool to prepare nice HTML report from specific JSON. Obtained HTML can be presented by general purpose [HTML Publisher Plugin](https://wiki.jenkins.io/display/JENKINS/HTML+Publisher+Plugin).
 
+Let's start with code raw metrics.
 
-Lets start with code raw metrics.
-
-### Raw metrics
+### Raw code metrics
 
 We will use `Radon` package to produce data in json format. Then json and report will be archived (moved to the `build/` folder).
 
 {% highlight groovy %}
 ...
-    stages{
         stage('Static code metrics') {
             steps {
                 echo "Raw metrics"
@@ -394,22 +434,13 @@ We will use `Radon` package to produce data in json format. Then json and report
                 }
             }
         }
-    } 
-    post {
-        always {
-            sh 'conda remove --yes -n ${BUILD_TAG} --all'
-        }
-        success {
-            echo "build package"
-        }
-    }
+
 ...
 {% endhighlight %}
 
+### Code coverage report
 
-### Test coverage report
-
-Jenkins has very powerful JUnit Plugin. 
+Jenkins has very powerful JUnit Plugin. We can use pytest capabilities to produce code coverage report in `.xml` format. It is understandable by Cubertura plugin.
 
 We can also use GitHub account possibilities and publish reports in [codecov.io](https://codecov.io).
 
@@ -451,17 +482,16 @@ Two types of testing are essential:
 1. Unit tests (`pytest` or `unittest`)
 1. Acceptance tests (`behave`)
 
-In case of more complex software integration tests may be added to the list. According to agile  "outside-in" approach first we should write acceptance tests (more general test), then precise unit tests (classic TDD)
+In case of more complex software integration tests may be added to the list. According to agile  "outside-in" approach first we should write acceptance tests (more general test), then precise unit tests (classic TDD). Test results will be stored for comparison. JUnit plugin gives quick and easy access to the tests.
 
 ### Unit tests
 
-Application unit
+Stage with unit tests and their archiving:
 
 {% highlight groovy %}
 ...
         stage('Unit tests') {
             steps {
-                echo "Running unit tests"
                 sh  ''' source activate ${BUILD_TAG}
                         python -m pytest --verbose --junit-xml test-reports/results.xml
                     '''
@@ -469,22 +499,21 @@ Application unit
             post {
                 always {
                     // Archive unit tests for the future
-                    junit allowEmptyResults: true, testResults: 'test-reports/results.xml'
+                    junit allowEmptyResults: true, testResults: 'test-reports/results.xml', fingerprint: true
                 }
             }
         }
 ...
 {% endhighlight %}
 
-
 ### Acceptance tests
 
+Acceptance tests:
 
 {% highlight groovy %}
 ...
         stage('Acceptance tests') {
             steps {
-                echo "Acceptance testing"
                 sh  ''' source activate ${BUILD_TAG}
                         behave
                     '''
@@ -493,37 +522,49 @@ Application unit
 ...
 {% endhighlight %}
 
-
 ## Building python package
 
 {% highlight groovy %}
 ...
-    stages{
         stage('Build package') {
+            when {
+                expression {
+                    currentBuild.result == null || currentBuild.result == 'SUCCESS'
+                }
+            }
             steps {
-                echo "Building package"
                 sh  ''' source activate ${BUILD_TAG}
                         python setup.py bdist_wheel  
                     '''
             }
+            post {
+                always {
+                    // Archive unit tests for the future
+                    archiveArtifacts allowEmptyArchive: true, artifacts: 'dist/*whl', fingerprint: true
+                }
+            }
         }
-    }
-    post {
-        always {
-            sh 'conda remove --yes -n ${BUILD_TAG} --all'
-        }
-        success {
-            archiveArtifacts allowEmptyArchive: true, artifacts: 'dist/*whl', fingerprint: true
-        }
-    }
 ...
 {% endhighlight %}
 
-
 ## Deployment
 
-Package, which passes tests will be uploaded to PyPI server.
+Package, which passed tests and was successfuly built will be uploaded to PyPI server.
 
+{% highlight groovy %}
+...
+        stage("Deploy to PyPI") {
+            }
+            steps {
+                sh """python setup.py register -r pypitest
+                      python setup.py bdist_wheel upload -r pypitest
+                      python setup.py register -r pypi
+                      python setup.py bdist_wheel upload -r pypi
+                """
+            }
+        }
+...
+{% endhighlight %}
 
 ## Summary
 
@@ -532,19 +573,29 @@ Package, which passes tests will be uploaded to PyPI server.
 pipeline {
     agent any
 
-    options {
-        buildDiscarder(logRotator(numToKeepStr:'10'))
-    }
-
-    environment{
-        PATH="$PATH:/var/lib/jenkins/miniconda3/bin"
-    }
-
     triggers {
-        pollSCM('H */4 * * 1-5')
+        pollSCM('*/5 * * * 1-5')
+    }
+
+    options {
+        skipDefaultCheckout(true)
+        // Keep the 10 most recent builds
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+        timestamps()
+    }
+
+    environment {
+      PATH="/var/lib/jenkins/miniconda3/bin:$PATH"
     }
 
     stages {
+
+        stage ("Code pull"){
+            steps{
+                checkout scm
+            }
+        }
+
         stage('Build environment') {
             steps {
                 echo "Building virtualenv"
@@ -570,6 +621,61 @@ pipeline {
                         python -m coverage xml -o ./reports/coverage.xml
                     '''
                 echo "Style check"
+                sh  ''' source activate ${BUILD_TAG}
+                        pylint irisvmpy
+                    '''
+            }
+        }
+
+        stage('Unit tests') {
+            steps {
+                sh  ''' source activate ${BUILD_TAG}
+                        python -m pytest --verbose --junit-xml test-reports/results.xml
+                    '''
+            }
+            post {
+                always {
+                    // Archive unit tests for the future
+                    junit allowEmptyResults: true, testResults: 'test-reports/results.xml', fingerprint: true
+                }
+            }
+        }
+
+        stage('Acceptance tests') {
+            steps {
+                sh  ''' source activate ${BUILD_TAG}
+                        behave
+                    '''
+            }
+        }
+
+        stage('Build package') {
+            when {
+                expression {
+                    currentBuild.result == null || currentBuild.result == 'SUCCESS'
+                }
+            }
+            steps {
+                sh  ''' source activate ${BUILD_TAG}
+                        python setup.py bdist_wheel  
+                    '''
+            }
+            post {
+                always {
+                    // Archive unit tests for the future
+                    archiveArtifacts allowEmptyArchive: true, artifacts: 'dist/*whl', fingerprint: true
+                }
+            }
+        }
+
+        stage("Deploy to PyPI") {
+            }
+            steps {
+                sh """python setup.py register -r pypitest
+                      python setup.py bdist_wheel upload -r pypitest
+                      python setup.py register -r pypi
+                      python setup.py bdist_wheel upload -r pypi
+                """
             }
         }
     }
@@ -578,11 +684,8 @@ pipeline {
         always {
             sh 'conda remove --yes -n ${BUILD_TAG} --all'
         }
-        success {
-            sh 'ls -las'
-            sloccountPublish encoding: '', pattern: ''
-            archive '*/reports/*'
-            junit "*/reports/*.xml"
+        failure {
+            echo "send e-mail when failed"
         }
     }
 }
@@ -604,3 +707,4 @@ pipeline {
 [creator_3]:       /assets/2017-10-14/creator_3.png
 [blue_proj]:       /assets/2017-10-14/blue_projects.png
 [jenkins_38]:      /assets/2017-10-14/jenkins_38.png
+[jenkins_shell]:   /assets/2017-10-14/jenkins-shell.png
