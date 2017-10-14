@@ -88,7 +88,7 @@ First we need to create GitHub repository (with `LICENSE` and `.gitignore` for e
     └── test_iris.py
 {% endhighlight %}
 
-Project pushed to the GitHub repository [**H E R E**](https://github.com/mdyzma/jenkins-python-test).
+Project pushed to the GitHub repository [**H E R E**](https://github.com/mdyzma/jenkins-python-test). It is a simple Iris classifier using SVM.
 
 Basic pipeline structure, recommended on [Jenkins pipeline documentation](https://jenkins.io/doc/book/pipeline/) is as follows:
 
