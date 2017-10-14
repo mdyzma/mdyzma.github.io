@@ -88,7 +88,7 @@ First we need to create GitHub repository (with `LICENSE` and `.gitignore` for e
     └── test_iris.py
 {% endhighlight %}
 
-Project pushed to the GitHub repository [**H E R E**](https://github.com/mdyzma/jenkins-python-test). It is a simple Iris classifier using SVM.
+Project pushed to the GitHub repository [**H E R E**](https://github.com/mdyzma/jenkins-python-test/tree/master/irisvmpy). It is a simple Iris classifier using SVM. It contains all files necessary to build decent python project.
 
 Basic pipeline structure, recommended on [Jenkins pipeline documentation](https://jenkins.io/doc/book/pipeline/) is as follows:
 
@@ -441,34 +441,50 @@ We will use `Radon` package to produce data in json format. Then json and report
 
 ### Code coverage report
 
-Jenkins has very powerful JUnit Plugin. We can use pytest capabilities to produce code coverage report in `.xml` format. It is understandable by Cubertura plugin.
+Jenkins has very powerful [CoberturaPublisher Plugin](https://wiki.jenkins.io/display/JENKINS/Cobertura+Plugin). We will create proper `.xml` report with code coverage using `coverage` pacage and publish it to HTML using post section of this step. It will always grab info located in `/reports/coverage.xml` and transform it to the HTML report visible in the side menu of the Jekins project.
 
-We can also use GitHub account possibilities and publish reports in [codecov.io](https://codecov.io).
-
+<br>
 {% highlight groovy %}
 ...
         stage('Static code metrics') {
             steps {
                 echo "Code Coverage"
                 sh  ''' source activate ${BUILD_TAG}
-                        python -m pytest -v -p no:warnings --cov-report xml --cov=src/ tests/
+                        coverage run irisvmpy/iris.py 1 1 2 3
+                        python -m coverage xml -o ./reports/coverage.xml
                     '''
             }
+            post{
+                always{
+                    step([$class: 'CoberturaPublisher',
+                                   autoUpdateHealth: false,
+                                   autoUpdateStability: false,
+                                   coberturaReportFile: './reports/coverage.xml',
+                                   failUnhealthy: false,
+                                   failUnstable: false,
+                                   maxNumberOfBuilds: 10,
+                                   onlyStable: false,
+                                   sourceEncoding: 'ASCII',
+                                   zoomCoverageChart: false])
+                }
+            }
+        }
 ...
 {% endhighlight %}
 
 
 ### PEP8 & code metrics reports
 
+We can also check code erorors and style violations. Unfortunately`pylint`  has tendency  to return a non-zero exit code even only if a small warning issue was found. Only when everything was fine, 0 is returned. All non zero steps are signal for Jekins to fail the pipeline. This is unacceptable in case of small style differences. In this situation I use pylint report as a "tip" and allow it to fail. My shell command will always return true.
+
+
 {% highlight groovy %}
 ...
         stage('Static code metrics') {
             steps {
-                echo "Error and style report"
+                echo "PEP8 style check"
                 sh  ''' source activate ${BUILD_TAG}
-                        radon raw --json irisvmpy/
-                        radon cc --xml irisvmpy/
-                        radon mi --json irisvmpy/ #cyclometric complexity
+                        pylint --disable=C irisvmpy || true
                     '''
             }
         }
@@ -507,23 +523,70 @@ Stage with unit tests and their archiving:
 ...
 {% endhighlight %}
 
+Tests report is accessible on special **Tests** tab:
+
+![tests-tab][tests_tab]
+
 ### Acceptance tests
 
-Acceptance tests:
+Behave package is able to return results of acceptance tests in JSON format, however this format is not compatible with any Jenkins cucumber repoprt plugins. There is a workaround to this problem. Actually two. 
 
+1. Use custom json formatter (there is gist [published on GitHub](https://gist.github.com/fredizzimo/b92adf1d4596c0c1da1b05cc9899574b) with formatter compatible with cuccumber plugin style)). How to use user-specific formatters with behave, please checks [behave documentation](http://behave.readthedocs.io/en/latest/formatters.html#user-defined-formatters).
+2. Use [`behave2cucumber` package](https://github.com/behalf-oss/behave2cucumber), which adds another dependency to te project. Also, last post post in [this](https://github.com/behave/behave/issues/267) discussions suggests, that `behave2cucumber` fails in some cases.
+
+<br>
+__first option__
 {% highlight groovy %}
 ...
         stage('Acceptance tests') {
             steps {
                 sh  ''' source activate ${BUILD_TAG}
-                        behave
+                        behave -f=formatters.cucumber_json:PrettyCucumberJSONFormatter -o ./reports/acceptance.json
                     '''
+            }
+            post {
+                always {
+                    cucumber (buildStatus: 'UNSTABLE', 
+                              fileIncludePattern: '**/acceptance*.json',
+                              jsonReportDirectory: './reports/',
+                              parallelTesting: true,
+                              sortingMethod: 'ALPHABETICAL')
+                }
             }
         }
 ...
 {% endhighlight %}
 
+
+<br>
+__second option__
+{% highlight groovy %}
+...
+        stage('Acceptance tests') {
+            steps {
+                sh  ''' source activate ${BUILD_TAG}
+                        behave -f=json.pretty -o ./reports/acceptance.json
+                        python -m behave2cucumber ./reports/acceptance.json
+                    '''
+            }
+            post {
+                always {
+                    cucumber (buildStatus: 'UNSTABLE', 
+                              fileIncludePattern: '**/acceptance*.json',
+                              jsonReportDirectory: './reports/',
+                              parallelTesting: true,
+                              sortingMethod: 'ALPHABETICAL')
+                }
+            }
+        }
+...
+{% endhighlight %}
+
+
 ## Building python package
+
+We will also buld wheel package when all tests and code metrics was completed. Jekins will check internal variable `currentBuild.result`. If nothing changed or there was no failure, Jenkins will initialize `setup.py` script. When buuild process is finished Jenkins will archive `.whl`  file and store it for download. Blue Ocean and classical Jenkins create "Artifacts" page with all files marked to archivisation during pipeline run.
+
 
 {% highlight groovy %}
 ...
@@ -541,12 +604,17 @@ Acceptance tests:
             post {
                 always {
                     // Archive unit tests for the future
-                    archiveArtifacts allowEmptyArchive: true, artifacts: 'dist/*whl', fingerprint: true
+                    archiveArtifacts allowEmptyArchive: true, artifacts: 'dist/*whl', fingerprint: true)
                 }
             }
         }
 ...
 {% endhighlight %}
+
+
+As we can see python package was archived as expected:
+
+![artifacts][artifacts]
 
 ## Deployment
 
@@ -557,17 +625,14 @@ Package, which passed tests and was successfuly built will be uploaded to PyPI s
         stage("Deploy to PyPI") {
             }
             steps {
-                sh """python setup.py register -r pypitest
-                      python setup.py bdist_wheel upload -r pypitest
-                      python setup.py register -r pypi
-                      python setup.py bdist_wheel upload -r pypi
-                """
+                sh "twine upload dist/*"
             }
         }
 ...
 {% endhighlight %}
 
 ## Summary
+To summ up. Here is listing of the complete Jenkinsfile:
 
 <br>
 {% highlight groovy %}
@@ -623,7 +688,7 @@ pipeline {
                     '''
                 echo "Style check"
                 sh  ''' source activate ${BUILD_TAG}
-                        pylint irisvmpy
+                        pylint irisvmpy || true
                     '''
             }
         }
@@ -631,13 +696,15 @@ pipeline {
         stage('Unit tests') {
             steps {
                 sh  ''' source activate ${BUILD_TAG}
-                        python -m pytest --verbose --junit-xml test-reports/results.xml
+                        python -m pytest --verbose --junit-xml reports/unit_tests.xml
                     '''
             }
             post {
                 always {
                     // Archive unit tests for the future
-                    junit allowEmptyResults: true, testResults: 'test-reports/results.xml', fingerprint: true
+                    junit (allowEmptyResults: true, 
+                          testResults: './reports/unit_tests.xml', 
+                          fingerprint: true)
                 }
             }
         }
@@ -645,8 +712,17 @@ pipeline {
         stage('Acceptance tests') {
             steps {
                 sh  ''' source activate ${BUILD_TAG}
-                        behave
+                        behave -f=formatters.cucumber_json:PrettyCucumberJSONFormatter -o ./reports/acceptance.json
                     '''
+            }
+            post {
+                always {
+                    cucumber (buildStatus: 'UNSTABLE', 
+                    fileIncludePattern: '**/*.json', 
+                    jsonReportDirectory: './reports/', 
+                    parallelTesting: true,
+                    sortingMethod: 'ALPHABETICAL')
+                }
             }
         }
 
@@ -664,7 +740,9 @@ pipeline {
             post {
                 always {
                     // Archive unit tests for the future
-                    archiveArtifacts allowEmptyArchive: true, artifacts: 'dist/*whl', fingerprint: true
+                    archiveArtifacts (allowEmptyArchive: true,
+                                     artifacts: 'dist/*whl',
+                                     fingerprint: true)
                 }
             }
         }
@@ -686,13 +764,20 @@ pipeline {
             sh 'conda remove --yes -n ${BUILD_TAG} --all'
         }
         failure {
-            echo "send e-mail when failed"
+            emailext (
+                subject: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+                body: """<p>FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
+                         <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
+                recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+            )
         }
     }
 }
 {% endhighlight %}
 
+Running entire pipeline results all green, successful run:
 
+![completed-pipeline][complete]
 
 
 <br>
@@ -709,3 +794,6 @@ pipeline {
 [blue_proj]:       /assets/2017-10-14/blue_projects.png
 [jenkins_38]:      /assets/2017-10-14/jenkins_38.png
 [jenkins_shell]:   /assets/2017-10-14/jenkins-shell.png
+[tests_tab]:       /assets/2017-10-14/test_tab.png
+[artifacts]:       /assets/2017-10-14/pipeline_artifacts.png
+[complete]:        /assets/2017-10-14/pipeline_completed.png
