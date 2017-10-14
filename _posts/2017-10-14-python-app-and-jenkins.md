@@ -77,7 +77,9 @@ First we need to create GitHub repository (with `LICENSE` and `.gitignore` for e
 │   └── iris.py
 ├── Jenkinsfile
 ├── LICENSE
+├── Manifest.in
 ├── README.md
+├── setup.cfg
 ├── setup.py
 └── tests/
     ├── features
@@ -421,18 +423,6 @@ We will use `Radon` package to produce data in json format. Then json and report
                         radon cc --json irisvmpy/ > cc_report.json
                         radon mi --json irisvmpy/ > mi_report.json
                     '''
-            }
-            post {
-                success {
-                    publishHTML target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: false,
-                    keepAll: true,
-                    reportDir: 'coverage',
-                    reportFiles: 'index.html',
-                    reportName: 'RCov Report'
-                    ]
-                }
             }
         }
 
