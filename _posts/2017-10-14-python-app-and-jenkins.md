@@ -449,7 +449,8 @@ Jenkins has very powerful [CoberturaPublisher Plugin](https://wiki.jenkins.io/di
                     step([$class: 'CoberturaPublisher',
                                    autoUpdateHealth: false,
                                    autoUpdateStability: false,
-                                   coberturaReportFile: './reports/coverage.xml',
+                                   coberturaReportFile: 'reports/coverage.xml',
+                                   failNoReports: false,
                                    failUnhealthy: false,
                                    failUnstable: false,
                                    maxNumberOfBuilds: 10,
@@ -535,8 +536,7 @@ __first option__
             }
             post {
                 always {
-                    cucumber (buildStatus: 'UNSTABLE', 
-                              fileIncludePattern: '**/acceptance*.json',
+                    cucumber (fileIncludePattern: '**/acceptance*.json',
                               jsonReportDirectory: './reports/',
                               parallelTesting: true,
                               sortingMethod: 'ALPHABETICAL')
@@ -560,8 +560,7 @@ __second option__
             }
             post {
                 always {
-                    cucumber (buildStatus: 'UNSTABLE', 
-                              fileIncludePattern: '**/acceptance*.json',
+                    cucumber (fileIncludePattern: '**/acceptance*.json',
                               jsonReportDirectory: './reports/',
                               parallelTesting: true,
                               sortingMethod: 'ALPHABETICAL')
@@ -673,12 +672,27 @@ pipeline {
                 echo "Test coverage"
                 sh  ''' source activate ${BUILD_TAG}
                         coverage run irisvmpy/iris.py 1 1 2 3
-                        python -m coverage xml -o ./reports/coverage.xml
+                        python -m coverage xml -o reports/coverage.xml
                     '''
                 echo "Style check"
                 sh  ''' source activate ${BUILD_TAG}
                         pylint irisvmpy || true
                     '''
+            }
+            post{
+                always{
+                    step([$class: 'CoberturaPublisher',
+                                   autoUpdateHealth: false,
+                                   autoUpdateStability: false,
+                                   coberturaReportFile: 'reports/coverage.xml',
+                                   failNoReports: false,
+                                   failUnhealthy: false,
+                                   failUnstable: false,
+                                   maxNumberOfBuilds: 10,
+                                   onlyStable: false,
+                                   sourceEncoding: 'ASCII',
+                                   zoomCoverageChart: false])
+                }
             }
         }
 
@@ -691,8 +705,8 @@ pipeline {
             post {
                 always {
                     // Archive unit tests for the future
-                    junit (allowEmptyResults: true, 
-                          testResults: './reports/unit_tests.xml', 
+                    junit (allowEmptyResults: true,
+                          testResults: './reports/unit_tests.xml',
                           fingerprint: true)
                 }
             }
@@ -706,11 +720,10 @@ pipeline {
             }
             post {
                 always {
-                    cucumber (buildStatus: 'UNSTABLE', 
-                    fileIncludePattern: '**/*.json', 
-                    jsonReportDirectory: './reports/', 
-                    parallelTesting: true,
-                    sortingMethod: 'ALPHABETICAL')
+                    cucumber (fileIncludePattern: '**/*.json',
+                              jsonReportDirectory: './reports/',
+                              parallelTesting: true,
+                              sortingMethod: 'ALPHABETICAL')
                 }
             }
         }
