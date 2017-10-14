@@ -59,9 +59,9 @@ In this post, but I will focus only on the last one, most recent and most featur
 
 Free style jobs chaining was common practice before. Its advantage was simplicity. Click here and there, add bash command to the form on the project page and voila. But when project reaches several dozens of stages communicating them becomes nightmare.
 
-Much better approach is to move stages and their logic into separate `groovy` script. In scripted pipelines script is again block of code pasted in the projects form on Jenkins site. Single steps of the pipeline are encoded in Jenkins scripted language resembling `groovy`, so we have part of the pipeline moved to the cohesive script and use Jenkins internal structures, but it shares same disadvantage as previous solution. It exists only in Jenkinses local configuration files. Once your Jenkins installation is gone, so is your pipeline.
+Much better approach is to move stages and their logic into separate `groovy` script. In scripted pipelines script is again block of code pasted in the projects form on Jenkins site. Single steps of the pipeline are encoded in Jenkins scripted language resembling `groovy`, so we have part of the pipeline moved to the cohesive script and use Jenkins internal structures, but it shares same disadvantage as previous solution. It exists only in Jenkins local configuration files. Once your Jenkins installation is gone, so is your pipeline.
 
-Best solution is to keep everything under version control. In special files describing entire pipeline to any Jenkins instance. This is so called **declarative pipeline**. Let's create special `Jenkinsfile` and put there some basic pipeline from the tutorial.
+The best solution is to keep everything under version control. In special files describing entire pipeline to any Jenkins instance. This is so called **declarative pipeline**. Let's create special `Jenkinsfile` and put there some basic pipeline from the tutorial.
 
 
 ## Setting up GitHub project
@@ -150,7 +150,7 @@ Three of them will be used in almost every project:
 
 2. **Success** only when no errors were noted during pipeline processing. Good to archive successful builds.
 
-3. **Failed** is an option processed when pipeline failed. This variant of post part is very useful to send feedback to the team, via e-mail or other medium like slack channel, that something went wrong and changes commited lately did not pass regression tests and require urgent attention. When CI is tightly combined with delivery process (i.e. copying web app to the production server) post failure option may be used to roll back to the last successful build.
+3. **Failed** is an option processed when pipeline failed. This variant of post part is very useful to send feedback to the team, via e-mail or other medium like slack channel, that something went wrong and changes committed lately did not pass regression tests and require urgent attention. When CI is tightly combined with delivery process (i.e. copying web app to the production server), post failure option may be used to roll back to the last successful build.
 
 <br>
 It is time to connect our project with Jenkins. To do that I will use Blue Ocean creator. First one needs to connect GitHub account with Jenkins user account (add Personal Access Token), then connect GitHub account. More details about pipeline creation and adding GitHub  access token from scratch - [here](https://jenkins.io/doc/book/blueocean/creating-pipelines/). In general process can be summed up in three slides:
@@ -165,7 +165,7 @@ After that creator leads to specific repository:
 ![Second-step][creator_2]
 
 <br>
-and finally, Jenkins will auto-discover all steps from `Jenkinsfile` present in the repository. Alternatively one can use  [Blue Ocean Pipeline Editor](https://jenkins.io/doc/book/blueocean/pipeline-editor/) and create everythong using nice GUI based user interface. Pipeline will be displayed on the screen:
+and finally, Jenkins will auto-discover all steps from `Jenkinsfile` present in the repository. Alternatively one can use  [Blue Ocean Pipeline Editor](https://jenkins.io/doc/book/blueocean/pipeline-editor/) and create everything using nice GUI based user interface. Pipeline will be displayed on the screen:
 
 <br>
 ![Third-step][creator_3]
@@ -210,9 +210,9 @@ It is time to rebuild our `Jenkinsfile` to reflect steps given above.
 
 ## Jenkins anatomy
 
-Jenkins uses its user service account to create job folders and files, manage workspaces and its plugins. All configuration options are kept in `.xml` files in specific locations in Jenkins `$HOME` directory for jenkins user. On debian derived OS it is placed in `/var/lib/jenkins/` directory. This is location of our agent, so called service account without interactive properties. It means it does not have designated shell, no `/home/jenkins/` folder and one can not login to this account interactively.
+Jenkins uses its user service account to create job folders and files, manage work-space and its plugins. All configuration options are kept in `.xml` files in specific locations in Jenkins `$HOME` directory for jenkins user. On debian derived OS it is placed in `/var/lib/jenkins/` directory. This is location of our agent, so called service account without interactive properties. It means it does not have designated shell, no `/home/jenkins/` folder and one can not login to this account interactively.
 
-In this directory Jenkins server stores information about its activity. Processed **jobs** in `/var/lib/jenkins/jobs/` subfolder (it contains logs and meta-data in `.xml` format for all or, specified number of runs, (this option can be set for each project). For example:
+In this directory Jenkins server stores information about its activity. Processed **jobs** in `/var/lib/jenkins/jobs/` sub-folder (it contains logs and meta-data in `.xml` format for all or, specified number of runs, (this option can be set for each project). For example:
 
 <br>
 {% highlight bash %}
@@ -247,14 +247,14 @@ In this directory Jenkins server stores information about its activity. Processe
 Most important is `config.xml`, which is Jenkinsfile reflection and stores all steps, commands and logic translated to the xml format. Few years ago it was very important file, since it was used to back up all settings for Jenkins job and pipelines created via web UI. In our project all information is stored in `Jenkinsfile`.
 
 
-Source code and its processing i.e. testing, is done in workspace subfolder (`/var/lib/jenkins/workspace/`). This location is also accessible as a `$WORKSPACE` internal variable from the pipeline level.
+Source code and its processing i.e. testing, is done in workspace sub-folder (`/var/lib/jenkins/workspace/`). This location is also accessible as a `$WORKSPACE` internal variable from the pipeline level.
 
 ## Python environment for Jenkins
 
 There are two bad news about jenkins and python virtual environments:
 
-1. jenkins user by default uses shell (it means no `source` command)
-2. jenkins user is non-interactive service account. It means it doesn't run through the same set of scripts that alter the PATH environment variable for logged users. There is no `.bashrc` and  neither `/etc/profile` nor `/etc/bash.bashrc` configurations have any effect. As a consequence it usually uses interpreter located in `/usr/bin/python` or something like this (basic default system interpreter). If you have some Anaconda or Miniconda custom python installation in the system, there is a good chance, that jenkins will not see it.
+1. Jenkins user by default uses shell (it means no `source` command)
+2. Jenkins user is non-interactive service account. It means it doesn't run through the same set of scripts that alter the PATH environment variable for logged users. There is no `.bashrc` and neither `/etc/profile` nor `/etc/bash.bashrc` configurations have any effect. As a consequence it usually uses interpreter located in `/usr/bin/python` or something like this (basic default system interpreter). If you have some Anaconda or Miniconda custom python installation in the system, there is a good chance, that jenkins will not see it.
 
 There is also Jenkins special plugin called *Shiny Panda*, which allows managing python virtual environments in Jenkins, but I do not recommend it. It is easier and safer to configure proper python interpreter and environment using Miniconda and Jenkins settings.
 
@@ -308,7 +308,7 @@ To activate `source` command we need to switch to Bourne-again shell (bash) as d
 
 ![jenkins-shell][jenkins_shell]
 
-Still, we have to expose miniconda binaries to the non-login Jenkins profile. Declarative Pipelines support an environment directive, which allows to define environmental variables. Environment directive used in the top-level pipeline block will apply to all steps within the Pipeline (see: [Jenkins documentation](https://jenkins.io/doc/book/pipeline/syntax/#environment)). We will use it to modify PATH variable.
+Still, we have to expose miniconda binaries to the non-login Jenkins profile. Declarative Pipelines support an environment directive, which allows defining environmental variables. Environment directive used in the top-level pipeline block will apply to all steps within the Pipeline (see: [Jenkins documentation](https://jenkins.io/doc/book/pipeline/syntax/#environment)). We will use it to modify PATH variable.
 
 Now we can easily create and destroy python virtual environment within jenkins pipeline. We can also install all dependencies locally. The post block of the script will remove this environment when pipeline finishes.
 
@@ -369,7 +369,7 @@ pipeline {
 }
 {% endhighlight %}
 
-Basic frames for pipeline was enclosed in the listing above. GitHub is checked with */5 * * * 1-5 frequency (at every 5th minute on every day-of-week from Monday through Friday). Default code checkout was suppressed in pipeline options. In options, we have also established rules regarding keeping old builds (Round Robin rotation of last 10 builds) and we also established, that each log entry will be timestamped. In one stage we create conda environment and install all project dependencies. In second stage we check interpreter localization. There is also possibility to create separate environment for different python versions (i.e. 2.7 branch). All is needed is python version in create command i.e.: `conda create --yes -n env_name python=2`.
+Basic frames for pipeline was enclosed in the listing above. GitHub is checked with */5 * * * 1-5 frequency (at every 5th minute on every day-of-week from Monday through Friday). Default code checkout was suppressed in pipeline options. In options, we have also established rules regarding keeping old builds (Round Robin rotation of last 10 builds) and we also established, that each log entry will be timestamped. During first stage we create conda environment and install all project dependencies. During second stage we check interpreter localization. There is also possibility to create separate environment for different python versions (i.e. 2.7 branch). All is needed is python version in create command i.e.: `conda create --yes -n env_name python=2`.
 
 `${BUILD_TAG}` is a string created by Jenkins from combination of `jenkins-${JOB_NAME}-${BUILD_NUMBER}` variables. Convenient to put into a resource file or for easier identification of virtual environment.
 
@@ -400,12 +400,11 @@ In this part we will configure static code analysis tools to determine complexit
 
 There is large diversity of formats among tools. They can produce reports as JSON, HTML and sometimes XML.
 
-Coverage and pytest-cov produce XML outputs in JUnit format. Effortless option to quickly obtain test coverage report and progress graph using basic jenkins plugins. Best option for this tools would be XML format in combination with [JUnit Plugin](https://wiki.jenkins.io/display/JENKINS/JUnit+Plugin).
- 
+Coverage and pytest-cov produce XML outputs in JUnit format. Very good option to quickly obtain test coverage report and progress graph using basic jenkins plugins. `.xml` files very easily integrate with Jenkins toolkit. To process this reports we will use [JUnit Plugin](https://wiki.jenkins.io/display/JENKINS/JUnit+Plugin).
+
 Pylint can generate its own output files, which can be read by [Violation Columns Plugin](https://wiki.jenkins.io/display/JENKINS/Violation+Columns+Plugin).
 
-
-Radon generates JSON outputs, which are the most problematic of them all. One of possible options is to use allure tool to prepare nice HTML report from specific JSON. Obtained HTML can be presented by general purpose [HTML Publisher Plugin](https://wiki.jenkins.io/display/JENKINS/HTML+Publisher+Plugin).
+Radon generates JSON outputs, which are the most problematic, since Jenkins does not have specific plugin for this tool. One possible option is to use allure tool to convert them to nice HTML reports and serve using general purpose [HTML Publisher Plugin](https://wiki.jenkins.io/display/JENKINS/HTML+Publisher+Plugin).
 
 Let's start with code raw metrics.
 
@@ -422,6 +421,7 @@ We will use `Radon` package to produce data in json format. Then json and report
                         radon raw --json irisvmpy/ > raw_report.json
                         radon cc --json irisvmpy/ > cc_report.json
                         radon mi --json irisvmpy/ > mi_report.json
+                        //TODO: add conversion and HTML publisher step
                     '''
             }
         }
@@ -431,7 +431,7 @@ We will use `Radon` package to produce data in json format. Then json and report
 
 ### Code coverage report
 
-Jenkins has very powerful [CoberturaPublisher Plugin](https://wiki.jenkins.io/display/JENKINS/Cobertura+Plugin). We will create proper `.xml` report with code coverage using `coverage` pacage and publish it to HTML using post section of this step. It will always grab info located in `/reports/coverage.xml` and transform it to the HTML report visible in the side menu of the Jekins project.
+Jenkins has very powerful [CoberturaPublisher Plugin](https://wiki.jenkins.io/display/JENKINS/Cobertura+Plugin). We will create proper `.xml` report with code coverage using `coverage` package and publish it to HTML using post section of this step. It will always grab info located in `/reports/coverage.xml` and transform it to the HTML report visible in the side menu of the Jenkins project.
 
 <br>
 {% highlight groovy %}
@@ -462,10 +462,9 @@ Jenkins has very powerful [CoberturaPublisher Plugin](https://wiki.jenkins.io/di
 ...
 {% endhighlight %}
 
-
 ### PEP8 & code metrics reports
 
-We can also check code erorors and style violations. Unfortunately`pylint`  has tendency  to return a non-zero exit code even only if a small warning issue was found. Only when everything was fine, 0 is returned. All non zero steps are signal for Jekins to fail the pipeline. This is unacceptable in case of small style differences. In this situation I use pylint report as a "tip" and allow it to fail. My shell command will always return true.
+We can also check code errors and style violations. Unfortunately `pylint` has tendency to return a non-zero exit code even only if a small warning issue was found. Only when everything was fine, 0 is returned. All non-zero steps are signal for Jenkins to fail the pipeline. This is unacceptable in case of small style differences. In this situation I use pylint report as a "tip" and allow it to fail. My shell command will always return true.
 
 
 {% highlight groovy %}
@@ -489,7 +488,7 @@ Two types of testing are essential:
 1. Unit tests (`pytest` or `unittest`)
 1. Acceptance tests (`behave`)
 
-In case of more complex software integration tests may be added to the list. According to agile  "outside-in" approach first we should write acceptance tests (more general test), then precise unit tests (classic TDD). Test results will be stored for comparison. JUnit plugin gives quick and easy access to the tests.
+In case of more complex software integration tests may be added to the list. According to agile "outside-in" approach first we should write acceptance tests (more general test), then precise unit tests (classic TDD). Test results will be stored for comparison. JUnit plugin gives quick and easy access to the tests.
 
 ### Unit tests
 
@@ -575,7 +574,7 @@ __second option__
 
 ## Building python package
 
-We will also buld wheel package when all tests and code metrics was completed. Jekins will check internal variable `currentBuild.result`. If nothing changed or there was no failure, Jenkins will initialize `setup.py` script. When buuild process is finished Jenkins will archive `.whl`  file and store it for download. Blue Ocean and classical Jenkins create "Artifacts" page with all files marked to archivisation during pipeline run.
+We will also build wheel package when all tests and code metrics was completed. Jenkins will check internal variable `currentBuild.result`. If nothing changed or there was no failure, Jenkins will initialize `setup.py` script. When build process is finished Jenkins will archive `.whl` file and store it for download. Blue Ocean and classical Jenkins create "Artifacts" page with all files marked to archivisation during pipeline run.
 
 
 {% highlight groovy %}
@@ -608,7 +607,7 @@ As we can see python package was archived as expected:
 
 ## Deployment
 
-Package, which passed tests and was successfuly built will be uploaded to PyPI server.
+Package, which passed tests and was successfully built will be uploaded to PyPI server.
 
 {% highlight groovy %}
 ...
