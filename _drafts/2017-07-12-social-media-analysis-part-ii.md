@@ -64,7 +64,7 @@ The landing page is bound to the main endpoint of the app `/` and will reside in
     * __user__:  user profile templates  
 
 <br>
-Finally lest focus a bit on the stack of tools which will be used in this application. Obviously back-end is Flask and gunicorn, to the front-end I would like to use two popular frameworks:  [Twitter Bootstrap 4][twb4] to make page responsive and nice without having to write extensive CSS and [Material Design for Bootstrap][mdb], to make things more beautiful. For Bootstrap framework we will need two files: `bootstrap.min.css` and `bootstrap.min.js`. Additionally we can add standard JQuery library `jquery-3.2.1.min.js`. For MDB we will need `mdb.min.css`, `mdb.min.js` and `popper.min.js`. They will spice up our web site and give lots of good solutions and JavaScript functionalities to it. Files should be placed in appropriate static sub-folders:
+Finally lest focus a bit on the stack of tools which will be used in this application. Obviously back-end is Flask and gunicorn, to the front-end I would like to use two popular frameworks:  [Twitter Bootstrap 4][twb4] to make page responsive and nice without having to write extensive CSS and [Material Design for Bootstrap][mdb], to make things more beautiful. For Bootstrap framework we will need two files: `bootstrap.min.css` and `bootstrap.min.js`. Bootstrap relies on jQuery, a JavaScript framework that provides a layer of abstraction in most common JavaScript operations (i.e. element selection, events handling). Therefore we should also add latest JQuery library `jquery-3.2.1.min.js` to our files. For MDB we will need `mdb.min.css`, `mdb.min.js` and `popper.min.js`. They will spice up our web site and give lots of good solutions and JavaScript functionalities to it. Files should be placed in appropriate static sub-folders:
 
 {% highlight bash %}
 (md_analytics) [mdyzma@devbox md_analytics]$ tree .
@@ -227,7 +227,7 @@ Order of linked css is important. The latter file will overwrite same functional
 
 ### Body section
 
-Body section contains several distinct blocks: `navbar.html`, `messages.html`, `intro` and `footer.html`. Last is `scripts` block which allows to include site specific JS scripts at the end of the page.
+Body section contains several distinct blocks: `navbar.html`, `messages.html`, `intro` and `footer.html`. Last is `scripts` block which allows to include site specific JS scripts at the end of the page. It is considered best practice to place JS scripts near closing body tag, which speeds up page loading and ensures, that all page is already rendered, when scripts start to invoke __DOM (Document Object Model)__ operations.
 
 Main navigation bar is common for all pages in the app and will be fixed at the top of the site. It is pretty standard navigation bar, based on Bootstrap and MDB. There is also some Flask helper function enclosed in Jinja variable `{% raw %}{{ url_for('index') }}{% endraw %}` to manage finding url for main entry point for our application, which is landing page.
 
@@ -265,7 +265,7 @@ __/templates/includes/nav.html__
 </nav>
 {% endhighlight %}
 
-Later we will expand it with some logic for Sign in logging and log-out
+Later we will expand it with some logic for sessions and accessing restricted pages.
 
 Messages box, will display all communicates produced by application. Every feedback improves tremendously user experience with the app. It consists of simple div and some Jinja logic to manage messages produced by Flask:
 
@@ -319,7 +319,7 @@ __/templates/includes/footer.html__
     <!--Copyright-->
     <div class="footer-copyright">
         <div class="container-fluid">
-            © 2017 Copyright: <a href="https://www.MDBootstrap.com"> MDBootstrap.com &amp Michal Dyzma</a>
+            &copy 2017 Copyright: <a href="https://www.MDBootstrap.com"> MDBootstrap.com &amp Michal Dyzma</a>
         </div>
     </div>
     <!--/.Copyright-->
@@ -342,26 +342,46 @@ It is time to expand main application and put in use templates created above. Fi
 
 Earlier, when template mechanism was explained I mentioned all components will reside in their own folders to maximize portability. Landing page (home) resides in `public` folder and this part of the application can be accessed by anyone. Folder contains blueprint for landing page and login/register forms. Folder with the same name was also placed in `templates/`, to store necessary html boilerplate. To move this functionality  to other app one has to copy both public folder to new location and make necessary imports.
 
-Blueprint contains all routing for the pages that have something common. For now  our landing page contains only single rout `/` to render `home.html`. Later we will add more functionalities.
+Blueprint contains all routing for the pages that have something common. For now  our landing page contains only few routs: `/` to render __home__ page, `/login` and `/register` to display __login__ and __register__ forms. For now each method renders specific template. Login and register will be updated in the next section, where we will add data storage layer, safe database communication and sessions.
 
 
 __/app/public/views.py__
 {% highlight python linenos %}
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, redirect
 
 
-blueprint = Blueprint('public', __name__, static_folder='../static')
+home = Blueprint('public', __name__, static_folder='../static')
 
 
-@blueprint.route('/')
+@home.route('/')
 def home():
     """Home page."""
     return render_template('public/home.html')
+
+
+@home.route('/login')
+def login():
+    """Login page."""
+    return render_template('public/login.html')
+
+
+@home.route('/register')
+def register():
+    """Register page."""
+    return render_template('public/register.html')
+
+
+@home.route('/logout')
+def logout():
+    """Home page."""
+    return redirect(url_for('home'))
 {% endhighlight %}
 
 Once all endpoints and functions are ready, we have to register blueprint with main app.
 
 
+
+
 __/app/extensions.py__
 {% highlight python linenos %}
 from flask import Blueprint, render_template
@@ -377,12 +397,6 @@ def home():
 
 {% endhighlight %}
 
-__/app/extensions.py__
-{% highlight python linenos %}
-from flask_debugtoolbar import DebugToolbarExtension
-
-debug_toolbar = DebugToolbarExtension()
-{% endhighlight %}
 
 
 
@@ -402,7 +416,7 @@ from flask import Flask, render_template
 # Local Imports
 # -----------------------------------------------------------------------------
 from app.extensions import debug_toolbar
-from app import views
+from app.public import views
 
 def create_app(config_object=None):
     app = Flask(__name__)
@@ -428,6 +442,14 @@ def register_blueprints(app):
 This file instead of displaying simple `h1` tag (like in [Social media analysis with Flask, Part I]({{site.url}}/2017/08/17/social-media-analysis-part-i)) will render full `home.html` page, which should resemble this: 
 
 
+### Register extensions
+
+__/app/extensions.py__
+{% highlight python linenos %}
+from flask_debugtoolbar import DebugToolbarExtension
+
+debug_toolbar = DebugToolbarExtension()
+{% endhighlight %}
 
 
 
