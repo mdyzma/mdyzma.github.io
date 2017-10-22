@@ -5,8 +5,8 @@ title:      Social media analysis with Flask, Part II
 date:       2017-07-12 16:11:47
 comments:   true
 mathjax:    false
-categories: python social-media Flask Jinja2 Flask-Login
-keywords:   python, twitter, Flask, Jinja2, Flask-Login
+categories: python social-media Flask Jinja2 MongoDB
+keywords:   python, twitter, Flask, Jinja2, MongoDB
 ---
 
 ![banner][banner]<br>
@@ -47,24 +47,33 @@ Flask application presenting social media accounts analysis in form of dashboard
 -----
 
 
-## Jinja engine
+## Project  organization
 
-Flask uses very powerful and flexible template engine called [__Jinja2__][jinja]. It allows to define website in small blocks, one by one, which then are pieced together, to form complete HTML pages. The power of Jinja relies on possibility to push some portion of logic like iterations over containers or table rows, some flow control with `if` or `while` statements, some text processing capabilities like filtering, even mathematical operations and files handling. All this can be accedes from the web HTML template level. Still most important feature of Jinja is template inheritance mechanism similar to class inheritance in python. Basic layout template provides set of blocks, which can be overridden by the content of the specific page. Also changes, or bugs fixes are much easier, since the HTML for each part of the site exists in one place - template file.  Flask auto-magically finds templates in the app directory, but it is a good idea to structure files a bit. 
+Flask auto-magically finds templates or static files in the app directory, but it is a good idea to structure things a little.
 
-From organizational point of view, most preferable is modular packaging of files, that specific parts of our application can be moved and adopted to other projects as a whole with its own routing mechanism, static files and templates. Therefore we will write specific components like dashboard or user management will be placed in separate folders and will adopt Flask blueprints pattern. So we will have some __public__ component with landing page, accessible for all users and restricted areas (like __user__ or __dashboard__), which will be displayed only to logged users. 
+From organizational point of view, most preferable is modular packaging of files, that specific parts of our application can be moved and adopted to other projects as a whole with its own routing mechanism, static files and templates. Therefore we will write specific components like dashboard or user management and place in separate folders and python packages. So we will have __public__ component (in this context component comprises of python package and folder with the same name placed in `templates/`) with landing page accessible for all users. And some other components restricted only for logged users i.e. __user__ or __dashboard__), which will be placed in separate folders. This kind of packaging allows to produce modular and easy to reuse code.
 
-The landing page is bound to the main endpoint of the app `/` and will reside in `public/` folder. Same would be with register page for new users. Additionally some blocks like navigation bar or head block may become quite complicated, therefore it is better to flatten template structure even more and incorporate them as separate files from `templates/includes/`. SO each large component will have it's own folder in the `app/` and `template/`, to make it maximally portable. Each large block will use common set of tools provided by frameworks and stored in `static/`
-`
+The landing page is bound to the main endpoint of the app `/` and will reside in `public/` package. Other have their own endopoints i.e `/users/` or `/dashboard/`, and are placed in packages specific for them. We will adopt Flask blueprints pattern, which means the basic structure for each component will comprise of blueprint and it's business logic, which will be registered with the main app.
+
+![app-diagram][app_diag]
+
+Repeatedly used, large blocks of code like `nav`, `head` or `footer` may become quite complicated, therefore it is better to flatten template structure even more and incorporate them as separate `html` files from `templates/includes/`.
+
+To sum up, each large component will have it's own folder in the `app/` and `template/`, to make it maximally portable. Each page will use common set of tools provided by frameworks and stored in `static/`.
+
 <br>
+* __dashboard__: routs, models, forms, db communication for data presentation
+* __public__: routs, forms and models for home page
 * __static__: all static files served by the app, including css styles, JavaScript, images or fonts.
 * __templates__: basic layout blueprint and error pages
     * __dashboard__: templates to the dashboard
     * __includes__: partial HTML snippets for specific purpose i.e. navigation bar, footer, part of templates folder.
     * __public__: landing page and login/register templates
-    * __user__:  user profile templates  
+    * __user__:  user profile templates
+* __user__:  routes, models, forms and db communication for user data
 
 <br>
-Finally lest focus a bit on the stack of tools which will be used in this application. Obviously back-end is Flask and gunicorn, to the front-end I would like to use two popular frameworks:  [Twitter Bootstrap 4][twb4] to make page responsive and nice without having to write extensive CSS and [Material Design for Bootstrap][mdb], to make things more beautiful. For Bootstrap framework we will need two files: `bootstrap.min.css` and `bootstrap.min.js`. Bootstrap relies on jQuery, a JavaScript framework that provides a layer of abstraction in most common JavaScript operations (i.e. element selection, events handling). Therefore we should also add latest JQuery library `jquery-3.2.1.min.js` to our files. For MDB we will need `mdb.min.css`, `mdb.min.js` and `popper.min.js`. They will spice up our web site and give lots of good solutions and JavaScript functionalities to it. Files should be placed in appropriate static sub-folders:
+Finally lest focus a bit on the stack of tools which will be used in this application. Obviously back-end is Flask and gunicorn. User data will be stored in [MongoDB][mongo]. Front-end will use two popular frameworks:  [Twitter Bootstrap 4][twb4] to make page responsive and nice without having to write extensive CSS and [Material Design for Bootstrap][mdb], to make things more beautiful. For Bootstrap framework we will need to download already compiled cssn from Bootstrap's page files: `bootstrap.min.css` and `bootstrap.min.js`. Bootstrap relies on jQuery, a JavaScript framework that provides a layer of abstraction in most common JavaScript operations (i.e. element selection, events handling). Therefore we should also add latest JQuery library `jquery-3.2.1.min.js` to our files. For MDB we will need `mdb.min.css`, `mdb.min.js` and `popper.min.js`. They will spice up our web site and give lots of good solutions and JavaScript functionalities to it. Files should be placed in appropriate static sub-folders:
 
 {% highlight bash %}
 (md_analytics) [mdyzma@devbox md_analytics]$ tree .
@@ -121,7 +130,12 @@ Finally lest focus a bit on the stack of tools which will be used in this applic
 {% endhighlight %}
 
 
-In templates we will use several Jinja elements, which will build dynamic structure skeleton. Most frequently used Jinja statements enclosed in {% raw %}`{% ... %}`{% endraw %} and Jinja expressions, enclosed in  {% raw %}`{{ ... }}`{% endraw %}. Statements provide different means of the work-flow control, for example `if`, `with` conditionals or `for` loops and some pre-defined Jinja tags i.e. `block`, `include`, `call`. Expressions, on the other hand, display dictionary based variables passed to the engine via Flask context mechanism. For more details, please refer to the [Jinja documentation][jinja].
+## Jinja engine
+
+Flask uses very powerful and flexible template engine called [__Jinja2__][jinja]. It allows to define website in small blocks, one by one, which then are pieced together, to form complete HTML pages. The power of Jinja relies on possibility to push some portion of logic like iterations over containers or table rows, some flow control with `if` or `while` statements, some text processing capabilities like filtering, even mathematical operations and files handling. All this can be accedes from the web HTML template level. Still most important feature of Jinja is template inheritance mechanism similar to class inheritance in python. Basic layout template provides set of blocks, which can be overridden by the content of the specific page. Also changes, or bugs fixes are much easier, since the HTML for each part of the site exists in one place - template file.  
+
+
+In templates we will use several Jinja elements, which will build dynamic structure skeleton. Most frequently used Jinja elements are so called statements (enclosed in {% raw %}`{% ... %}`{% endraw %}) and expressions (enclosed in  {% raw %}`{{ ... }}`{% endraw %}). Statements provide different means of the work-flow control, for example `if`, `with` conditionals or `for` loops and some pre-defined Jinja tags i.e. `block`, `include`, `call`. Expressions, on the other hand, display dictionary based variables passed to the engine via Flask context mechanism. For more details, please refer to the [Jinja documentation][jinja].
 
 
 ## Layout
@@ -195,7 +209,7 @@ __/templates/layout.html__
 {% endhighlight %}
 
 
-### Head section
+#### Head section
 
 Some fragments of HTML are moved to separate `html` files to keep main template lean and understandable. Fragments like main navigation bar or footer can be quite large and it could affect code readability. Base includes are located in `app/templates/includes/` and will be described separately.
 
@@ -225,7 +239,7 @@ __/templates/includes/meta.html__
 
 Order of linked css is important. The latter file will overwrite same functionalities from the previous one.
 
-### Body section
+#### Body section
 
 Body section contains several distinct blocks: `navbar.html`, `messages.html`, `intro` and `footer.html`. Last is `scripts` block which allows to include site specific JS scripts at the end of the page. It is considered best practice to place JS scripts near closing body tag, which speeds up page loading and ensures, that all page is already rendered, when scripts start to invoke __DOM (Document Object Model)__ operations.
 
@@ -338,7 +352,7 @@ Putting it all together we are ready to create first page for our app - the land
 It is time to expand main application and put in use templates created above. First we will create web page endpoints, add some basic extensions to it and display everything as a nice, responsive landing page.
 
 
-### Blueprint
+#### Blueprint
 
 Earlier, when template mechanism was explained I mentioned all components will reside in their own folders to maximize portability. Landing page (home) resides in `public` folder and this part of the application can be accessed by anyone. Folder contains blueprint for landing page and login/register forms. Folder with the same name was also placed in `templates/`, to store necessary html boilerplate. To move this functionality  to other app one has to copy both public folder to new location and make necessary imports.
 
@@ -380,8 +394,6 @@ def logout():
 Once all endpoints and functions are ready, we have to register blueprint with main app.
 
 
-
-
 __/app/extensions.py__
 {% highlight python linenos %}
 from flask import Blueprint, render_template
@@ -396,8 +408,6 @@ def home():
     return render_template('public/home.html')
 
 {% endhighlight %}
-
-
 
 
 And main application file:
@@ -442,7 +452,7 @@ def register_blueprints(app):
 This file instead of displaying simple `h1` tag (like in [Social media analysis with Flask, Part I]({{site.url}}/2017/08/17/social-media-analysis-part-i)) will render full `home.html` page, which should resemble this: 
 
 
-### Register extensions
+#### Register extensions
 
 __/app/extensions.py__
 {% highlight python linenos %}
@@ -453,7 +463,7 @@ debug_toolbar = DebugToolbarExtension()
 
 
 
-### Template
+#### Template
 
 Landing page template is located in `templates/public/home.html`. Because it inherits all traits of `layout.html` it will contain only elements which differ between this two templates. Rest will be provided from base. First we should tell Jinja what template we are extending and populate current home template with site-specific content. Lets add "intro" for our page:
 
@@ -589,15 +599,15 @@ Obviously I am no web designer, but this simple stub should do the trick. Also w
 
 
 
-### Testing landing page
+#### Testing landing page
 
 
 ## Login, Register forms
 
-
 It is time to secure our app. Basic tools for us will be login and register forms, which will allow app to exchange information with the server. For getting info from the server app uses HTTP `GET` method, to send information to the server it uses `POST` method. Login and register forms will base on this two to communicate with the database, which will keep information about users. Only logged users will be allowed to see dashboard. In addition logged users can see their own profile with the data app is keeping about them. Lets start with login.
 
-### Login
+
+#### Login
 
 
 First lets create login page with all fields:
@@ -620,7 +630,7 @@ __/app/forms.py__
 
 
 
-### Register
+#### Register
 
 __/app/views.py__
 {% highlight python linenos %}
@@ -644,6 +654,12 @@ __/templates/register.html__
 
 
 ## User data in application
+
+#### MongoDB
+
+
+#### 
+
 
 ### User page
 
@@ -719,13 +735,17 @@ __/dashboard/views.py__
 
 
 <!-- Links -->
+
 [jinja]:  http://jinja.pocoo.org
 [twb4]:   http://getbootstrap.com
 [mdb]:    https://mdbootstrap.com/material-design-for-bootstrap/
 [vue]:    https://vuejs.org
 [google-maps-api]: https://developers.google.com/maps/documentation/javascript/adding-a-google-map
+[mongo]:  https://www.mongodb.com
+
+
 <!-- Images -->
 
 [banner]:   /assets/2017-07-12/banner.png
-[intro]:     /assets/2017-07-12/intro.png
+[intro]:    /assets/2017-07-12/intro.png
 [home_fdt]: /assets/2017-07-12/home-fdt.png
