@@ -5,8 +5,8 @@ title:      Social media analysis with Flask, Part II
 date:       2017-07-12 16:11:47
 comments:   true
 mathjax:    false
-categories: python social-media Flask Jinja2 Flask-Login
-keywords:   python, twitter, Flask, Jinja2, Flask-Login
+categories: python social-media Flask Jinja2 MongoDB
+keywords:   python, twitter, Flask, Jinja2, MongoDB
 ---
 
 ![banner][banner]<br>
@@ -31,40 +31,50 @@ Flask application presenting social media accounts analysis in form of dashboard
 ## Part II
 
 
-1. [Jinja engine](#jinja-engine)
-2. [Layout](#layout)
-3. [Landing page](#landing-page)
-4. [Login / Register forms](#login-register-forms)
+1. [Project organization](#project-organization)
+2. [Jinja engine](#jinja-engine)
+3. [Layout](#layout)
+4. [Landing page](#landing-page)
+5. [Login / Register forms](#login-register-forms)
     * [Login](#login)
     * [Register](#register)
-5. [Dashboard](#dashboard)
+6. [Dashboard](#dashboard)
     * [Template](#template)
-6. [User data in application](#user-data-in-application)
+7. [User data in application](#user-data-in-application)
     * [Password management](#password-management)
-    * [User profile](#user-profile)
-7. [Summary](#summary)
+    * [User model](#user-model)
+8. [Summary](#summary)
 
 -----
 
 
-## Jinja engine
+## Project  organization
 
-Flask uses very powerful and flexible template engine called [__Jinja2__][jinja]. It allows to define website in small blocks, one by one, which then are pieced together, to form complete HTML pages. The power of Jinja relies on possibility to push some portion of logic like iterations over containers or table rows, some flow control with `if` or `while` statements, some text processing capabilities like filtering, even mathematical operations and files handling. All this can be accedes from the web HTML template level. Still most important feature of Jinja is template inheritance mechanism similar to class inheritance in python. Basic layout template provides set of blocks, which can be overridden by the content of the specific page. Also changes, or bugs fixes are much easier, since the HTML for each part of the site exists in one place - template file.  Flask auto-magically finds templates in the app directory, but it is a good idea to structure files a bit. 
+Flask auto-magically finds templates or static files in the app directory, but it is a good idea to structure things a little.
 
-From organizational point of view, most preferable is modular packaging of files, that specific parts of our application can be moved and adopted to other projects as a whole with its own routing mechanism, static files and templates. Therefore we will write specific components like dashboard or user management will be placed in separate folders and will adopt Flask blueprints pattern. So we will have some __public__ component with landing page, accessible for all users and restricted areas (like __user__ or __dashboard__), which will be displayed only to logged users. 
+From organizational point of view, most preferable is modular packaging of files, that specific parts of our application can be moved and adopted to other projects as a whole with its own routing mechanism, static files and templates. Therefore we will write specific components like dashboard or user management and place in separate folders and python packages. So we will have __public__ component (in this context component comprises of python package and folder with the same name placed in `templates/`) with landing page accessible for all users. And some other components restricted only for logged users i.e. __user__ or __dashboard__), which will be placed in separate folders. This kind of packaging allows to produce modular and easy to reuse code.
 
-The landing page is bound to the main endpoint of the app `/` and will reside in `public/` folder. Same would be with register page for new users. Additionally some blocks like navigation bar or head block may become quite complicated, therefore it is better to flatten template structure even more and incorporate them as separate files from `templates/includes/`. SO each large component will have it's own folder in the `app/` and `template/`, to make it maximally portable. Each large block will use common set of tools provided by frameworks and stored in `static/`
-`
+The landing page is bound to the main endpoint of the app `/` and will reside in `public/` package. Other have their own endopoints i.e `/users/` or `/dashboard/`, and are placed in packages specific for them. We will adopt Flask blueprints pattern, which means the basic structure for each component will comprise of blueprint and it's business logic, which will be registered with the main app.
+
+![app-diagram][app_diag]
+
+Repeatedly used, large blocks of code like `nav`, `head` or `footer` may become quite complicated, therefore it is better to flatten template structure even more and incorporate them as separate `html` files from `templates/includes/`.
+
+To sum up, each large component will have it's own folder in the `app/` and `template/`, to make it maximally portable. Each page will use common set of tools provided by frameworks and stored in `static/`.
+
 <br>
+* __dashboard__: routs, models, forms, db communication for data presentation
+* __public__: routs, forms and models for home page
 * __static__: all static files served by the app, including css styles, JavaScript, images or fonts.
 * __templates__: basic layout blueprint and error pages
     * __dashboard__: templates to the dashboard
     * __includes__: partial HTML snippets for specific purpose i.e. navigation bar, footer, part of templates folder.
     * __public__: landing page and login/register templates
-    * __user__:  user profile templates  
+    * __user__:  user profile templates
+* __user__:  routes, models, forms and db communication for user data
 
 <br>
-Finally lest focus a bit on the stack of tools which will be used in this application. Obviously back-end is Flask and gunicorn, to the front-end I would like to use two popular frameworks:  [Twitter Bootstrap 4][twb4] to make page responsive and nice without having to write extensive CSS and [Material Design for Bootstrap][mdb], to make things more beautiful. For Bootstrap framework we will need two files: `bootstrap.min.css` and `bootstrap.min.js`. Bootstrap relies on jQuery, a JavaScript framework that provides a layer of abstraction in most common JavaScript operations (i.e. element selection, events handling). Therefore we should also add latest JQuery library `jquery-3.2.1.min.js` to our files. For MDB we will need `mdb.min.css`, `mdb.min.js` and `popper.min.js`. They will spice up our web site and give lots of good solutions and JavaScript functionalities to it. Files should be placed in appropriate static sub-folders:
+Finally lest focus a bit on the stack of tools which will be used in this application. Obviously back-end is Flask and gunicorn. User data will be stored in [MongoDB][mongo]. Front-end will use two popular frameworks:  [Twitter Bootstrap 4][twb4] to make page responsive and nice without having to write extensive CSS and [Material Design for Bootstrap][mdb], to make things more beautiful. For Bootstrap framework we will need to download already compiled css from Bootstrap's page files: `bootstrap.min.css` and `bootstrap.min.js`. Bootstrap relies on jQuery, a JavaScript framework that provides a layer of abstraction in most common JavaScript operations (i.e. element selection, events handling). Therefore we should also add latest JQuery library `jquery-3.2.1.min.js` to our files. For MDB we will need `mdb.min.css`, `mdb.min.js` and `popper.min.js`. They will spice up our web site and give lots of good solutions and JavaScript functionalities to it. Files should be placed in appropriate static sub-folders:
 
 {% highlight bash %}
 (md_analytics) [mdyzma@devbox md_analytics]$ tree .
@@ -121,7 +131,12 @@ Finally lest focus a bit on the stack of tools which will be used in this applic
 {% endhighlight %}
 
 
-In templates we will use several Jinja elements, which will build dynamic structure skeleton. Most frequently used Jinja statements enclosed in {% raw %}`{% ... %}`{% endraw %} and Jinja expressions, enclosed in  {% raw %}`{{ ... }}`{% endraw %}. Statements provide different means of the work-flow control, for example `if`, `with` conditionals or `for` loops and some pre-defined Jinja tags i.e. `block`, `include`, `call`. Expressions, on the other hand, display dictionary based variables passed to the engine via Flask context mechanism. For more details, please refer to the [Jinja documentation][jinja].
+## Jinja engine
+
+Flask uses very powerful and flexible template engine called [__Jinja2__][jinja]. It allows to define website in small blocks, one by one, which then are pieced together, to form complete HTML pages. The power of Jinja relies on possibility to push some portion of logic like iterations over containers or table rows, some flow control with `if` or `while` statements, some text processing capabilities like filtering, even mathematical operations and files handling. All this can be accedes from the web HTML template level. Still most important feature of Jinja is template inheritance mechanism similar to class inheritance in python. Basic layout template provides set of blocks, which can be overridden by the content of the specific page. Also changes, or bugs fixes are much easier, since the HTML for each part of the site exists in one place - template file.  
+
+
+In templates we will use several Jinja elements, which will build dynamic structure skeleton. Most frequently used Jinja elements are so called statements (enclosed in {% raw %}`{% ... %}`{% endraw %}) and expressions (enclosed in  {% raw %}`{{ ... }}`{% endraw %}). Statements provide different means of the work-flow control, for example `if`, `with` conditionals or `for` loops and some pre-defined Jinja tags i.e. `block`, `include`, `call`. Expressions, on the other hand, display dictionary based variables passed to the engine via Flask context mechanism. For more details, please refer to the [Jinja documentation][jinja].
 
 
 ## Layout
@@ -340,7 +355,7 @@ It is time to expand main application and put in use templates created above. Fi
 
 ### Blueprint
 
-Earlier, when template mechanism was explained I mentioned all components will reside in their own folders to maximize portability. Landing page (home) resides in `public` folder and this part of the application can be accessed by anyone. Folder contains blueprint for landing page and login/register forms. Folder with the same name was also placed in `templates/`, to store necessary html boilerplate. To move this functionality  to other app one has to copy both public folder to new location and make necessary imports.
+Earlier, when project organization was explained I mentioned all components will reside in their own folders to maximize portability. Landing page (home) resides in `public` folder and this part of the application can be accessed by anyone. Folder contains blueprint for landing page and login/register forms. Folder with the same name was also placed in `templates/`, to store necessary html boilerplate. To move this functionality  to other app one has to copy both public folder to new location and make necessary imports.
 
 Blueprint contains all routing for the pages that have something common. For now  our landing page contains only few routs: `/` to render __home__ page, `/login` and `/register` to display __login__ and __register__ forms. For now each method renders specific template. Login and register will be updated in the next section, where we will add data storage layer, safe database communication and sessions.
 
@@ -361,62 +376,41 @@ def home():
 
 @home.route('/login')
 def login():
-    """Login page."""
+    """Login form."""
     return render_template('public/login.html')
 
 
 @home.route('/register')
 def register():
-    """Register page."""
+    """Register form."""
     return render_template('public/register.html')
 
 
 @home.route('/logout')
 def logout():
-    """Home page."""
+    """Logout link."""
     return redirect(url_for('home'))
 {% endhighlight %}
 
-Once all endpoints and functions are ready, we have to register blueprint with main app.
 
-
+<br>
+Once all endpoints and functions are ready, we have to register blueprint with main app. But before we do that, lets refactor our app. We will use several flask extensions, which will help to develop certain functionalities very fast. There is no need to develop wheel again. Instead of writing our own data-base models, login classes etc, we can use already existing solutions i.e. extensions. Extensions will reside in separate file `extensions.py`, where they will be instantiated. Separate function will bind existing extension instances with the current app. First lets create extension's package:
 
 
 __/app/extensions.py__
 {% highlight python linenos %}
-from flask import Blueprint, render_template
+from flask_debugtoolbar import DebugToolbarExtension
 
-
-blueprint = Blueprint('public', __name__, static_folder='../static')
-
-
-@blueprint.route('/')
-def home():
-    """Home page."""
-    return render_template('public/home.html')
-
+debug_toolbar = DebugToolbarExtension()
 {% endhighlight %}
 
+We will repeat this pattern with all Flask extensions. Having extensions ready we can register everything with main application:
 
-
-
-And main application file:
 
 __/app/app.py__
 {% highlight python linenos %}
-# -----------------------------------------------------------------------------
-# Standard Library Imports
-# -----------------------------------------------------------------------------
-import os
-# -----------------------------------------------------------------------------
-# Related Libraries Imports
-# -----------------------------------------------------------------------------
-from flask import Flask, render_template
-# -----------------------------------------------------------------------------
-# Local Imports
-# -----------------------------------------------------------------------------
 from app.extensions import debug_toolbar
-from app.public import views
+from app import public
 
 def create_app(config_object=None):
     app = Flask(__name__)
@@ -434,23 +428,12 @@ def register_extensions(app):
 
 def register_blueprints(app):
     """Register Flask blueprints."""
-    app.register_blueprint(public.views.blueprint)
+    app.register_blueprint(public.views.home)
     return None
 
 {% endhighlight %}
 
-This file instead of displaying simple `h1` tag (like in [Social media analysis with Flask, Part I]({{site.url}}/2017/08/17/social-media-analysis-part-i)) will render full `home.html` page, which should resemble this: 
-
-
-### Register extensions
-
-__/app/extensions.py__
-{% highlight python linenos %}
-from flask_debugtoolbar import DebugToolbarExtension
-
-debug_toolbar = DebugToolbarExtension()
-{% endhighlight %}
-
+This file will initialize flask app, register all extensions and blueprints to the current context.
 
 
 ### Template
@@ -588,64 +571,138 @@ Obviously I am no web designer, but this simple stub should do the trick. Also w
 
 
 
-
 ### Testing landing page
 
 
 ## Login, Register forms
 
 
-It is time to secure our app. Basic tools for us will be login and register forms, which will allow app to exchange information with the server. For getting info from the server app uses HTTP `GET` method, to send information to the server it uses `POST` method. Login and register forms will base on this two to communicate with the database, which will keep information about users. Only logged users will be allowed to see dashboard. In addition logged users can see their own profile with the data app is keeping about them. Lets start with login.
+It is time to secure our app. Basic tools for us will be login and register forms, which will allow app to exchange information with the server. For getting info from the server app uses HTTP `GET` method, to send information to the server it uses `POST` method. Login and register forms will base on this two to communicate with the database, which will keep information about users (see next [section](#user-data-management)). Only logged users will be allowed to see dashboard. In addition logged users can see their own profile with the data app is keeping about them. Lets start with login.
 
 ### Login
 
 
-First lets create login page with all fields:
+First lets create login page with all fields, nothing fancy, just simple form with a bit of styling:
 
 __/templates/login.html__
 {% highlight html linenos %}
 {% raw %}{% extends "layout.html" %}{% endraw %}
-
-
-
-{% raw %}{% block content %}{% endblock %}{% endraw %}
+{% raw %}{% set title = "Register" %}{% endraw %}
+{% raw %}{% block intro %}{% endraw %}
+<section class="view">
+    <div class="container" style="padding-top: 75px">
+        <h1>Login</h1>
+        <form>
+            <span>Email: </span>
+            <input type="email" name="email", required="true">
+            <br>
+            <span>Password: </span>
+            <input type="password" name="password", required="true">
+            <br>
+            <br>
+            <input type="submit">
+        </form>
+    </div>
+</section>
+{% raw %}{% endblock %}{% endraw %}
 {% endhighlight %}
 
 
-__/app/forms.py__
-{% highlight python linenos %}
-# some code
-{% endhighlight %}
-
-
+![login][login]
 
 
 ### Register
 
-__/app/views.py__
-{% highlight python linenos %}
-# some code
-{% endhighlight %}
-
-__/app/forms.py__
-{% highlight python linenos %}
-# some code
-{% endhighlight %}
+Now very, very simple register form:
 
 
 __/templates/register.html__
 {% highlight html linenos %}
-<!-- some code -->
 {% raw %}{% extends "layout.html" %}{% endraw %}
+{% raw %}{% set title = "Register" %}{% endraw %}
+{% raw %}{% block intro %}{% endraw %}
+<section class="view">
+    <div class="container" style="padding-top: 75px">
+        <h1>Create account</h1>
+        <form>
+            <span>Name: </span>
+            <input type="text" name="name", required="true">
+            <br>
+            <span>Email: </span>
+            <input type="email" name="email", required="true">
+            <br>
+            <span>Password: </span>
+            <input type="password" name="password", required="true">
+            <br>
+            <br>
+            <span>Re-type Password: </span>
+            <input type="password" name="password", required="true">
+            <br>
+            <br>
+            <input type="submit">
+        </form>
+    </div>
+</section>
+{% raw %}{% endblock %}{% endraw %}
+{% endhighlight %}
 
-{% raw %}{% block content %}{% endblock %}{% endraw %}
+
+![register][register]
+
+
+Again, this code does nothing, except it looks good in the browser. All the magic will happen  behind the stage, described in details in next section.
+
+
+### User data management
+
+Before we dive into login/register python machinery I would like to address few topics related to this issue. First is database choice. I decided to store user provided information and data received from social media providers in NoSQL database - [MongoDB][mongo]. Main reason is that different providers have different data models. Friends, followers lists, text or media content of the posts, software repositories. Variety makes nearly impossible to fit them in some sane common relational database. In mongo, JSON like format of the data is playing nicely with the data format given by providers (API requests return JSON responses). JSON can be easily manipulated in python and converted tot he dictionary container. It is also very easy to store and manipulate graph-type data. To communicate with db we will use excellent Flask extension: [`flask_pymongo`][flpymg]. Pip install it `pip install flask_pymongo`.
+
+<br>
+{% include note.html content="This step assumes, you have MongoDB server up and running on your local machine. Refer to MongoDB documentation for [installation details](https://docs.mongodb.com/manual/administration/install-community/)." %}
+
+First lets register pymongo extension:
+
+__/app/extensions.py__
+{% highlight python linenos %}
+from flask_debugtoolbar import DebugToolbarExtension
+from flask_pymongo import PyMongo
+
+
+debug_toolbar = DebugToolbarExtension()
+mongo = PyMongo()
+{% endhighlight %}
+
+And add to `register_extensions()` in main application:
+
+__/app/app.py__
+{% highlight python linenos %}
+from app.extensions import debug_toolbar mongo
+from app import public
+
+...
+def register_extensions(app):
+    """Register Flask extensions."""
+    debug_toolbar.init_app(app)
+    app.logger.debug("Debug toolbar initialized")
+    mongo.init_app(app)
+    return None
+{% endhighlight %}
+
+
+This will attach PyMongo db the current app according to the info provided in app configurtion
+
+
+__/app/settings.py__
+{% highlight python linenos %}
+
+
 {% endhighlight %}
 
 
 
-## User data in application
 
-### User page
+
+### User model
 
 {% highlight bash %}
 (md_analytics) [mdyzma@devbox md_analytics]$ tree .
@@ -692,6 +749,23 @@ Basic structure of the dashboard component is contained in separate folder which
 {% endhighlight%}
 
 
+
+__/app/settings.py__
+{% highlight python linenos %}
+
+
+{% endhighlight %}
+
+
+
+__/app/settings.py__
+{% highlight python linenos %}
+
+
+{% endhighlight %}
+
+
+
 ### Template
 
 __/dashboard/templates/dashboard.html__
@@ -719,13 +793,19 @@ __/dashboard/views.py__
 
 
 <!-- Links -->
+
 [jinja]:  http://jinja.pocoo.org
 [twb4]:   http://getbootstrap.com
 [mdb]:    https://mdbootstrap.com/material-design-for-bootstrap/
 [vue]:    https://vuejs.org
+[mongo]:  https://www.mongodb.com
+[flpymg]: http://flask-pymongo.readthedocs.io/en/latest/
 [google-maps-api]: https://developers.google.com/maps/documentation/javascript/adding-a-google-map
+
 <!-- Images -->
 
 [banner]:   /assets/2017-07-12/banner.png
-[intro]:     /assets/2017-07-12/intro.png
+[intro]:    /assets/2017-07-12/intro.png
 [home_fdt]: /assets/2017-07-12/home-fdt.png
+[register]: /assets/2017-07-12/register.png
+[login]: /assets/2017-07-12/login.png
