@@ -31,18 +31,19 @@ Flask application presenting social media accounts analysis in form of dashboard
 ## Part II
 
 
-1. [Jinja engine](#jinja-engine)
-2. [Layout](#layout)
-3. [Landing page](#landing-page)
-4. [Login / Register forms](#login-register-forms)
+1. [Project organization](#project-organization)
+2. [Jinja engine](#jinja-engine)
+3. [Layout](#layout)
+4. [Landing page](#landing-page)
+5. [Login / Register forms](#login-register-forms)
     * [Login](#login)
     * [Register](#register)
-5. [Dashboard](#dashboard)
+6. [Dashboard](#dashboard)
     * [Template](#template)
-6. [User data in application](#user-data-in-application)
+7. [User data in application](#user-data-in-application)
     * [Password management](#password-management)
-    * [User profile](#user-profile)
-7. [Summary](#summary)
+    * [User model](#user-model)
+8. [Summary](#summary)
 
 -----
 
@@ -73,7 +74,7 @@ To sum up, each large component will have it's own folder in the `app/` and `tem
 * __user__:  routes, models, forms and db communication for user data
 
 <br>
-Finally lest focus a bit on the stack of tools which will be used in this application. Obviously back-end is Flask and gunicorn. User data will be stored in [MongoDB][mongo]. Front-end will use two popular frameworks:  [Twitter Bootstrap 4][twb4] to make page responsive and nice without having to write extensive CSS and [Material Design for Bootstrap][mdb], to make things more beautiful. For Bootstrap framework we will need to download already compiled cssn from Bootstrap's page files: `bootstrap.min.css` and `bootstrap.min.js`. Bootstrap relies on jQuery, a JavaScript framework that provides a layer of abstraction in most common JavaScript operations (i.e. element selection, events handling). Therefore we should also add latest JQuery library `jquery-3.2.1.min.js` to our files. For MDB we will need `mdb.min.css`, `mdb.min.js` and `popper.min.js`. They will spice up our web site and give lots of good solutions and JavaScript functionalities to it. Files should be placed in appropriate static sub-folders:
+Finally lest focus a bit on the stack of tools which will be used in this application. Obviously back-end is Flask and gunicorn. User data will be stored in [MongoDB][mongo]. Front-end will use two popular frameworks:  [Twitter Bootstrap 4][twb4] to make page responsive and nice without having to write extensive CSS and [Material Design for Bootstrap][mdb], to make things more beautiful. For Bootstrap framework we will need to download already compiled css from Bootstrap's page files: `bootstrap.min.css` and `bootstrap.min.js`. Bootstrap relies on jQuery, a JavaScript framework that provides a layer of abstraction in most common JavaScript operations (i.e. element selection, events handling). Therefore we should also add latest JQuery library `jquery-3.2.1.min.js` to our files. For MDB we will need `mdb.min.css`, `mdb.min.js` and `popper.min.js`. They will spice up our web site and give lots of good solutions and JavaScript functionalities to it. Files should be placed in appropriate static sub-folders:
 
 {% highlight bash %}
 (md_analytics) [mdyzma@devbox md_analytics]$ tree .
@@ -106,6 +107,7 @@ Finally lest focus a bit on the stack of tools which will be used in this applic
 |   |   |-- dashboard/
 |   |   |
 |   |   |-- includes/
+|   |   |-- |-- contact.html
 |   |   |   |-- footer.html
 |   |   |   |-- meta.html
 |   |   |   |-- messages.html
@@ -152,6 +154,7 @@ In our template we have specified several large code blocks, which will be fille
   * __messages__ - part displaying application messages to the user
   * __intro__  - part specific for landing page
   * __content__ block - different content on each page
+  * __contact__ block - contact info/form
   * __footer__ section - basic structural element with extended footer information like site map, and other links
 
 
@@ -180,6 +183,7 @@ __/templates/layout.html__
         <main>
             <!-- Main content block -->
             {% raw %}{% block content %}{% endblock %}{% endraw %}
+            {% raw %}{% block contact %}{% endblock %}{% endraw %}
         </main>
             <!-- Footer from include -->
             {% raw %}{% include 'includes/footer.html' ignore missing %}{% endraw %}
@@ -209,7 +213,7 @@ __/templates/layout.html__
 {% endhighlight %}
 
 
-#### Head section
+### Head section
 
 Some fragments of HTML are moved to separate `html` files to keep main template lean and understandable. Fragments like main navigation bar or footer can be quite large and it could affect code readability. Base includes are located in `app/templates/includes/` and will be described separately.
 
@@ -239,7 +243,7 @@ __/templates/includes/meta.html__
 
 Order of linked css is important. The latter file will overwrite same functionalities from the previous one.
 
-#### Body section
+### Body section
 
 Body section contains several distinct blocks: `navbar.html`, `messages.html`, `intro` and `footer.html`. Last is `scripts` block which allows to include site specific JS scripts at the end of the page. It is considered best practice to place JS scripts near closing body tag, which speeds up page loading and ensures, that all page is already rendered, when scripts start to invoke __DOM (Document Object Model)__ operations.
 
@@ -264,7 +268,7 @@ __/templates/includes/nav.html__
                 <a class="nav-link" href="https://github.com/mdyzma/md_analytics">GitHub</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#contact">Contact</a>
+                <a class="nav-link" href="{% raw %}{{ url_for('public.home') }}{% endraw %}#contact">Contact</a>
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
@@ -278,6 +282,9 @@ __/templates/includes/nav.html__
     </div>
 </nav>
 {% endhighlight %}
+
+![main-navigation][navbar]
+
 
 Later we will expand it with some logic for sessions and accessing restricted pages.
 
@@ -299,6 +306,41 @@ __/templates/includes/messages.html__
 </div>
 {% endhighlight %}
 
+
+At some point we will also try to include contact information. For now it is map with marked location (using Google'e Map API) and some contact details.
+
+__/templates/includes/contact.html__
+{% highlight html linenos %}
+<!--Section: Contact-->
+<section id="contact pb-5">
+    <div class="row">
+        <!--First column-->
+        <div class="col-md-8 mb-5">
+            <div id="map-container" class="z-depth-1 wow fadeIn" style="height: 300px"></div>
+        </div>
+        <!--/First column-->
+        <!--Second column-->
+        <div class="col-md-4">
+            <ul class="text-center list-unstyled">
+                <li class="wow fadeIn" data-wow-delay="0.2s"><i class="fa fa-map-marker teal-text fa-lg"></i>
+                    <p>Gen. Grochowskiego 55/55</p>
+                    <p>Piaseczno, 55-555 , Poland</p>
+                </li>
+                <li class="wow fadeIn mt-5 pt-2" data-wow-delay="0.3s"><i class="fa fa-phone teal-text fa-lg"></i>
+                    <p>+ 48 555 55 55 55</p>
+                </li>
+                <li class="wow fadeIn mt-5 pt-2" data-wow-delay="0.4s"><i class="fa fa-envelope teal-text fa-lg"></i>
+                    <p>mdyzma@gmail.com</p>
+                </li>
+            </ul>
+        </div>
+        <!--/Second column-->
+    </div>
+</section>
+<!--Section: Contact-->
+{% endhighlight %}
+
+![contact][contact]
 
 Footer part will be also common to all pages. It will include some extended information about policies, social media links and other standard "footer content". Code snippet bellow is just simple copyright tag and two column structure for extended content. 
 
@@ -341,6 +383,8 @@ __/templates/includes/footer.html__
 <!--/.Footer-->
 {% endhighlight %}
 
+![footer][footer]
+
 This is just an example from MDB tutorial. Exact code for footer can be downloaded from the [footer template on GitHub](https://github.com/mdyzma/md_analytics/blob/master/app/templates/includes/footer.html).
 
 Putting it all together we are ready to create first page for our app - the landing page! 
@@ -352,9 +396,9 @@ Putting it all together we are ready to create first page for our app - the land
 It is time to expand main application and put in use templates created above. First we will create web page endpoints, add some basic extensions to it and display everything as a nice, responsive landing page.
 
 
-#### Blueprint
+### Blueprint
 
-Earlier, when template mechanism was explained I mentioned all components will reside in their own folders to maximize portability. Landing page (home) resides in `public` folder and this part of the application can be accessed by anyone. Folder contains blueprint for landing page and login/register forms. Folder with the same name was also placed in `templates/`, to store necessary html boilerplate. To move this functionality  to other app one has to copy both public folder to new location and make necessary imports.
+Earlier, when project organization was explained I mentioned all components will reside in their own folders to maximize portability. Landing page (home) resides in `public` folder and this part of the application can be accessed by anyone. Folder contains blueprint for landing page and login/register forms. Folder with the same name was also placed in `templates/`, to store necessary html boilerplate. To move this functionality  to other app one has to copy both public folder to new location and make necessary imports.
 
 Blueprint contains all routing for the pages that have something common. For now  our landing page contains only few routs: `/` to render __home__ page, `/login` and `/register` to display __login__ and __register__ forms. For now each method renders specific template. Login and register will be updated in the next section, where we will add data storage layer, safe database communication and sessions.
 
@@ -375,58 +419,41 @@ def home():
 
 @home.route('/login')
 def login():
-    """Login page."""
+    """Login form."""
     return render_template('public/login.html')
 
 
 @home.route('/register')
 def register():
-    """Register page."""
+    """Register form."""
     return render_template('public/register.html')
 
 
 @home.route('/logout')
 def logout():
-    """Home page."""
+    """Logout link."""
     return redirect(url_for('home'))
 {% endhighlight %}
 
-Once all endpoints and functions are ready, we have to register blueprint with main app.
+
+<br>
+Once all endpoints and functions are ready, we have to register blueprint with main app. But before we do that, lets refactor our app. We will use several flask extensions, which will help to develop certain functionalities very fast. There is no need to develop wheel again. Instead of writing our own data-base models, login classes etc, we can use already existing solutions i.e. extensions. Extensions will reside in separate file `extensions.py`, where they will be instantiated. Separate function will bind existing extension instances with the current app. First lets create extension's package:
 
 
 __/app/extensions.py__
 {% highlight python linenos %}
-from flask import Blueprint, render_template
+from flask_debugtoolbar import DebugToolbarExtension
 
-
-blueprint = Blueprint('public', __name__, static_folder='../static')
-
-
-@blueprint.route('/')
-def home():
-    """Home page."""
-    return render_template('public/home.html')
-
+debug_toolbar = DebugToolbarExtension()
 {% endhighlight %}
 
+We will repeat this pattern with all Flask extensions. Having extensions ready we can register everything with main application:
 
-And main application file:
 
 __/app/app.py__
 {% highlight python linenos %}
-# -----------------------------------------------------------------------------
-# Standard Library Imports
-# -----------------------------------------------------------------------------
-import os
-# -----------------------------------------------------------------------------
-# Related Libraries Imports
-# -----------------------------------------------------------------------------
-from flask import Flask, render_template
-# -----------------------------------------------------------------------------
-# Local Imports
-# -----------------------------------------------------------------------------
 from app.extensions import debug_toolbar
-from app.public import views
+from app import public
 
 def create_app(config_object=None):
     app = Flask(__name__)
@@ -444,26 +471,15 @@ def register_extensions(app):
 
 def register_blueprints(app):
     """Register Flask blueprints."""
-    app.register_blueprint(public.views.blueprint)
+    app.register_blueprint(public.views.home)
     return None
 
 {% endhighlight %}
 
-This file instead of displaying simple `h1` tag (like in [Social media analysis with Flask, Part I]({{site.url}}/2017/08/17/social-media-analysis-part-i)) will render full `home.html` page, which should resemble this: 
+This file will initialize flask app, register all extensions and blueprints to the current context.
 
 
-#### Register extensions
-
-__/app/extensions.py__
-{% highlight python linenos %}
-from flask_debugtoolbar import DebugToolbarExtension
-
-debug_toolbar = DebugToolbarExtension()
-{% endhighlight %}
-
-
-
-#### Template
+### Template
 
 Landing page template is located in `templates/public/home.html`. Because it inherits all traits of `layout.html` it will contain only elements which differ between this two templates. Rest will be provided from base. First we should tell Jinja what template we are extending and populate current home template with site-specific content. Lets add "intro" for our page:
 
@@ -522,7 +538,7 @@ __/templates/public/home.html__
 {% raw %}{% block content %}{% endraw %}
 <div class="container">
     <div class="divider-new pt-5">
-        <h2 class="h2-responsive wow fadeIn" data-wow-delay="0.2s">About project</h2>
+        <h2 class="h2-responsive wow fadeIn" data-wow-delay="0.2s">About me</h2>
     </div>
     <!--Section: About-->
     <section id="about" class="text-center wow fadeIn" data-wow-delay="0.2s">
@@ -530,37 +546,106 @@ __/templates/public/home.html__
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Velit explicabo assumenda eligendi ex exercitationem harum deleniti quaerat beatae ducimus dolor voluptates magnam, reiciendis pariatur culpa tempore quibusdam quidem, saepe eius.</p>
     </section>
     <!--Section: About-->
-    <!--Section: Contact-->
-    <section id="contact pb-5">
-        <div class="row">
-            <!--First column-->
-            <div class="col-md-8 mb-5">
-                <div id="map-container" class="z-depth-1 wow fadeIn" style="height: 300px"></div>
-            </div>
-            <!--/First column-->
-            <!--Second column-->
-            <div class="col-md-4">
-                <ul class="text-center list-unstyled">
-                    <li class="wow fadeIn" data-wow-delay="0.2s"><i class="fa fa-map-marker teal-text fa-lg"></i>
-                        <p>Gen. Grochowskiego 55</p>
-                        <p>Piaseczno, 55-555 , Poland</p>
-                    </li>
-                    <li class="wow fadeIn mt-5 pt-2" data-wow-delay="0.3s"><i class="fa fa-phone teal-text fa-lg"></i>
-                        <p>+ 48 555 55 55 55</p>
-                    </li>
-                    <li class="wow fadeIn mt-5 pt-2" data-wow-delay="0.4s"><i class="fa fa-envelope teal-text fa-lg"></i>
-                        <p>mymail@gmail.com</p>
-                    </li>
-                </ul>
-            </div>
-            <!--/Second column-->
+        <div id="features">
+            <!-- dummy section for link -->
         </div>
-    </section>
-    <!--Section: Contact-->   
-</div>
+       <div class="divider-new pt-5">
+            <h2 class="h2-responsive wow fadeIn">Best features</h2>
+        </div>
+        <!--Section: Best features-->
+        <section id="best-features">
+            <div class="row pt-3">
+                <!--First columnn-->
+                <div class="col-lg-3 mb-r">
+                    <!--Card-->
+                    <div class="card wow fadeIn">
+                        <!--Card image-->
+                        <img class="img-fluid" src="https://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20(25).jpg" alt="Card image cap">
+                        <!--Card content-->
+                        <div class="card-body">
+                            <!--Title-->
+                            <h4 class="card-title text-center">360 Advertising</h4>
+                            <hr>
+                            <!--Text-->
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        </div>
+                    </div>
+                    <!--/.Card-->
+                </div>
+                <!--First columnn-->
+                <!--Second columnn-->
+                <div class="col-lg-3 mb-r">
+                    <!--Card-->
+                    <div class="card wow fadeIn" data-wow-delay="0.2s">
+                        <!--Card image-->
+                        <img class="img-fluid" src="https://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20(14).jpg" alt="Card image cap">
+                        <!--Card content-->
+                        <div class="card-body">
+                            <!--Title-->
+                            <h4 class="card-title text-center">Top-class Team</h4>
+                            <hr>
+                            <!--Text-->
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        </div>
+                    </div>
+                    <!--/.Card-->
+                </div>
+                <!--Second columnn-->
+                <!--Third columnn-->
+                <div class="col-lg-3 mb-r">
+                    <!--Card-->
+                    <div class="card wow fadeIn" data-wow-delay="0.4s">
+                        <!--Card image-->
+                        <img class="img-fluid" src="https://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20(21).jpg" alt="Card image cap">
+                        <!--Card content-->
+                        <div class="card-body">
+                            <!--Title-->
+                            <h4 class="card-title text-center">Top-class Team</h4>
+                            <hr>
+                            <!--Text-->
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        </div>
+                    </div>
+                    <!--/.Card-->
+                </div>
+                <!--Third columnn-->
+                <!--First columnn-->
+                <div class="col-lg-3 mb-r">
+                    <!--Card-->
+                    <div class="card wow fadeIn" data-wow-delay="0.6s">
+                        <!--Card image-->
+                        <img class="img-fluid" src="https://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20(37).jpg" alt="Card image cap">
+                        <!--Card content-->
+                        <div class="card-body">
+                            <!--Title-->
+                            <h4 class="card-title text-center">24/7 Support</h4>
+                            <hr>
+                            <!--Text-->
+                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        </div>
+                    </div>
+                    <!--/.Card-->
+                </div>
+                <!--First columnn-->
+            </div>
+        </section>
+        <!--/Section: Best features-->
+        <div id="contact">
+        <!-- dummy section for link -->
+        </div>
+        <div class="divider-new">
+            <h2 class="h2-responsive wow fadeIn">Contact</h2>
+        </div>
+        {% raw %}{% block contact %}{% endraw %}
+            {% raw %}{% include 'includes/contact.html' %}{% endraw %}
+        {% raw %}{% endblock %}{% endraw %}
+    </div>
+    <!--/ Main container-->
 {% raw %}{% endblock %}{% endraw %}
 {% endhighlight %}
 
+
+![content][content]
 
 Last but not least, lets add JS script to navigate Google map and place marker in position of our choice. More abou Google maps APIs can be found [here][google-maps-api].
 
@@ -592,76 +677,242 @@ __/templates/public/home.html__
 You may have noticed `{% raw %}{{ super() }}{% endraw %}` expression in scripts block. In `layout.html` I placed some JS code to be present in all pages. Code is responsible for smooth scrolling to the page internal link. Calling `super()` allows to keep all previous content of the block from previous template and append new content to it. So we have smooth scrolling and Google maps initialization. For now we have only two functions, so it is reasonable to keep them in template code. But when amount of custom JS grows it is better to migrate to separate `.js` file and serve it from static folder same as framework files. 
 
 
-Obviously I am no web designer, but this simple stub should do the trick. Also we can see that  Bootstrap and MDB gave us nice look and responsive design (hamburger button which expands to full navigation bar when shrunk below 768 pixels, material style of the buttons and navigation bar). There is additional element on the page - a very nice tool to debug flask web applications called `Flask-debugtoolbar`. It should be listed in dev requirements and install automatically during environment configuration. It appears on the page as a button at the right top corner and allows to track current Flask session including app configuration, requests, routing, variables and many more.
+Obviously I am no web designer, but this simple stub should do the trick. Also we can see that  Bootstrap and MDB gave us nice look and responsive design (hamburger button which expands to full navigation bar when shrunk below 768 pixels, material style of the buttons and navigation bar). There is additional element on the page - a very nice tool to debug flask web applications called `Flask-debugtoolbar`. It should be listed in dev requirements and installed automatically during environment configuration. It appears on the page as a button at the right top corner and allows to track current Flask session including app configuration, requests, routing, variables and many more.
 
 ![home-fdt][home_fdt]
 
+<!-- 
 
-
-
-#### Testing landing page
-
+### Testing landing page
+ -->
 
 ## Login, Register forms
 
-It is time to secure our app. Basic tools for us will be login and register forms, which will allow app to exchange information with the server. For getting info from the server app uses HTTP `GET` method, to send information to the server it uses `POST` method. Login and register forms will base on this two to communicate with the database, which will keep information about users. Only logged users will be allowed to see dashboard. In addition logged users can see their own profile with the data app is keeping about them. Lets start with login.
+It is time to secure our app. Basic tools for us will be login/register mechanizm, which will allow app to securely exchange information with the server, second would be creating sessions and above all encryption of data exchange. To extract information from the server app uses HTTP `GET` method, whereas to send information to the server it uses `POST` method. There are other methhods used in HTTP protocol, but we will focus on these two for now. Login and register forms will base on this two to communicate with the database, which will store information about users (see next [section](#user-data-management)). Only logged users will be allowed to see dashboard. In addition logged users can see their own profile with the data app is keeping about them. Lets start with login page.
+
+### Login
 
 
-#### Login
-
-
-First lets create login page with all fields:
+First lets create login page with all fields, nothing fancy, just simple form with a bit of styling:
 
 __/templates/login.html__
 {% highlight html linenos %}
 {% raw %}{% extends "layout.html" %}{% endraw %}
-
-
-
-{% raw %}{% block content %}{% endblock %}{% endraw %}
+{% raw %}{% set title = "Register" %}{% endraw %}
+{% raw %}{% block intro %}{% endraw %}
+<section class="view">
+    <div class="container" style="padding-top: 75px">
+        <h1>Login</h1>
+        <form>
+            <span>Email: </span>
+            <input type="email" name="email", required="true">
+            <br>
+            <span>Password: </span>
+            <input type="password" name="password", required="true">
+            <br>
+            <br>
+            <input type="submit">
+        </form>
+    </div>
+</section>
+{% raw %}{% endblock %}{% endraw %}
 {% endhighlight %}
 
 
-__/app/forms.py__
-{% highlight python linenos %}
-# some code
-{% endhighlight %}
+![login][login]
 
 
+### Register
 
-
-#### Register
-
-__/app/views.py__
-{% highlight python linenos %}
-# some code
-{% endhighlight %}
-
-__/app/forms.py__
-{% highlight python linenos %}
-# some code
-{% endhighlight %}
+Now very, very simple register form:
 
 
 __/templates/register.html__
 {% highlight html linenos %}
-<!-- some code -->
 {% raw %}{% extends "layout.html" %}{% endraw %}
+{% raw %}{% set title = "Register" %}{% endraw %}
+{% raw %}{% block intro %}{% endraw %}
+<section class="view">
+    <div class="container" style="padding-top: 75px">
+        <h1>Create account</h1>
+        <form>
+            <span>Name: </span>
+            <input type="text" name="name", required="true">
+            <br>
+            <span>Email: </span>
+            <input type="email" name="email", required="true">
+            <br>
+            <span>Password: </span>
+            <input type="password" name="password", required="true">
+            <br>
+            <br>
+            <span>Re-type Password: </span>
+            <input type="password" name="password", required="true">
+            <br>
+            <br>
+            <input type="submit">
+        </form>
+    </div>
+</section>
+{% raw %}{% endblock %}{% endraw %}
+{% endhighlight %}
 
-{% raw %}{% block content %}{% endblock %}{% endraw %}
+
+![register][register]
+
+
+Again, this code does nothing, except it looks good in the browser. All the magic like validation, verification will happen  behind the stage, described in details in next sections.
+
+### Sessions
+
+Sometimes  URL's contain additional parameters submitted in the URL (i.e `http://www.domain.com/endpoint?key=value`). One can access them via lask request object (`request.args` attribute) and store them in the cookies attribute (`request.cookies`) for later usage. However using cookies is not preffered to store requests data, especialy sensitive one like credentials or authorization tokens, therefore it is recomended to use more secure solution and it is__session__.
+
+Session stores request parameters specific to a user from one request to the next. But it does it in more secure way, by adding additional security layer on top of cookies. To secure data serialized in cookie it uses secret key provided by the app. User can not modify session parameters, unles has access to this key. In our case we will use app configuration to set strong secret key with `os.urandom(24)`, which generates 24 random bytes suitable for cryptographic use. We set this parameter as a `SECRET_KEY` in base class of the config file. Configuration key is inherited by all child classess, and passed further to each app instance upon app creation by `create_app()` function. 
+
+Session or cookie usually resides on client side. We will go one step further and use Flask extension to manage server side sessions in our app. Because our app is ment to analyze social media data, it will certainy have to be able to gather and process amounts of data above average cookie capacity (counted in tens or even hundreds of MB). And we do not want to send hundreds of megabytes through internet from our server, where app runs, to the clients browser. To make it possible we will use very handy Redis NoSQL database, which can operate in memory and store data in form of key:value pairs. Here we will use Redis to store session data. Extension will hook up to the app and allow to use it through standard Flask session object.
+
+<br>
+{% include note.html content="To run application localy, you need to have Redis server running on your local machine. Refer to Redis documentation for [installation details](https://redis.io/documentation)." %}
+
+
+Fortunatelly we do not have to write our own Redis interface to interact with it. Flask-Session will take care for it, using some default settings and some values taken from app configuration. However few things must be done to use Redis as a server side session storage:
+
+1. Add `SESSION_TYPE = 'redis'` to the config file
+2. Download, install and add Flask-Session extension (don't forget to add Flask-Session==0.3.1 to `requirements/prod.txt`)
+
+
+__/app/settings.py__
+{% highlight python linenos %}
+class Config(object):
+    SECRET_KEY = os.urandom(24)
+    ...
+    SESSION_TYPE = 'redis'
+...
+{% endhighlight %}
+
+Once it is done we can append `extensions.py`with Flask-Session initialization:
+
+
+__/app/extensions.py__
+{% highlight python linenos %}
+...
+from flask_session import Session
+...
+sess = Session()
+{% endhighlight %}
+
+
+and register it with the app:
+
+__/app/app.py__
+{% highlight python linenos %}
+from app.extensions import debug_toolbar, mongo, login_manager, sess
+
+def register_extensions(app):
+    """Register Flask extensions."""
+    debug_toolbar.init_app(app)
+    mongo.init_app(app)
+    login_manager.init_app(app)
+    sess.init_app(app)
+    return None
+{% endhighlight %}
+
+
+Finally lets use it in our app. Lets make session to store users data during registration and then compare them during signing in. This is jus t temporary solution, to show how session works. Our primary storage will be MongoDB and Redis will serve as a cache to keep some data obtained from API's of social media providers. Processed data will be also stored in MongoDB. 
+
+__/app/public/views.py__
+{% highlight python %}
+from flask import Blueprint, render_template, redirect, session
+
+
+blueprint = Blueprint('public', __name__, static_folder='../static')
+
+
+@blueprint.route('/')
+def home():
+    """Home page."""
+    return render_template('public/home.html')
+
+
+@blueprint.route('/login')
+def login():
+    """Login page."""
+    return render_template('public/login.html')
+
+
+@blueprint.route('/register')
+def register():
+    """Register page."""
+    return render_template('public/register.html')
+
+
+@blueprint.route('/logout')
+def logout():
+    """logout link."""
+    return redirect(url_for('home'))
 {% endhighlight %}
 
 
 
-## User data in application
 
-#### MongoDB
+### Flask-Login
+
+To restrict 
+### Data storage
+
+1. MongoDB, 
+2. security with bcrypt - password passed in POST http call.
+3. 
+
+Before we dive into login/register python machinery I would like to address few topics related to this issue. First is database choice. I decided to store user provided information and data received from social media providers in NoSQL database - [MongoDB][mongo]. Main reason is that different providers have different data models. Friends, followers lists, text or media content of the posts, software repositories. Variety makes nearly impossible to fit them in some sane common relational database. In mongo, JSON like format of the data is playing nicely with the data format given by providers (API requests return JSON responses). JSON can be easily manipulated in python and converted tot he dictionary container. It is also very easy to store and manipulate graph-type data. To communicate with db we will use excellent Flask extension: [`flask_pymongo`][flpymg]. Pip install it `pip install flask_pymongo` if package is not installed on your system.
+
+<br>
+{% include note.html content="This step assumes, you have MongoDB server up and running on your local machine. Refer to MongoDB documentation for [installation details](https://docs.mongodb.com/manual/administration/install-community/)." %}
+
+First lets register PyMongo extension (and add `flask_pymongo==0.5.1` to the requirements list in production):
+
+__/app/extensions.py__
+{% highlight python linenos %}
+from flask_debugtoolbar import DebugToolbarExtension
+from flask_pymongo import PyMongo
 
 
-#### 
+debug_toolbar = DebugToolbarExtension()
+mongo = PyMongo()
+{% endhighlight %}
+
+And add to `register_extensions()` in main application:
+
+__/app/app.py__
+{% highlight python linenos %}      
+from app.extensions import debug_toolbar mongo
+from app import public
+
+...
+def register_extensions(app):
+    """Register Flask extensions."""
+    debug_toolbar.init_app(app)
+    app.logger.debug("Debug toolbar initialized")
+    mongo.init_app(app)
+    return None
+{% endhighlight %}
 
 
-### User page
+This will attach PyMongo db to the current app using default name or name specified in configurtion file. 
+
+
+
+
+
+__/app/settings.py__
+{% highlight python linenos %}
+
+
+{% endhighlight %}
+
+
+
+### User model
 
 {% highlight bash %}
 (md_analytics) [mdyzma@devbox md_analytics]$ tree .
@@ -708,6 +959,23 @@ Basic structure of the dashboard component is contained in separate folder which
 {% endhighlight%}
 
 
+
+__/app/settings.py__
+{% highlight python linenos %}
+
+
+{% endhighlight %}
+
+
+
+__/app/settings.py__
+{% highlight python linenos %}
+
+
+{% endhighlight %}
+
+
+
 ### Template
 
 __/dashboard/templates/dashboard.html__
@@ -740,12 +1008,18 @@ __/dashboard/views.py__
 [twb4]:   http://getbootstrap.com
 [mdb]:    https://mdbootstrap.com/material-design-for-bootstrap/
 [vue]:    https://vuejs.org
-[google-maps-api]: https://developers.google.com/maps/documentation/javascript/adding-a-google-map
 [mongo]:  https://www.mongodb.com
-
+[flpymg]: http://flask-pymongo.readthedocs.io/en/latest/
+[google-maps-api]: https://developers.google.com/maps/documentation/javascript/adding-a-google-map
 
 <!-- Images -->
 
 [banner]:   /assets/2017-07-12/banner.png
+[navbar]:   /assets/2017-07-12/navbar.png
 [intro]:    /assets/2017-07-12/intro.png
+[content]:  /assets/2017-07-12/content.png
+[contact]:  /assets/2017-07-12/contact.png
+[footer]:    /assets/2017-07-12/footer.png
 [home_fdt]: /assets/2017-07-12/home-fdt.png
+[register]: /assets/2017-07-12/register.png
+[login]: /assets/2017-07-12/login.png
