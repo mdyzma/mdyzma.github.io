@@ -19,15 +19,10 @@ Flask application presenting social media accounts analysis in form of dashboard
 
 ## Series consists of:
 
-* [Social media analysis with Flask, Part I]({{site.url}}/2017/06/07/social-media-analysis-part-I/) (Setting environment, flask, Travis CI/Heroku CD )
-* [Social media analysis with Flask, Part II]({{site.url}}/2017/07/12/social-media-analysis-part-ii/) (Templates, login/register mechanism, data storage)
-<!-- * [Social media analysis with Flask, Part III]({{site.url}}/2017/08/17/social-media-analysis-part-iii) (Twitter data analysis) -->
+* [Social media analysis with Flask, Part I]({{site.url}}{% post_url 2017-06-07-social-media-analysis-part-I %}) (Setting environment, flask, Travis CI/Heroku CD )
+* [Social media analysis with Flask, Part II]({{site.url}}{% post_url 2017-07-12-social-media-analysis-part-ii %}) (Templates, login/register mechanism, data storage)
 
-<!-- 
-* [Social media analysis with Flask, Part IV]({{site.url}}/2017/09/09/social-media-analysis-part-iv/) (Twitter data analysis)
-* [Social media analysis with Flask, Part V]({{site.url}}/2017/10/18/social-media-analysis-part-v/) (Facebook data analysis)
-* [Social media analysis with Flask, Part VI]({{site.url}}/2017/11/05/social-media-analysis-part-vi/) (GitHub data analysis)
- -->
+
 ## Part II
 
 
@@ -476,7 +471,25 @@ def register_blueprints(app):
 
 {% endhighlight %}
 
-This file will initialize flask app, register all extensions and blueprints to the current context.
+This file will initialize flask app, register all extensions and blueprints to the current context. We can print all endpoints using `manage.py show-urls` command:
+
+{% highlight bash %}
+(md_analytics) [mdyzma@devbox md_analytics]$ python manage.py show-urls
+
+--------------------------------------------------------------------------------
+DEBUG in app [/home/mdyzma/md_analytics/app/app.py:27]:
+Debug toolbar initialized
+--------------------------------------------------------------------------------
+Rule                                          Endpoint
+---------------------------------------------------------------------------
+/                                             public.home
+/login                                        public.login
+/logout                                       public.logout
+/register                                     public.register
+/static/<path:filename>                       static
+/static/<path:filename>                       public.
+
+{% endhighlight %}
 
 
 ### Template
@@ -703,7 +716,7 @@ __/templates/login.html__
 <section class="view">
     <div class="container" style="padding-top: 75px">
         <h1>Login</h1>
-        <form>
+        <form method="post">
             <span>Email: </span>
             <input type="email" name="email", required="true">
             <br>
@@ -762,6 +775,46 @@ __/templates/register.html__
 
 
 Again, this code does nothing, except it looks good in the browser. All the magic like validation, verification will happen  behind the stage, described in details in next sections.
+
+### MongoDB
+
+Before we dive into login/register python machinery I would like to address few topics related to this issue. First is database choice. I decided to store user provided information and data received from social media providers in NoSQL database - [MongoDB][mongo]. Main reason is that different providers have different data models. Friends, followers lists, text or media content of the posts, software repositories. Variety makes nearly impossible to fit them in some sane common relational database. In MongoDB, JSON like format of the data is playing nicely with the data format given by providers (API requests return JSON responses). JSON can be easily manipulated in python and converted tot he dictionary container. It is also very easy to store and manipulate graph-type data. To communicate with db we will use excellent Flask extension: [`flask_pymongo`][flpymg]. Pip install it `pip install flask_pymongo` if package is not installed on your system.
+
+<br>
+{% include note.html content="This step assumes, you have MongoDB server up and running on your local machine. Refer to [__MongoDB documentation__](https://docs.mongodb.com/manual/administration/install-community/) for installation details." %}
+
+First lets register PyMongo extension (and add `flask_pymongo==0.5.1` to the requirements list in production):
+
+__/app/extensions.py__
+{% highlight python linenos %}
+...
+from flask_pymongo import PyMongo
+
+...
+mongo = PyMongo()
+{% endhighlight %}
+
+And add to `register_extensions()` in main application:
+
+__/app/app.py__
+{% highlight python linenos %}      
+from app.extensions import debug_toolbar, mongo
+from app import public
+
+...
+def register_extensions(app):
+    """Register Flask extensions."""
+    debug_toolbar.init_app(app)
+    app.logger.debug("Debug toolbar initialized")
+    mongo.init_app(app)
+    app.logger.debug("Debug mongo initialized")
+    return None
+{% endhighlight %}
+
+
+This will attach PyMongo db to the current app using default name or name specified in `settings.py` file.
+
+
 
 ### Sessions
 
@@ -864,41 +917,6 @@ To restrict
 2. security with bcrypt - password passed in POST http call.
 3. 
 
-Before we dive into login/register python machinery I would like to address few topics related to this issue. First is database choice. I decided to store user provided information and data received from social media providers in NoSQL database - [MongoDB][mongo]. Main reason is that different providers have different data models. Friends, followers lists, text or media content of the posts, software repositories. Variety makes nearly impossible to fit them in some sane common relational database. In MongoDB, JSON like format of the data is playing nicely with the data format given by providers (API requests return JSON responses). JSON can be easily manipulated in python and converted tot he dictionary container. It is also very easy to store and manipulate graph-type data. To communicate with db we will use excellent Flask extension: [`flask_pymongo`][flpymg]. Pip install it `pip install flask_pymongo` if package is not installed on your system.
-
-<br>
-{% include note.html content="This step assumes, you have MongoDB server up and running on your local machine. Refer to MongoDB documentation for [installation details](https://docs.mongodb.com/manual/administration/install-community/)." %}
-
-First lets register PyMongo extension (and add `flask_pymongo==0.5.1` to the requirements list in production):
-
-__/app/extensions.py__
-{% highlight python linenos %}
-from flask_debugtoolbar import DebugToolbarExtension
-from flask_pymongo import PyMongo
-
-
-debug_toolbar = DebugToolbarExtension()
-mongo = PyMongo()
-{% endhighlight %}
-
-And add to `register_extensions()` in main application:
-
-__/app/app.py__
-{% highlight python linenos %}      
-from app.extensions import debug_toolbar mongo
-from app import public
-
-...
-def register_extensions(app):
-    """Register Flask extensions."""
-    debug_toolbar.init_app(app)
-    app.logger.debug("Debug toolbar initialized")
-    mongo.init_app(app)
-    return None
-{% endhighlight %}
-
-
-This will attach PyMongo db to the current app using default name or name specified in configurtion file. 
 
 
 
