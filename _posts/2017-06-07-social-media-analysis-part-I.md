@@ -242,7 +242,7 @@ Project's documentation is place in `docs` folder and is based on excellent Pyth
 Creating basic documentation stub out of the box.
 
 {% highlight bash %}
-(md_analytics) [mdyzma@devbox md_analytics]$ sphinx-quickstart
+(md_analytics) [mdyzma@devbox docs]$ sphinx-quickstart
 Welcome to the Sphinx 1.6.3 quickstart utility.
 
 Please enter values for the following settings (just press Enter to
@@ -504,6 +504,7 @@ __manage.py__
 # -*- coding: utf-8 -*-
 import os
 from flask_script import Manager, Shell, Server
+from flask_script.commands import ShowUrls, Clean
 
 from app.app import create_app
 from app.settings import DevConfig, ProdConfig
@@ -513,12 +514,14 @@ app = create_app(DevConfig)
 manager = Manager(app)
 
 manager.add_command("runserver", Server())
+manager.add_command("show-urls", ShowUrls())
+manager.add_command("clean", Clean())
 
 if __name__ == "__main__":
     manager.run()
 {% endhighlight %}
 
-File `manage.py` uses Flask-Script to register command-line tasks outside web application (from bash level). There are several build in commands like `Server()`, which runs the Flask development server. Still `manage.py` is not the only way to run our app locally. We can use HerokuCLI to do that (see [Heroku deployment](#heroku-deployment)).
+File `manage.py` uses Flask-Script to register command-line tasks outside web application (from bash level). There are several build in commands like `Server()`, which runs the Flask development server. Still `manage.py` is not the only way to run our app locally. We can use HerokuCLI to do that (see [Heroku deployment](#heroku-deployment)). Two additional methods are `show-urls` and `clean`. First will show all endpoints for our app, the second will clean all app folders from `__pycache__` folders.
 
 
 ### Test Flask app
