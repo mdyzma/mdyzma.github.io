@@ -33,12 +33,7 @@ Flask application presenting social media accounts analysis in form of dashboard
 5. [Login / Register forms](#login-register-forms)
     * [Login](#login)
     * [Register](#register)
-6. [Dashboard](#dashboard)
-    * [Template](#template)
-7. [User data in application](#user-data-in-application)
-    * [Password management](#password-management)
-    * [User model](#user-model)
-8. [Summary](#summary)
+6. [Summary](#summary)
 
 -----
 
@@ -302,11 +297,7 @@ __/templates/includes/messages.html__
 {% endhighlight %}
 
 
-<<<<<<< HEAD
-At some point we will also try to include contact information. For now it is map with marked location (using Google'e Map API) and some contact details.
-=======
 At some point we will also try to include contact information. For now it is map with marked location (using Google Map API) and some contact details.
->>>>>>> 881ae6598563e575243516bd08c04d6601b4c6e0
 
 __/templates/includes/contact.html__
 {% highlight html linenos %}
@@ -664,11 +655,7 @@ __/templates/public/home.html__
 
 ![content][content]
 
-<<<<<<< HEAD
-Last but not least, lets add JS script to navigate Google map and place marker in position of our choice. More abou Google maps APIs can be found [here][google-maps-api].
-=======
 Last but not least, lets add JS script to navigate Google map and place marker in position of our choice. More about Google maps APIs can be found [here][google-maps-api].
->>>>>>> 881ae6598563e575243516bd08c04d6601b4c6e0
 
 __/templates/public/home.html__
 {% highlight html linenos %}
@@ -703,17 +690,6 @@ Obviously I am no web designer, but this simple stub should do the trick. Also w
 ![home-fdt][home_fdt]
 
 <!-- 
-<<<<<<< HEAD
-
-### Testing landing page
- -->
-
-## Login, Register forms
-
-It is time to secure our app. Basic tools for us will be login/register mechanizm, which will allow app to securely exchange information with the server, second would be creating sessions and above all encryption of data exchange. To extract information from the server app uses HTTP `GET` method, whereas to send information to the server it uses `POST` method. There are other methhods used in HTTP protocol, but we will focus on these two for now. Login and register forms will base on this two to communicate with the database, which will store information about users (see next [section](#user-data-management)). Only logged users will be allowed to see dashboard. In addition logged users can see their own profile with the data app is keeping about them. Lets start with login page.
-
-### Login
-=======
 
 ### Testing landing page
  -->
@@ -721,37 +697,9 @@ It is time to secure our app. Basic tools for us will be login/register mechaniz
 ## Login, Register forms
 
 It is time to secure our app. Basic tools for us will be login/register mechanism, which will allow app to securely exchange information with the server, second would be creating sessions and above all encryption of data exchange. To extract information from the server app uses HTTP `GET` method, whereas to send information to the server it uses `POST` method. There are other methods used in HTTP protocol, but we will focus on these two for now. Login and register forms will base on this two to communicate with the database, which will store information about users (see next [section](#user-data-management)). Only logged users will be allowed to see dashboard. In addition logged users can see their own profile with the data app is keeping about them. Lets start with login page.
->>>>>>> 881ae6598563e575243516bd08c04d6601b4c6e0
 
 ### Login
 
-<<<<<<< HEAD
-First lets create login page with all fields, nothing fancy, just simple form with a bit of styling:
-
-__/templates/login.html__
-{% highlight html linenos %}
-{% raw %}{% extends "layout.html" %}{% endraw %}
-{% raw %}{% set title = "Register" %}{% endraw %}
-{% raw %}{% block intro %}{% endraw %}
-<section class="view">
-    <div class="container" style="padding-top: 75px">
-        <h1>Login</h1>
-        <form>
-            <span>Email: </span>
-            <input type="email" name="email", required="true">
-            <br>
-            <span>Password: </span>
-            <input type="password" name="password", required="true">
-            <br>
-            <br>
-            <input type="submit">
-        </form>
-    </div>
-</section>
-{% raw %}{% endblock %}{% endraw %}
-{% endhighlight %}
-
-=======
 
 First lets create login page with all fields, nothing fancy, just simple form with a bit of styling:
 
@@ -778,7 +726,6 @@ __/templates/login.html__
 {% raw %}{% endblock %}{% endraw %}
 {% endhighlight %}
 
->>>>>>> 881ae6598563e575243516bd08c04d6601b4c6e0
 
 ![login][login]
 
@@ -823,19 +770,6 @@ __/templates/register.html__
 
 
 Again, this code does nothing, except it looks good in the browser. All the magic like validation, verification will happen  behind the stage, described in details in next sections.
-<<<<<<< HEAD
-
-### Sessions
-
-Sometimes  URL's contain additional parameters submitted in the URL (i.e `http://www.domain.com/endpoint?key=value`). One can access them via lask request object (`request.args` attribute) and store them in the cookies attribute (`request.cookies`) for later usage. However using cookies is not preffered to store requests data, especialy sensitive one like credentials or authorization tokens, therefore it is recomended to use more secure solution and it is__session__.
-
-Session stores request parameters specific to a user from one request to the next. But it does it in more secure way, by adding additional security layer on top of cookies. To secure data serialized in cookie it uses secret key provided by the app. User can not modify session parameters, unles has access to this key. In our case we will use app configuration to set strong secret key with `os.urandom(24)`, which generates 24 random bytes suitable for cryptographic use. We set this parameter as a `SECRET_KEY` in base class of the config file. Configuration key is inherited by all child classess, and passed further to each app instance upon app creation by `create_app()` function. 
-
-Session or cookie usually resides on client side. We will go one step further and use Flask extension to manage server side sessions in our app. Because our app is ment to analyze social media data, it will certainy have to be able to gather and process amounts of data above average cookie capacity (counted in tens or even hundreds of MB). And we do not want to send hundreds of megabytes through internet from our server, where app runs, to the clients browser. To make it possible we will use very handy Redis NoSQL database, which can operate in memory and store data in form of key:value pairs. Here we will use Redis to store session data. Extension will hook up to the app and allow to use it through standard Flask session object.
-
-<br>
-{% include note.html content="To run application localy, you need to have Redis server running on your local machine. Refer to Redis documentation for [installation details](https://redis.io/documentation)." %}
-=======
 
 ### MongoDB
 
@@ -887,7 +821,6 @@ Session or cookie usually resides on client side. We will go one step further an
 
 <br>
 {% include note.html content="To run application locally, you need to have Redis server running on your local machine. Refer to Redis documentation for [installation details](https://redis.io/documentation)." %}
->>>>>>> 881ae6598563e575243516bd08c04d6601b4c6e0
 
 
 Fortunatelly we do not have to write our own Redis interface to interact with it. Flask-Session will take care for it, using some default settings and some values taken from app configuration. However few things must be done to use Redis as a server side session storage:
@@ -930,46 +863,6 @@ def register_extensions(app):
     login_manager.init_app(app)
     sess.init_app(app)
     return None
-<<<<<<< HEAD
-{% endhighlight %}
-
-
-Finally lets use it in our app. Lets make session to store users data during registration and then compare them during signing in. This is jus t temporary solution, to show how session works. Our primary storage will be MongoDB and Redis will serve as a cache to keep some data obtained from API's of social media providers. Processed data will be also stored in MongoDB. 
-
-__/app/public/views.py__
-{% highlight python %}
-from flask import Blueprint, render_template, redirect, session
-
-
-blueprint = Blueprint('public', __name__, static_folder='../static')
-
-
-@blueprint.route('/')
-def home():
-    """Home page."""
-    return render_template('public/home.html')
-
-
-@blueprint.route('/login')
-def login():
-    """Login page."""
-    return render_template('public/login.html')
-
-
-@blueprint.route('/register')
-def register():
-    """Register page."""
-    return render_template('public/register.html')
-
-
-@blueprint.route('/logout')
-def logout():
-    """logout link."""
-    return redirect(url_for('home'))
-{% endhighlight %}
-
-
-=======
 {% endhighlight %}
 
 
@@ -1008,7 +901,6 @@ def logout():
 {% endhighlight %}
 
 
->>>>>>> 881ae6598563e575243516bd08c04d6601b4c6e0
 
 
 ### Flask-Login
@@ -1018,56 +910,6 @@ To restrict
 
 1. MongoDB, 
 2. security with bcrypt - password passed in POST http call.
-3. 
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-Before we dive into login/register python machinery I would like to address few topics related to this issue. First is database choice. I decided to store user provided information and data received from social media providers in NoSQL database - [MongoDB][mongo]. Main reason is that different providers have different data models. Friends, followers lists, text or media content of the posts, software repositories. Variety makes nearly impossible to fit them in some sane common relational database. In mongo, JSON like format of the data is playing nicely with the data format given by providers (API requests return JSON responses). JSON can be easily manipulated in python and converted tot he dictionary container. It is also very easy to store and manipulate graph-type data. To communicate with db we will use excellent Flask extension: [`flask_pymongo`][flpymg]. Pip install it `pip install flask_pymongo` if package is not installed on your system.
-=======
-Before we dive into login/register python machinery I would like to address few topics related to this issue. First is database choice. I decided to store user provided information and data received from social media providers in NoSQL database - [MongoDB][mongo]. Main reason is that different providers have different data models. Friends, followers lists, text or media content of the posts, software repositories. Variety makes nearly impossible to fit them in some sane common relational database. In MongoDB, JSON like format of the data is playing nicely with the data format given by providers (API requests return JSON responses). JSON can be easily manipulated in python and converted tot he dictionary container. It is also very easy to store and manipulate graph-type data. To communicate with db we will use excellent Flask extension: [`flask_pymongo`][flpymg]. Pip install it `pip install flask_pymongo` if package is not installed on your system.
->>>>>>> 881ae6598563e575243516bd08c04d6601b4c6e0
-
-<br>
-{% include note.html content="This step assumes, you have MongoDB server up and running on your local machine. Refer to MongoDB documentation for [installation details](https://docs.mongodb.com/manual/administration/install-community/)." %}
-
-First lets register PyMongo extension (and add `flask_pymongo==0.5.1` to the requirements list in production):
-
-__/app/extensions.py__
-{% highlight python linenos %}
-from flask_debugtoolbar import DebugToolbarExtension
-from flask_pymongo import PyMongo
-
-
-debug_toolbar = DebugToolbarExtension()
-mongo = PyMongo()
-{% endhighlight %}
-
-And add to `register_extensions()` in main application:
-
-__/app/app.py__
-{% highlight python linenos %}      
-from app.extensions import debug_toolbar mongo
-from app import public
-
-...
-def register_extensions(app):
-    """Register Flask extensions."""
-    debug_toolbar.init_app(app)
-    app.logger.debug("Debug toolbar initialized")
-    mongo.init_app(app)
-    return None
-{% endhighlight %}
-
-
-This will attach PyMongo db to the current app using default name or name specified in configurtion file. 
-=======
->>>>>>> 7b8ed81e246d72878f051ae568b6b13377af597c
-
-<<<<<<< HEAD
-=======
-
->>>>>>> 881ae6598563e575243516bd08c04d6601b4c6e0
-
 
 
 __/app/settings.py__
@@ -1076,15 +918,6 @@ __/app/settings.py__
 
 {% endhighlight %}
 
-<<<<<<< HEAD
-__/app/settings.py__
-{% highlight python linenos %}
-
-
-{% endhighlight %}
-
-=======
->>>>>>> 881ae6598563e575243516bd08c04d6601b4c6e0
 
 
 ### User model
@@ -1105,73 +938,6 @@ __/app/settings.py__
 ...
 {% endhighlight%}
 
-
-### Password management
-
-### User profile
-
-
-
-
-## Dashboard
-
-Basic structure of the dashboard component is contained in separate folder which gives very high modularity. Each module has its own routing mechanism located in `views.py` and own templates. If it is necessary we can include additional static folder with dashboard related JavaScript and css styles.
-
-
-__/app/settings.py__
-{% highlight python linenos %}
-
-
-{% endhighlight %}
-
-
-
-__/app/settings.py__
-{% highlight python linenos %}
-
-
-{% endhighlight %}
-
-
-
-
-__/app/settings.py__
-{% highlight python linenos %}
-
-
-{% endhighlight %}
-
-
-
-__/app/settings.py__
-{% highlight python linenos %}
-
-
-{% endhighlight %}
-
-
-
-### Template
-
-__/dashboard/templates/dashboard.html__
-{% highlight html linenos %}
-{% raw %}{% extends "layout.html" %}{% endraw %}
-
-{% raw %}{% block title %}Dashboard{% endblock %}{% endraw %}
-
-{% raw %}{% block content %}{% endraw %}
-
-
-    <h2>This is Dashboard page!</h2>
-
-
-{% raw %}{% endblock %}{% endraw %}
-{% endhighlight%}
-
-__/dashboard/views.py__
-{% highlight python linenos %}
-# some code
-{% endhighlight %}
 
 
 ## Summary
@@ -1194,14 +960,7 @@ __/dashboard/views.py__
 [intro]:    /assets/2017-07-12/intro.png
 [content]:  /assets/2017-07-12/content.png
 [contact]:  /assets/2017-07-12/contact.png
-<<<<<<< HEAD
-[footer]:    /assets/2017-07-12/footer.png
-[home_fdt]: /assets/2017-07-12/home-fdt.png
-[register]: /assets/2017-07-12/register.png
-[login]: /assets/2017-07-12/login.png
-=======
 [footer]:   /assets/2017-07-12/footer.png
 [home_fdt]: /assets/2017-07-12/home-fdt.png
 [register]: /assets/2017-07-12/register.png
 [login]:    /assets/2017-07-12/login.png
->>>>>>> 881ae6598563e575243516bd08c04d6601b4c6e0
