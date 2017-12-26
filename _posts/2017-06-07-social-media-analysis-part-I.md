@@ -2,7 +2,7 @@
 layout:     post
 author:     Michal Dyzma
 title:      Social media analysis with Flask, Part I
-date:       2017-06-07 11:11:47
+date:       2017-06-07 11:11:47 +0200
 comments:   true
 mathjax:    false
 categories: python social-media Flask TravisCI Heroku

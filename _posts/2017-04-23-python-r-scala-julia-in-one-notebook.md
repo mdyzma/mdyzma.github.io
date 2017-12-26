@@ -674,7 +674,9 @@ Available kernels:
   python3      /home/mdyzma/anaconda3/share/jupyter/kernels/python3
 {% endhighlight %}
 
+## Examples
 
+Usually notebooks are used sequentially. It means, that changing kernel during ccomputation may not be possible for all kernels. Python kernel is able to use ipython magic functions to switch kernels from cell to cell, Julia has very usefull packages - pycall and rcall, which allow to execute native code in this languages. Only R kernel has no connections outside, and it's usage with other kernel is impossible without complicated serialization and deserialization system.
 ## Summary
 
 Now we have versatile, multi-language prototyping environment in the browser.

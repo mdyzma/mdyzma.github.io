@@ -1,38 +1,32 @@
 ---
 layout:     post
 author:     Michal Dyzma
-title:      Continuous integration with Travis CI
+title:      Deploy Flask application with TravisCI
 subtitle:   Setup various CI systems for python projects
-date:       2017-07-28 18:40:53
+date:       2017-05-20 18:40:53 +0200
 comments:   true
 categories: python devops TravisCI
 keywords:   python, devops, TravisCI
 ---
 
-Travis is very nice service, which allows to easily build your own  CI/CD platform using GitHub project and configuration file in YAML (YAML Ain't Markup Language) format. Easy to read by ordinary people not speaking binary. CI/CD stands for Continuous Integration and Continuous Deployment (or Delivery). Basic concepts in modern software engineering, which are fancy terms for automating entire software production  pipeline: from unit test, acceptance tests to deployment to the production server.
+TravisCI is very nice service, which allows to easily build your own  CI/CD platform using GitHub project and configuration file in YAML (YAML Ain't Markup Language) format. Easy to read by ordinary people not speaking binary. CI/CD stands for Continuous Integration and Continuous Deployment (or Delivery). Basic concepts in modern software engineering, which are fancy terms for automating entire software production  pipeline: from unit test, acceptance tests to deployment to the production server.
 
 
 ## TravisCI & GitHub integration
 
 First thing first, register account on [https://travis-ci.org](https://travis-ci.org). The easiest way is to integrate TravisCI with your GitHub account. Go to the GitHub and initialize empty repository. Next go to the Travis profile page and sync repository. Your new project should appear on the list. Find it and enable webhook listening git repository changes on GitHub:
 
-
 ![webhook][webhook]
-
 
 Now if you check GitHub's __settings tab -> Integration & services__, you will find Travis on the list of connected services:
 
-
 ![settings][settings]
 
-
 Project s listed on your main Travis Profile, but says _"There is no build on the default branch yet."_. We need ``.travis.yaml`` in our project
-
 
 ## Travis YAML configuration file
 
 To set TravisCI we have to place `.travis.yml` file in the application root directory. It will contain instructions for TravisCI service. Project structure should be similar to this:
-
 
 {% highlight bash %}
 [mdyzma@devbox GitHub]$ tree .
@@ -43,7 +37,6 @@ To set TravisCI we have to place `.travis.yml` file in the application root dire
     |-- LICENSE
     `-- README.md
 {% endhighlight %}
-
 
 YAML is pretty easy to read and write. The most important parts of our CI system will be:
 
@@ -73,7 +66,7 @@ python:
 
 ## Requirements
 
-Depending on your program this will cover 99.5% of all Python users. The 0.5% would cover exotic bio-it labs from the last century and European Space Agency data processing clusters.  Rest already uses Python v3.6 at least. Now lets install all the dependencies needed in our project.
+Depending on your program this will cover 99.5% of all Python users. The 0.5% would cover exotic bio-it labs from the last century and European Space Agency data processing clusters.  Rest already uses Python v3.6 at least. Now let's install all the dependencies needed in our project.
 
 It is best to keep dependencies organized in separate files. One for each environment. Main `requirements.txt` file contains link to the production environment dependencies (used by deployment service). For development purposes I will use superset of requirements from `requirements/dev.txt`
 
@@ -132,7 +125,7 @@ WebTest==2.0.27
 # mock==2.0.0
 
 # PEP8
-pylin==1.6.5
+pylint==1.6.5
 
 # Documentation
 Sphinx==1.6.5
@@ -168,17 +161,18 @@ python:
 install: "pip install -r requirements/dev.txt"
 {% endhighlight %}
 
-Now when all dependencies were installed successful pipeline should proceed to create code metrics, particularly test coverage, docs coverage and code
+Now when all dependencies were installed successful pipeline should proceed to create code metrics, particularly test coverage, docs coverage and code consistency with PEP8.
 
 ## Test coverage
 
 
 ## PEP8 consistency
 
-This is usually resolved on the level of IDE. Most modern Python IDE's have style guide built in the code editor. Therefore this step is usually skipped in many projects.
+This is usually resolved on the level of IDE. Most modern Python IDE's have style guide built in the code editor. Therefore, this step is usually skipped in many projects.
+
 > A Foolish Consistency is the Hobgoblin of Little Minds
 
-It is true whar Rober Martin wrote: Codes are read much longer time than being written. This style guide exists for consistency. The most important thing is to know when you should break consistency, to keep software maintanance efficient. For example this PEP you should not break backward compatibility.  One of the modules allowing to test code styling is `pylint`. Text report of pylint module may look like this:
+It is true what Rober Martin wrote: Codes are read much longer time than being written. This style guide exists for consistency. The most important thing is to know when you should break consistency, to keep software maintenance efficient. For example this PEP you should not break backward compatibility.  One of the modules allowing to test code styling is `pylint`. Text report of pylint module may look like this:
 
 
 {% highlight bash %}
@@ -251,7 +245,6 @@ It is true whar Rober Martin wrote: Codes are read much longer time than being w
 
 {% endhighlight %}
 
-
 But it is better to redirect stdout to the file, where it can be checked in more civilized way: 
 
 {% highlight bash %}
@@ -278,11 +271,9 @@ pylint --output-format=html src > pylint_report.html
 
 {% endhighlight %}
 
-
 ## Documentation
 
-Project's documentation is placed in `docs/` folder and is based on excellent Python `Sphinx` module. Hearth of the documentation is `conf.py` file, where all extensions and static pages generator properties are configured. 
-
+Project's documentation is placed in `docs/` folder and is based on excellent Python `Sphinx` module. Hearth of the documentation is `conf.py` file, where all extensions and static pages generator properties are configured.
 
 {% highlight bash %}
 [mdyzma@devbox travis_python_test]$ tree .
@@ -307,9 +298,6 @@ Project's documentation is placed in `docs/` folder and is based on excellent Py
 `-- requirements.txt
 {% endhighlight %}
 
-
-
-
 Creating basic documentation stub out of the box.
 
 {% highlight bash %}
@@ -330,9 +318,8 @@ Finished: An initial directory structure has been created.
 You should now populate your master file ./source/index.rst and create other documentation
 source files. Use the Makefile to build the docs, like so:
    make builder
-where "builder" is one of the supported builders, e.g. html, latex or linkcheck.
+where "builder" is one of the supported builders, e.g. html, latex or link check.
 {% endhighlight %}
-
 
 Following quick-start help, lets build basic html documentation:
 
@@ -351,7 +338,7 @@ build succeeded.
 Build finished. The HTML pages are in build/html.
 {% endhighlight %}
 
-During development we will need to build document frequently. Autobuild tool will manage this task and will  run local server, which will rebuild sphinx documentation, when it detects changes in `.rst` files. To start server type:
+During development, we will need to build document frequently. Autobuild tool will manage this task and will run local server, which will rebuild sphinx documentation, when it detects changes in `.rst` files. To start server type:
     
 {% highlight bash %}
 [mdyzma@devbox docs]$ sphinx-autobuild source build\html
@@ -384,25 +371,121 @@ During development we will need to build document frequently. Autobuild tool wil
 [I 171214 23:05:00 handlers:62] Start detecting changes
 {% endhighlight %}
 
-
 Now we should be able to check docs page in the browser under [http://127.0.0.1:8000](http://127.0.0.1:8000) address.
-
 
 ![docs][docs]
 
-Additionally we want to keep latest documentation or even publish it online. But we do not need Travis do it. GitHub repository can be connected to the [ReadTheDocs[(https://readthedocs.org) service, which will deploy our documentation on it's servers whenever repo has been changed. No need to update `.travis.yml`.
+Additionally, we want to keep the latest documentation or even publish it online. But we do not need Travis do it. GitHub repository can be connected to the [ReadTheDocs](https://readthedocs.org) service, which will deploy our documentation on its servers whenever repo has been changed. No need to update `.travis.yml`.
+
+## Application
+
+Lets place basic Flask application in webapp directory:
+
+{% highlight bash %}
+[mdyzma@devbox travis_python_test]$ tree .
+.
+|-- .gitignore
+|-- .travis.yml
+|-- docs/
+|-- LICENSE
+|-- README.md
+|-- requirements/
+|-- requirements.txt
+`-- webapp/
+    |-- templates/
+    |   |-- index.html
+    |   `-- layout.html
+    |-- __init__.py
+    `-- app.py
+
+{% endhighlight %}
+
+
+
+## Tests
+
+There are two types of tests I would like to put in project prototype:
+
+- unit tests
+- acceptance tests
+
+Unit tests are bound to specific module, class or method/function, while acceptance tests are derived from „User Stories”. Unit tests can be programmed using python's STL module or very popular `pytest`. Acceptance tests use more natural language called gherkin and python library `behave`.
+
+{% highlight bash %}
+[mdyzma@devbox travis_python_test]$ tree .
+.
+|-- .gitignore
+|-- .travis.yml
+|-- docs/
+|-- LICENSE
+|-- README.md
+|-- requirements/
+|-- requirements.txt
+|
+|-- .behaverc
+|
+|-- tests/
+|    `--features/
+|       |-- environment.py
+|       |--home.feature
+|       `-- steps/
+|          `--home_steps.py
+`-- webapp/
+
+{% endhighlight %}
+
+Behave discovers basic settings file in form of windows ini, where  we can specify output format and features folder location. For better readability I usually place `features` inside `tests`.
+
+__.behaverc__
+{% highlight bash %}
+[behave]
+show_skipped = false
+show_timings = false
+default_format = pretty
+paths = tests/features
+{% endhighlight %}
+
+Another configuration file is located in `features` and exposes web application context to the test environment.
+
+__/features/environment.py__
+{% highlight python %}
+from webtest import TestApp
+
+from webapp.app import app
+
+
+def before_scenario(context, scenario):
+    context.client = TestApp(app)
+
+
+def after_scenario(context, scenario):
+    del context.client
+{% endhighlight %}
+
+__features/home.feature__
+{% highlight gherkin %}
+Feature: Index page display
+
+    Scenario: Navigation to Home Page
+        When I navigate to Home Page
+        Then Home Page should be displayed
+{% endhighlight %}
+
+__features/steps/home_steps.py__
+{% highlight python %}
+from behave import *
+
+@when(u'I navigate to Home Page')
+def step_impl(ctx):
+    ctx.resp = ctx.client.get('/')
+
+@then(u'{text} should be displayed')
+def step_impl(ctx, text):
+    assert text in ctx.resp
+{% endhighlight %}
 
 
 ## Heroku deployment
-
-
-
-
-
-
-
-
-
 
 {% highlight bash %}
 (md_analytics) [mdyzma@devbox md_analytics]$ tree .
@@ -445,10 +528,7 @@ Additionally we want to keep latest documentation or even publish it online. But
 `-- requirements.txt
 {% endhighlight %}
 
-
-
 Full `.travis.yml`file:
-
 
 {% highlight yml %}
 language: python
@@ -484,7 +564,7 @@ deploy:
 
 <!-- Images -->
 
-[webhook]:    /assets/2017-07-28/webhook.png
-[settings]:   /assets/2017-07-28/gh-settings.png
-[rtd-connect]:/assets/2017-07-28/rtd-connect.png
-[docs]:       /assets/2017-07-28/docs.png
+[webhook]:    /assets/2017-05-20/webhook.png
+[settings]:   /assets/2017-05-20/gh-settings.png
+[rtd-connect]:/assets/2017-05-20/rtd-connect.png
+[docs]:       /assets/2017-05-20/docs.png
