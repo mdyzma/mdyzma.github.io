@@ -162,7 +162,7 @@ Now when all dependencies were installed successful pipeline should proceed to c
 
 ## Test coverage
 
-Code coverage can be tested using `coverage` package. It is tricky to use, therefore some explanation might be usefull. I am going to use traditional coverage tool to produce coverage report in html, which will be grabbed by codecov service (check: [codecov.io](https://codecov.io)), which is integrated with GitHub. You can enable codecov for all repositories in your GitHub account.
+Code coverage can be tested using `coverage` package. It is tricky to use, therefore some explanation might be useful. I am going to use traditional coverage tool to produce coverage report in html, which will be grabbed by codecov service (check: [codecov.io](https://codecov.io)), which is integrated with GitHub. You can enable codecov for all repositories in your GitHub account.
 
 To get simple report is is enough to type:
 
@@ -205,7 +205,7 @@ This is usually resolved on the level of IDE. Most modern Python IDE's have styl
 
 > A Foolish Consistency is the Hobgoblin of Little Minds
 
-It is true what Rober Martin wrote: Codes are read much longer time than being written. This style guide exists for consistency. The most important thing is to know when you should break consistency, to keep software maintenance efficient. For example this PEP you should not break backward compatibility.  One of the modules allowing to test code styling is `pylint`. Text report of pylint module may look like this:
+It is true what Rober Martin wrote: Codes are read much longer time than being written. This style guide exists for consistency. The most important thing is to know when you should break consistency, to keep software maintenance efficient. For example this PEP you should not break backward compatibility.  One of the modules allowing to test code style is `pylint`. Text report of pylint module may look like this:
 
 
 {% highlight bash %}
@@ -645,11 +645,11 @@ if __name__ == '__main__':
 Running tests now shows all is green and good to go.
 ## Heroku deployment
 
-To deploy project to the web we need nice server and domain. Heroku provides nice hosting for python apps. Free to play with (5 applications), test and checkhow our application might work in real life.
+To deploy project to the web we need nice server and domain. Heroku provides nice hosting for python apps. Free to play with (5 applications), test and check how our application might work in real life.
 
 In order to do that we need some Heroku infrastructure. In fact, the only necessary element is `Procfile`, instructing Heroku machinery what to launch and how.
 
-Following our app structure we can set following procfile:
+Following our app structure we can set following Procfile:
 
 __Procfile__
 {% highlight bash %}
@@ -682,7 +682,7 @@ https://flask-travis-ci.herokuapp.com/ | https://git.heroku.com/flask-travis-ci.
 {% endhighlight %}
 
 
-Now lets copy heroku api-key and add it to the .travis.yml using ruby travis gem, which will nicely secure it for us.
+Now lets copy heroku api-key and add it to the `.travis.yml` using ruby travis gem, which will nicely secure it for us.
 
 {% highlight bash %}
 [mdyzma@devbox flask_and_travis_ci]$ gem install travis
@@ -692,7 +692,8 @@ Now lets copy heroku api-key and add it to the .travis.yml using ruby travis gem
 Detected repository as mdyzma/travis_python_test, is this correct? |yes|
 {% endhighlight %}
 
-... this will add api key hash to the travis.yml
+... this will add api key hash to the `.travis.yml`
+
 __.travis.yml__
 {% highlight yml %}
 # Deployment to Heroku
@@ -707,17 +708,16 @@ deploy:
     app: flask-travis-ci
 {% endhighlight %}
 
-All done. Application is alive and served on heroku:
+All done. Application is alive and served on Heroku:
 
 ![app-deployed][app_deped]
 
-
-Temporary link to the workin application: [https://flask-travis-ci.herokuapp.com](https://flask-travis-ci.herokuapp.com)
+Temporary link to the working application: [https://flask-travis-ci.herokuapp.com](https://flask-travis-ci.herokuapp.com)
 
 
 ## Summary
 
-We have created Flask application with automated pipleine spanning most important aspects of agile software development. From source control, to automatic code metrics, testing and deployment.
+We have created Flask application with automated pipeline spanning most important aspects of agile software development. From source control, to automatic code metrics, testing and deployment.
 
 <br>
 {% include note.html content="Source code from the article can be downloaded from this [GitHub repository](https://github.com/mdyzma/travis_python_test)" %}
