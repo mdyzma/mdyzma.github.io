@@ -9,8 +9,12 @@ categories: python devops TravisCI
 keywords:   python, devops, TravisCI
 ---
 
-TravisCI is very nice service, which allows to easily build your own  CI/CD platform using GitHub project and configuration file in YAML (YAML Ain't Markup Language) format. Easy to read by ordinary people not speaking binary. CI/CD stands for Continuous Integration and Continuous Deployment (or Delivery). Basic concepts in modern software engineering, which are fancy terms for automating entire software production  pipeline: from unit test, acceptance tests to deployment to the production server.
+TravisCI is a very nice service, which allows to easily build your own  CI/CD platform using GitHub project and configuration file in YAML (YAML Ain't Markup Language) format. Easy to read by ordinary people not speaking binary. CI/CD stands for Continuous Integration and Continuous Deployment (or Delivery). Basic concepts in modern software engineering, which are fancy terms for automating entire software production  pipeline: from unit test, acceptance tests to deployment on the production server.
 
+
+<br>
+{% include note.html content="Source code from the article can be downloaded from this [GitHub repository](https://github.com/mdyzma/travis_python_test)" %}
+`
 
 ## TravisCI & GitHub integration
 
@@ -22,7 +26,7 @@ Now if you check GitHub's __settings tab -> Integration & services__, you will f
 
 ![settings][settings]
 
-Project s listed on your main Travis Profile, but says _"There is no build on the default branch yet."_. We need ``.travis.yaml`` in our project
+Project s listed on your main Travis Profile, but says _"There is no build on the default branch yet."_. We need ``.travis.yml`` in our project
 
 ## Travis YAML configuration file
 
@@ -44,8 +48,7 @@ YAML is pretty easy to read and write. The most important parts of our CI system
 2. app __dependencies installation__
 3. running __code metrics__
     - test coverage
-    <!-- - pep8 standard consistency check (style guide) -->
-    <!-- - documentation coverage -->
+    - pep8 standard consistency check (style guide)
 4. running __unit tests__
 5. running __acceptance test__
 6. __build latest documentation__
@@ -389,7 +392,7 @@ script:
 
 {% endhighlight %}
 
-Sometimes it is necessary to tweak pylint (especially in case of flask or pythoi), to stop failing standard naming convention i.e. `app = Flask(__name__)`. For application name app is just variable holding Flask class object. For pylin it is a global contant (visible in entire module), therefore should follow constants convention naming (capital letters, etc). We can tweak pylint to indicate variables we want to ignore. Or change its general behaviour changing regex, which is used to discover constants (check [Pylint documentation](https://pylint.readthedocs.io/en/latest/tutorial.html)).
+Sometimes it is necessary to tweak pylint (especially in case of flask or python apps), to stop failing standard naming convention i.e. `app = Flask(__name__)`. For application name app is just variable holding Flask class object. For pylin it is a global contant (visible in entire module), therefore should follow constants convention naming (capital letters, etc). We can tweak pylint to indicate variables we want to ignore. Or change its general behaviour changing regex, which is used to discover constants (check [Pylint documentation](https://pylint.readthedocs.io/en/latest/tutorial.html)).
 
 ## Documentation
 
@@ -490,9 +493,6 @@ Additionally, we want to keep the latest documentation or even publish it online
 
 ![rtd-conn][rtd-connect]
 
-## Documentation coverage
-
-Not very important, but shows code quality. Sphinx has its own plugin, which is responsible for this metrics.
 
 ## BDD development
 
@@ -503,8 +503,8 @@ There are two types of tests I would like to put in this project prototype:
 
 Unit tests are bound to specific module, class or method/function, while acceptance tests are derived from „User Stories”. Unit tests can be programmed using python's STL module or very popular `pytest`. Acceptance tests use more natural language called `Gherkin` and python library `behave`. Agile development requires at least three steps:
 
-1. Write simple acceptance test( which fails)
-2. Make acceptance test pass (using TDD inner loop)
+1. Write simple acceptance test
+2. Make acceptance test pass (using TDD in the inner loop)
 3. Refactor acceptance test
 
 Second step in our case is usually series of unit tests for all modules taking part in acceptance test from top module to most nested one (so called "outside-in" approach). Behave enforces specific folder and file structure with some flexibility, but main components need to be set in our app. Typical structure of acceptance tests with behave is shown below:
@@ -581,18 +581,19 @@ import webapp
 
 
 class HomeViewTest(unittest.TestCase):
-    """Main `home()` application endpoint tests.
-    """
+
     def setUp(self):
-    	self.app = webapp.app.test_client()
-    	self.app.testing = True
+      self.app = webapp.app.test_client()
+      self.app.testing = True
 
     def test_home_page(self):
         home = self.app.get('/')
-        assert 'Home Page'in str(home.data)
+        self.assertIn('Home Page', str(home.data))
+
 
 if __name__ == "__main__":
     unittest.main()
+
 {% endhighlight %}
 
 Test fails. Lets add unit tests and acceptance test in `.travis.yml`
@@ -718,6 +719,39 @@ Temporary link to the working application: [https://flask-travis-ci.herokuapp.co
 ## Summary
 
 We have created Flask application with automated pipeline spanning most important aspects of agile software development. From source control, to automatic code metrics, testing and deployment.
+
+Finally projects  `.travis.yml` file should look like this:
+
+__.travis.yml__
+{% highlight yml %}
+language: python
+
+python:
+  - 2.7
+  - 3.5
+  - 3.6
+
+install:
+  - pip install -r requirements/dev.txt
+  - pip install codecov
+
+script:
+  - python -m unittest discover
+  - behave
+  - coverage erase
+  - coverage run test_webapp.py && coverage html
+  - pylint --output-format=text webapp.py
+
+after_success:
+  - codecov
+
+deploy:
+  - provider: heroku
+    api_key:
+      secure: mSo7Q2TGXZou3GwctrEX5MBW1CrcNDeocOsau2QT5aqvVb8LUcgL8NqytDiOhWOBVX8u3cxn0nSME+j/Edz8Zxcw21Ls4kpZJu8VsJkn8oF/rPflBWIrW/6kw3hMucfec82eUxCOub2juXMTMbCTspaiWAAnpvsaptVmNhXIkvic3OXxRKKg50he9dpRbqRtyPlgR8nyXFYKJCRedzSwufpQWJ8t/pMy+epp06A6Z0CjbqOByYFfpxx7Vkbzj/L3+j4degED1SsmMmL3OQJHp00PJAcKYNEgPBXpgvRcppY/pS9YH/UnDT5nulU/1+K/IiBP/8/SRNj8MXdzlSAXqFBevEbCKyJRfWLMZ3tflbhdm3/0OeSN/3ncc2ypuwXHE5K/Td/P5NuPLmD5vH+di53Hxo/RHmltCxAKturPjrM6uS0bB24KctyztLERDudZkIBYAAZBZJ2t7alWeMY+cgPkfzs9fw0w6+ECphesdI2ZovE5pXXKEqX9Z83fgkAlw1d1iPpfOrz28C4QT12gsopYNFzW76lKKAGRtEUH07bu/R8IB4xohgtTf9a57mYcMYDcYCpJtMkNbqIEgYRDSS9nKdnL6pLNoJPGxsLrLarAYWMA1k7j5UaPBMweSuOj7Haowf84eH4tc/W4CRKMBvJw/HTDIxXdJWEaicpfljI=
+    app: flask-travis-ci
+
+{% endhighlight %}
 
 <br>
 {% include note.html content="Source code from the article can be downloaded from this [GitHub repository](https://github.com/mdyzma/travis_python_test)" %}
