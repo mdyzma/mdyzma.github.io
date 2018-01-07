@@ -2,7 +2,7 @@
 layout:     post
 author:     Michal Dyzma
 title:      Social media analysis with Flask, Part I
-date:       2017-06-07 11:11:47 +0200
+date:       2017-07-07 11:11:47 +0200
 comments:   true
 mathjax:    false
 categories: python social-media Flask TravisCI Heroku
@@ -19,8 +19,8 @@ Flask application presenting social media accounts analysis in form of dashboard
 
 ## Series consists of:
 
-* [Social media analysis with Flask, Part I]({{site.url}}{% post_url 2017-06-07-social-media-analysis-part-I %}) (Setting environment, flask, Travis CI/Heroku CD )
-* [Social media analysis with Flask, Part II]({{site.url}}{% post_url 2017-07-12-social-media-analysis-part-ii %}) (Templates, login/register mechanism, data storage)
+* [Social media analysis with Flask, Part I]({{site.url}}{% post_url 2017-07-07-social-media-analysis-part-I %}) (Setting environment, flask, Travis CI/Heroku CD )
+* [Social media analysis with Flask, Part II]({{site.url}}{% post_url 2017-08-12-social-media-analysis-part-ii %}) (Templates, login/register mechanism, data storage)
 
 
 ## Part I
@@ -906,17 +906,17 @@ To continue:
 
 <!-- Images -->
 
-[banner]:        /assets/2017-06-07/banner.png
-[tw_create_app]: /assets/2017-06-07/twitter-create-app.png
-[tw_settings]:   /assets/2017-06-07/twitter-app-settings.png
-[tw_tokens]:     /assets/2017-06-07/twitter-app-tokens.png
-[github_issues]: /assets/2017-06-07/github-issues.png
-[hello_flask]:   /assets/2017-06-07/hello-flask.png
-[h_pipeline]:    /assets/2017-06-07/heroku-pipeline.png
-[h_empty]:       /assets/2017-06-07/heroku-empty-app.png
-[h_first]:       /assets/2017-06-07/heroku-first-deployment.png
-[h_conn_gh]:     /assets/2017-06-07/heroku-connect-github.png
-[travis_ci]:     /assets/2017-06-07/connect-github-travis-ci.png
-[travis_board]:  /assets/2017-06-07/travis-ci-project.png
-[travis_log]:    /assets/2017-06-07/travis-ci-fail-report.png
-[travis_green]:  /assets/2017-06-07/travis-ci-green.png
+[banner]:        /assets/2017-07-07/banner.png
+[tw_create_app]: /assets/2017-07-07/twitter-create-app.png
+[tw_settings]:   /assets/2017-07-07/twitter-app-settings.png
+[tw_tokens]:     /assets/2017-07-07/twitter-app-tokens.png
+[github_issues]: /assets/2017-07-07/github-issues.png
+[hello_flask]:   /assets/2017-07-07/hello-flask.png
+[h_pipeline]:    /assets/2017-07-07/heroku-pipeline.png
+[h_empty]:       /assets/2017-07-07/heroku-empty-app.png
+[h_first]:       /assets/2017-07-07/heroku-first-deployment.png
+[h_conn_gh]:     /assets/2017-07-07/heroku-connect-github.png
+[travis_ci]:     /assets/2017-07-07/connect-github-travis-ci.png
+[travis_board]:  /assets/2017-07-07/travis-ci-project.png
+[travis_log]:    /assets/2017-07-07/travis-ci-fail-report.png
+[travis_green]:  /assets/2017-07-07/travis-ci-green.png

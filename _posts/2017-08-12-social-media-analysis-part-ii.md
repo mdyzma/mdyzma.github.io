@@ -2,7 +2,7 @@
 layout:     post
 author:     Michal Dyzma
 title:      Social media analysis with Flask, Part II
-date:       2017-07-12 16:11:47 +0200
+date:       2017-08-12 16:11:47 +0200
 comments:   true
 mathjax:    false
 categories: python social-media Flask Jinja2 MongoDB
@@ -19,8 +19,8 @@ Flask application presenting social media accounts analysis in form of dashboard
 
 ## Series consists of:
 
-* [Social media analysis with Flask, Part I]({{site.url}}{% post_url 2017-06-07-social-media-analysis-part-I %}) (Setting environment, flask, Travis CI/Heroku CD )
-* [Social media analysis with Flask, Part II]({{site.url}}{% post_url 2017-07-12-social-media-analysis-part-ii %}) (Templates, login/register mechanism, data storage)
+* [Social media analysis with Flask, Part I]({{site.url}}{% post_url 2017-07-07-social-media-analysis-part-I %}) (Setting environment, flask, Travis CI/Heroku CD )
+* [Social media analysis with Flask, Part II]({{site.url}}{% post_url 2017-08-12-social-media-analysis-part-ii %}) (Templates, login/register mechanism, data storage)
 
 
 ## Part II
@@ -955,12 +955,12 @@ __/app/settings.py__
 
 <!-- Images -->
 
-[banner]:   /assets/2017-07-12/banner.png
-[navbar]:   /assets/2017-07-12/navbar.png
-[intro]:    /assets/2017-07-12/intro.png
-[content]:  /assets/2017-07-12/content.png
-[contact]:  /assets/2017-07-12/contact.png
-[footer]:   /assets/2017-07-12/footer.png
-[home_fdt]: /assets/2017-07-12/home-fdt.png
-[register]: /assets/2017-07-12/register.png
-[login]:    /assets/2017-07-12/login.png
+[banner]:   /assets/2017-08-12/banner.png
+[navbar]:   /assets/2017-08-12/navbar.png
+[intro]:    /assets/2017-08-12/intro.png
+[content]:  /assets/2017-08-12/content.png
+[contact]:  /assets/2017-08-12/contact.png
+[footer]:   /assets/2017-08-12/footer.png
+[home_fdt]: /assets/2017-08-12/home-fdt.png
+[register]: /assets/2017-08-12/register.png
+[login]:    /assets/2017-08-12/login.png
