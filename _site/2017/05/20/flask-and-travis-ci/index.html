@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <!-- Begin Jekyll SEO tag v2.2.3 -->
+<title>Deploy Flask application with TravisCI | Consider Python</title>
+<meta property="og:title" content="Deploy Flask application with TravisCI" />
+<meta name="author" content="Michal Dyzma" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="TravisCI is a very nice service, which allows to easily build your own CI/CD platform using GitHub project and configuration file in YAML (YAML Ain’t Markup Language) format. Easy to read by ordinary people not speaking binary. CI/CD stands for Continuous Integration and Continuous Deployment (or Delivery). Basic concepts in modern software engineering, which are fancy terms for automating entire software production pipeline: from unit test, acceptance tests to deployment on the production server." />
+<meta property="og:description" content="TravisCI is a very nice service, which allows to easily build your own CI/CD platform using GitHub project and configuration file in YAML (YAML Ain’t Markup Language) format. Easy to read by ordinary people not speaking binary. CI/CD stands for Continuous Integration and Continuous Deployment (or Delivery). Basic concepts in modern software engineering, which are fancy terms for automating entire software production pipeline: from unit test, acceptance tests to deployment on the production server." />
+<link rel="canonical" href="http://localhost:4000/2017/05/20/flask-and-travis-ci/" />
+<meta property="og:url" content="http://localhost:4000/2017/05/20/flask-and-travis-ci/" />
+<meta property="og:site_name" content="Consider Python" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-05-20T18:40:53+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@MichalDyzma" />
+<meta name="twitter:creator" content="@Michal Dyzma" />
+<meta property="fb:admins" content="mdyzma" />
+<meta property="article:publisher" content="mdyzma" />
+<meta property="fb:app_id" content="422251294815916" />
+<script type="application/ld+json">
+{"@context":"http://schema.org","@type":"BlogPosting","headline":"Deploy Flask application with TravisCI","author":{"@type":"Person","name":"Michal Dyzma"},"datePublished":"2017-05-20T18:40:53+02:00","dateModified":"2017-05-20T18:40:53+02:00","description":"TravisCI is a very nice service, which allows to easily build your own CI/CD platform using GitHub project and configuration file in YAML (YAML Ain’t Markup Language) format. Easy to read by ordinary people not speaking binary. CI/CD stands for Continuous Integration and Continuous Deployment (or Delivery). Basic concepts in modern software engineering, which are fancy terms for automating entire software production pipeline: from unit test, acceptance tests to deployment on the production server.","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"http://localhost:4000/assets/md-logo.png"},"name":"Michal Dyzma"},"mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2017/05/20/flask-and-travis-ci/"},"url":"http://localhost:4000/2017/05/20/flask-and-travis-ci/"}</script>
+<!-- End Jekyll SEO tag -->
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>Deploy Flask application with TravisCI</title>
+  <meta name="description" content="TravisCI is a very nice service, which allows to easily build your own CI/CD platform using GitHub project and configuration file in YAML (YAML Ain’t Markup Language) format. Easy to read by ordinary people not speaking binary. CI/CD stands for Continuous Integration and Continuous Deployment (or Delivery). Basic concepts in modern software engineering, which are fancy terms for automating entire software production pipeline: from unit test, acceptance tests to deployment on the production server.">
+  <meta name="keywords" content="python, devops, TravisCI">
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://localhost:4000/2017/05/20/flask-and-travis-ci/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="Consider Python" href="http://localhost:4000/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="MichalDyzma">
+  <meta name="twitter:title" content="Deploy Flask application with TravisCI">
+  <meta name="twitter:description" content="TravisCI is a very nice service, which allows to easily build your own CI/CD platform using GitHub project and configuration file in YAML (YAML Ain’t Markup Language) format. Easy to read by ordina...">
+  
+    <meta name="twitter:creator" content="MichalDyzma">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+<!-- Font awesome -->
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  
+  <!-- Google Analytics -->
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-97434888-1', 'auto');
+    ga('send', 'pageview');
+
+  </script>
+
+
+  
+  <!-- Google Adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: ca-pub-4566255347044004,
+    enable_page_level_ads: true
+  });
+</script>
+
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">Consider Python</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="/">Home</a>
+      
+        
+        <a class="page-link" href="/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="/about/">About</a>
+      
+        
+        <a class="page-link" href="https://github.com/mdyzma/">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <h1 class="post-title" itemprop="name headline">Deploy Flask application with TravisCI</h1>
+    
+    <p class="post-meta"><time datetime="2017-05-20T18:40:53+02:00" itemprop="datePublished">May 20, 2017</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Michal Dyzma</span></span> • 
+  
+  
+    
+      <a href="/categories/python/">python</a>,
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/devops/">devops</a>,
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/travisci/">TravisCI</a>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+</p>
+  </header>
+
+  <div style="padding: 5px 0 5px 0;">
+<span class="reading-time" title="Estimated read time">
+  
+  
+    <i class="fa fa-clock-o" aria-hidden="true"></i> Estimated read time: <b>23 mins </b>
+  
+</span>
+</div>
+
+  <div class="post-content" itemprop="articleBody">
+
+    <p>TravisCI is a very nice service, which allows to easily build your own  CI/CD platform using GitHub project and configuration file in YAML (YAML Ain’t Markup Language) format. Easy to read by ordinary people not speaking binary. CI/CD stands for Continuous Integration and Continuous Deployment (or Delivery). Basic concepts in modern software engineering, which are fancy terms for automating entire software production  pipeline: from unit test, acceptance tests to deployment on the production server.</p>
+
+<p><br /></p>
+<div class="alert alert-info" role="alert" style="text-align: justify; vertical-align:middle;">
+Source code from the article can be downloaded from this <a href="https://github.com/mdyzma/travis_python_test">GitHub repository</a>
+</div>
+
+<p>`</p>
+
+<h2 id="travisci--github-integration">TravisCI &amp; GitHub integration</h2>
+
+<p>First thing first, register account on <a href="https://travis-ci.org">https://travis-ci.org</a>. The easiest way is to integrate TravisCI with your GitHub account. Go to the GitHub and initialize empty repository. Next go to the Travis profile page and sync repository. Your new project should appear on the list. Find it and enable webhook listening git repository changes on GitHub:</p>
+
+<p><img src="/assets/2017-05-20/webhook.png" alt="webhook" /></p>
+
+<p>Now if you check GitHub’s <strong>settings tab -&gt; Integration &amp; services</strong>, you will find Travis on the list of connected services:</p>
+
+<p><img src="/assets/2017-05-20/gh-settings.png" alt="settings" /></p>
+
+<p>Project s listed on your main Travis Profile, but says <em>“There is no build on the default branch yet.”</em>. We need <code class="highlighter-rouge">.travis.yml</code> in our project</p>
+
+<h2 id="travis-yaml-configuration-file">Travis YAML configuration file</h2>
+
+<p>To set TravisCI we have to place <code class="highlighter-rouge">.travis.yml</code> file in the application root directory. It will contain instructions for TravisCI service. Project structure should be similar to this:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox GitHub]<span class="nv">$ </span>tree .
+.
+|-- flask_and_travis_ci/
+    |-- .gitignore
+    |-- .travis.yml
+    |-- LICENSE
+    <span class="sb">`</span>-- README.md</code></pre></figure>
+
+<p>YAML is pretty easy to read and write. The most important parts of our CI system will be:</p>
+
+<ol>
+  <li><strong>language versions</strong> used to test app</li>
+  <li>app <strong>dependencies installation</strong></li>
+  <li>running <strong>code metrics</strong>
+    <ul>
+      <li>test coverage</li>
+      <li>pep8 standard consistency check (style guide)</li>
+    </ul>
+  </li>
+  <li>running <strong>unit tests</strong></li>
+  <li>running <strong>acceptance test</strong></li>
+  <li><strong>build latest documentation</strong></li>
+  <li><strong>deployment to staging</strong> environment</li>
+</ol>
+
+<p>First lets set language (Python obviously) and version of the interpreter:</p>
+
+<p><strong>.travis.yml</strong></p>
+
+<figure class="highlight"><pre><code class="language-yml" data-lang="yml"><span class="s">language</span><span class="pi">:</span> <span class="s">python</span>
+
+<span class="s">python</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">2.7</span>
+    <span class="pi">-</span> <span class="s">3.5</span>
+    <span class="pi">-</span> <span class="s">3.6</span></code></pre></figure>
+
+<h2 id="requirements">Requirements</h2>
+
+<p>Depending on your program this will cover 99.5% of all Python users. The 0.5% would cover exotic bio-it labs from the last century and European Space Agency data processing clusters.  Rest already uses Python v3.6 at least. But let’s add 2.7 version just for sport. Now let’s install all the dependencies needed in our project.</p>
+
+<p>It is best to keep dependencies organized in separate files. One for each environment. Main <code class="highlighter-rouge">requirements.txt</code> file contains link to the production environment dependencies (used by deployment service). For development purposes I will use superset of requirements from <code class="highlighter-rouge">requirements/dev.txt</code></p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox flask_and_travis_ci]<span class="nv">$ </span>tree .
+.
+|
+|-- requirements/
+|   |-- dev.txt
+|   <span class="sb">`</span>-- prod.txt
+<span class="sb">`</span>-- requirements.txt</code></pre></figure>
+
+<p>Now we will link <code class="highlighter-rouge">requirements/prod.txt</code> to the <code class="highlighter-rouge">requirements/dev.txt</code>, so that installing development dependencies will also install all required in production (which means when application is accessible for users). For simple web application requirements may look like this:</p>
+
+<p><strong>requirements.txt</strong></p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># requirements.txt</span>
+<span class="c"># Included because many Paas's require a requirements.txt file in the project root</span>
+<span class="c"># Just installs the production requirements.</span>
+-r requirements/prod.txt</code></pre></figure>
+
+<p><strong>requirements/prod.txt</strong></p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># requirements/prod.txt</span>
+
+<span class="c"># Everything needed in production</span>
+<span class="c"># Flask</span>
+<span class="nv">Flask</span><span class="o">==</span>0.12.2
+
+<span class="c"># Deployment</span>
+<span class="nv">gunicorn</span><span class="o">==</span>19.7.1
+
+<span class="c"># Test</span>
+<span class="nv">behave</span><span class="o">==</span>1.2.5
+<span class="nv">WebTest</span><span class="o">==</span>2.0.29
+<span class="c">#only in python 2.7</span>
+<span class="nv">mock</span><span class="o">==</span>2.0.0</code></pre></figure>
+
+<p>We will add more dependencies while app grows.</p>
+
+<p><strong>requirements/dev.txt</strong></p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># requirements/dev.txt</span>
+
+-r prod.txt
+
+<span class="c"># Debug</span>
+Flask-DebugToolbar<span class="o">==</span>0.10.1
+
+<span class="c"># PEP8</span>
+<span class="nv">pylint</span><span class="o">==</span>1.8.1
+
+<span class="c"># Coverage</span>
+<span class="nv">coverage</span><span class="o">==</span>4.4.2
+
+<span class="c"># Documentation</span>
+<span class="nv">Sphinx</span><span class="o">==</span>1.6.5
+sphinx-autobuild<span class="o">==</span>0.7.1</code></pre></figure>
+
+<p>Installing requirements is easy:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox GitHub]<span class="nv">$ </span>pip install -r requirements.txt</code></pre></figure>
+
+<p>Calling main requirements is enough to get application up and running, however for development other packages may be needed (i.e. debug toolbar). In development environment we should call:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox GitHub]<span class="nv">$ </span>pip install -r requirements/dev.txt</code></pre></figure>
+
+<p>… and it is exactly what we are going to call in <code class="highlighter-rouge">.travis.yml</code> file:</p>
+
+<p><strong>.travis.yml</strong></p>
+
+<figure class="highlight"><pre><code class="language-yml" data-lang="yml"><span class="s">language</span><span class="pi">:</span> <span class="s">python</span>
+
+<span class="s">python</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s2">"</span><span class="s">2.7"</span>
+    <span class="pi">-</span> <span class="s2">"</span><span class="s">3.5"</span>
+    <span class="pi">-</span> <span class="s2">"</span><span class="s">3.6"</span>
+
+<span class="c1"># install dependencies</span>
+<span class="s">install</span><span class="pi">:</span> 
+  <span class="s">-pip install -r requirements/dev.txt</span></code></pre></figure>
+
+<p>Now when all dependencies were installed successful pipeline should proceed to create code metrics, particularly test coverage and code consistency with PEP8.</p>
+
+<h2 id="test-coverage">Test coverage</h2>
+
+<p>Code coverage can be tested using <code class="highlighter-rouge">coverage</code> package. It is tricky to use, therefore some explanation might be useful. I am going to use traditional coverage tool to produce coverage report in html, which will be grabbed by codecov service (check: <a href="https://codecov.io">codecov.io</a>), which is integrated with GitHub. You can enable codecov for all repositories in your GitHub account.</p>
+
+<p>To get simple report is is enough to type:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox flask_and_travis_ci]<span class="nv">$coverage</span> report -m webapp.py 
+
+Name        Stmts   Miss  Cover   Missing
+-----------------------------------------
+webapp.py       7      1    86%   32</code></pre></figure>
+
+<p>But we want nice report. First we have to run our app using coverage, to allow it to gather execution data. However, we do not want to run our app (partially we do, but there is no test server prepared, so we will stick to the minimum plan, because it would launch dev server and stay like this). Instead we will run <code class="highlighter-rouge">test_webapp.py</code>, gather data, and create html report.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox flask_and_travis_ci]<span class="nv">$ </span>coverage run test_webapp.py <span class="o">&amp;&amp;</span> coverage html</code></pre></figure>
+
+<p>This should produce <code class="highlighter-rouge">htmlcov</code> directory in our app folder. The same will happen within Docker environment spined by TravisCI. We will install additional package codecov and run coverage. Upon success codecov will grab html or xml output and transform into concise and nice report, accessible on their site.</p>
+
+<p><strong>.travis.yml</strong></p>
+
+<figure class="highlight"><pre><code class="language-yml" data-lang="yml"><span class="c1"># install dependencies</span>
+<span class="s">install</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">pip install codecov</span>
+
+<span class="c1"># run scripts</span>
+<span class="s">script</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">coverage erase</span>
+  <span class="pi">-</span> <span class="s">coverage run test_webapp.py &amp;&amp; coverage html</span>
+
+<span class="s">after_success</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">codecov</span></code></pre></figure>
+
+<h2 id="pep8-consistency">PEP8 consistency</h2>
+
+<p>This is usually resolved on the level of IDE. Most modern Python IDE’s have style guide built in the code editor. Therefore, this step is usually skipped in many projects.</p>
+
+<blockquote>
+  <p>A Foolish Consistency is the Hobgoblin of Little Minds</p>
+</blockquote>
+
+<p>It is true what Rober Martin wrote: Codes are read much longer time than being written. This style guide exists for consistency. The most important thing is to know when you should break consistency, to keep software maintenance efficient. For example this PEP you should not break backward compatibility.  One of the modules allowing to test code style is <code class="highlighter-rouge">pylint</code>. Text report of pylint module may look like this:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox flask_and_travis_ci]<span class="nv">$ </span>pylint webapp.py
+No config file found, using default configuration
+<span class="k">*************</span> Module webapp
+I: 25, 0: Locally disabling C0103 <span class="o">(</span>locally-disabled<span class="o">)</span>
+C: 24, 0: Line too long <span class="o">(</span>119/80<span class="o">)</span> <span class="o">(</span>line-too-long<span class="o">)</span>
+
+
+Report
+<span class="o">======</span>
+8 statements analysed.
+
+Raw metrics
+-----------
+
++----------+-------+------+---------+-----------+
+|type      |number |%     |previous |difference |
++<span class="o">==========</span>+<span class="o">=======</span>+<span class="o">======</span>+<span class="o">=========</span>+<span class="o">===========</span>+
+|code      |24     |66.67 |24       |<span class="o">=</span>          |
++----------+-------+------+---------+-----------+
+|docstring |5      |13.89 |5        |<span class="o">=</span>          |
++----------+-------+------+---------+-----------+
+|comment   |1      |2.78  |1        |<span class="o">=</span>          |
++----------+-------+------+---------+-----------+
+|empty     |6      |16.67 |6        |<span class="o">=</span>          |
++----------+-------+------+---------+-----------+
+
+
+
+External dependencies
+---------------------
+::
+
+    flask 
+      <span class="se">\-</span>Flask <span class="o">(</span>webapp<span class="o">)</span>
+
+
+
+Messages by category
+--------------------
+
++-----------+-------+---------+-----------+
+|type       |number |previous |difference |
++<span class="o">===========</span>+<span class="o">=======</span>+<span class="o">=========</span>+<span class="o">===========</span>+
+|convention |1      |1        |<span class="o">=</span>          |
++-----------+-------+---------+-----------+
+|refactor   |0      |0        |<span class="o">=</span>          |
++-----------+-------+---------+-----------+
+|warning    |0      |0        |<span class="o">=</span>          |
++-----------+-------+---------+-----------+
+|error      |0      |0        |<span class="o">=</span>          |
++-----------+-------+---------+-----------+
+
+
+
+Messages
+--------
+
++-----------------+------------+
+|message id       |occurrences |
++<span class="o">=================</span>+<span class="o">============</span>+
+|locally-disabled |1           |
++-----------------+------------+
+|line-too-long    |1           |
++-----------------+------------+
+
+
+
+Global evaluation
+-----------------
+Your code has been rated at 8.75/10 <span class="o">(</span>previous run: 8.75/10, +0.00<span class="o">)</span>
+
+Statistics by <span class="nb">type</span>
+------------------
+
++---------+-------+-----------+-----------+------------+---------+
+|type     |number |old number |difference |%documented |%badname |
++<span class="o">=========</span>+<span class="o">=======</span>+<span class="o">===========</span>+<span class="o">===========</span>+<span class="o">============</span>+<span class="o">=========</span>+
+|module   |1      |1          |<span class="o">=</span>          |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|class    |0      |0          |<span class="o">=</span>          |0           |0        |
++---------+-------+-----------+-----------+------------+---------+
+|method   |0      |0          |<span class="o">=</span>          |0           |0        |
++---------+-------+-----------+-----------+------------+---------+
+|function |1      |1          |<span class="o">=</span>          |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+
+
+
+Duplication
+-----------
+
++-------------------------+------+---------+-----------+
+|                         |now   |previous |difference |
++<span class="o">=========================</span>+<span class="o">======</span>+<span class="o">=========</span>+<span class="o">===========</span>+
+|nb duplicated lines      |0     |0        |<span class="o">=</span>          |
++-------------------------+------+---------+-----------+
+|percent duplicated lines |0.000 |0.000    |<span class="o">=</span>          |
++-------------------------+------+---------+-----------+</code></pre></figure>
+
+<p>When we fix long comment line 24, we will get:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox flask_and_travis_ci]<span class="nv">$ </span>pylint webapp.py
+No config file found, using default configuration
+<span class="k">*************</span> Module webapp
+I: 26, 0: Locally disabling C0103 <span class="o">(</span>locally-disabled<span class="o">)</span>
+
+
+Report
+<span class="o">======</span>
+8 statements analysed.
+
+Statistics by <span class="nb">type</span>
+------------------
+
++---------+-------+-----------+-----------+------------+---------+
+|type     |number |old number |difference |%documented |%badname |
++<span class="o">=========</span>+<span class="o">=======</span>+<span class="o">===========</span>+<span class="o">===========</span>+<span class="o">============</span>+<span class="o">=========</span>+
+|module   |1      |1          |<span class="o">=</span>          |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|class    |0      |0          |<span class="o">=</span>          |0           |0        |
++---------+-------+-----------+-----------+------------+---------+
+|method   |0      |0          |<span class="o">=</span>          |0           |0        |
++---------+-------+-----------+-----------+------------+---------+
+|function |1      |1          |<span class="o">=</span>          |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+
+
+
+Raw metrics
+-----------
+
++----------+-------+------+---------+-----------+
+|type      |number |%     |previous |difference |
++<span class="o">==========</span>+<span class="o">=======</span>+<span class="o">======</span>+<span class="o">=========</span>+<span class="o">===========</span>+
+|code      |24     |64.86 |24       |<span class="o">=</span>          |
++----------+-------+------+---------+-----------+
+|docstring |5      |13.51 |5        |<span class="o">=</span>          |
++----------+-------+------+---------+-----------+
+|comment   |2      |5.41  |1        |+1.00      |
++----------+-------+------+---------+-----------+
+|empty     |6      |16.22 |6        |<span class="o">=</span>          |
++----------+-------+------+---------+-----------+
+
+
+
+Messages by category
+--------------------
+
++-----------+-------+---------+-----------+
+|type       |number |previous |difference |
++<span class="o">===========</span>+<span class="o">=======</span>+<span class="o">=========</span>+<span class="o">===========</span>+
+|convention |0      |1        |-1.00      |
++-----------+-------+---------+-----------+
+|refactor   |0      |0        |<span class="o">=</span>          |
++-----------+-------+---------+-----------+
+|warning    |0      |0        |<span class="o">=</span>          |
++-----------+-------+---------+-----------+
+|error      |0      |0        |<span class="o">=</span>          |
++-----------+-------+---------+-----------+
+
+Global evaluation
+-----------------
+Your code has been rated at 10.00/10 <span class="o">(</span>previous run: 8.75/10, +1.25<span class="o">)</span></code></pre></figure>
+
+<p>And this is exactly what goes to the CI/CD system:</p>
+
+<p><strong>.travis.yml</strong></p>
+
+<figure class="highlight"><pre><code class="language-yml" data-lang="yml"><span class="c1"># check style</span>
+<span class="s">script</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">pylint --output-format=text webapp.py</span></code></pre></figure>
+
+<p>Sometimes it is necessary to tweak pylint (especially in case of flask or python apps), to stop failing standard naming convention i.e. <code class="highlighter-rouge">app = Flask(__name__)</code>. For application name app is just variable holding Flask class object. For pylin it is a global contant (visible in entire module), therefore should follow constants convention naming (capital letters, etc). We can tweak pylint to indicate variables we want to ignore. Or change its general behaviour changing regex, which is used to discover constants (check <a href="https://pylint.readthedocs.io/en/latest/tutorial.html">Pylint documentation</a>).</p>
+
+<h2 id="documentation">Documentation</h2>
+
+<p>Project’s documentation is placed in <code class="highlighter-rouge">docs/</code> folder and is based on excellent Python <code class="highlighter-rouge">Sphinx</code> module. Hearth of the documentation is <code class="highlighter-rouge">conf.py</code> file, where all extensions and static pages generator properties are configured.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox flask_and_travis_ci]<span class="nv">$ </span>tree .
+.
+|
+|-- docs/
+|   |-- make.bat
+|   |-- Makefile
+|   <span class="sb">`</span>-- <span class="nb">source</span>/
+|       |-- _static/
+|       |-- _templates/
+|       |-- conf.py
+|       <span class="sb">`</span>-- index.rst</code></pre></figure>
+
+<p>Creating basic documentation stub out of the box.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox docs]<span class="nv">$ </span>sphinx-quickstart
+Welcome to the Sphinx 1.6.3 quickstart utility.
+
+Please enter values <span class="k">for </span>the following settings <span class="o">(</span>just press Enter to
+accept a default value, <span class="k">if </span>one is given <span class="k">in </span>brackets<span class="o">)</span>.
+
+...
+Creating file ./source/conf.py.
+Creating file ./source/index.rst.
+Creating file ./Makefile.
+Creating file ./make.bat.
+
+Finished: An initial directory structure has been created.
+
+You should now populate your master file ./source/index.rst and create other documentation
+<span class="nb">source </span>files. Use the Makefile to build the docs, like so:
+   make builder
+where <span class="s2">"builder"</span> is one of the supported builders, e.g. html, latex or link check.</code></pre></figure>
+
+<p>Following quick-start help, lets build basic html documentation:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox docs]<span class="nv">$ </span>make html
+
+Running Sphinx v1.6.5
+loading pickled environment... <span class="k">done
+</span>building <span class="o">[</span>mo]: targets <span class="k">for </span>0 po files that are out of date
+building <span class="o">[</span>html]: targets <span class="k">for </span>0 <span class="nb">source </span>files that are out of date
+updating environment: 0 added, 0 changed, 0 removed
+looking <span class="k">for </span>now-outdated files... none found
+no targets are out of date.
+build succeeded.
+
+Build finished. The HTML pages are <span class="k">in </span>build/html.</code></pre></figure>
+
+<p>During development, we will need to build document frequently. Autobuild tool will manage this task and will run local server, which will rebuild sphinx documentation, when it detects changes in <code class="highlighter-rouge">.rst</code> files. To start server type:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox docs]<span class="nv">$ </span>sphinx-autobuild <span class="nb">source </span>build<span class="se">\h</span>tml
+
++--------- manually triggered build ---------------------------------------------
+| Running Sphinx v1.6.5
+| loading pickled environment... not yet created
+| building <span class="o">[</span>mo]: targets <span class="k">for </span>0 po files that are out of date
+| building <span class="o">[</span>html]: targets <span class="k">for </span>1 <span class="nb">source </span>files that are out of date
+| updating environment: 1 added, 0 changed, 0 removed
+| reading sources... <span class="o">[</span>100%] index
+|
+| looking <span class="k">for </span>now-outdated files... none found
+| pickling environment... <span class="k">done</span>
+| checking consistency... <span class="k">done</span>
+| preparing documents... <span class="k">done</span>
+| writing output... <span class="o">[</span>100%] index
+|
+| generating indices... genindex
+| writing additional pages... search
+| copying static files... <span class="k">done</span>
+| copying extra files... <span class="k">done</span>
+| dumping search index <span class="k">in </span>English <span class="o">(</span>code: en<span class="o">)</span> ... <span class="k">done</span>
+| dumping object inventory... <span class="k">done</span>
+| build succeeded.
++--------------------------------------------------------------------------------
+
+<span class="o">[</span>I 171214 23:05:00 server:283] Serving on http://127.0.0.1:8000
+<span class="o">[</span>I 171214 23:05:00 handlers:60] Start watching changes
+<span class="o">[</span>I 171214 23:05:00 handlers:62] Start detecting changes</code></pre></figure>
+
+<p>Now we should be able to check docs page in the browser under <a href="http://127.0.0.1:8000">http://127.0.0.1:8000</a> address.</p>
+
+<p><img src="/assets/2017-05-20/docs.png" alt="docs" /></p>
+
+<p>Additionally, we want to keep the latest documentation or even publish it online. But we do not need Travis do it. GitHub repository can be connected to the <a href="http://travis-python-test.readthedocs.io/en/latest/">ReadTheDocs</a> service, which will deploy our documentation on its servers whenever repo has been changed. No need to update <code class="highlighter-rouge">.travis.yml</code>. The only thing, that needs to be done is to connect ReadTheDocs webhook with GitHub repository.</p>
+
+<p><img src="/assets/2017-05-20/rtd-connect.png" alt="rtd-conn" /></p>
+
+<h2 id="bdd-development">BDD development</h2>
+
+<p>There are two types of tests I would like to put in this project prototype:</p>
+
+<ul>
+  <li>unit tests</li>
+  <li>acceptance tests</li>
+</ul>
+
+<p>Unit tests are bound to specific module, class or method/function, while acceptance tests are derived from „User Stories”. Unit tests can be programmed using python’s STL module or very popular <code class="highlighter-rouge">pytest</code>. Acceptance tests use more natural language called <code class="highlighter-rouge">Gherkin</code> and python library <code class="highlighter-rouge">behave</code>. Agile development requires at least three steps:</p>
+
+<ol>
+  <li>Write simple acceptance test</li>
+  <li>Make acceptance test pass (using TDD in the inner loop)</li>
+  <li>Refactor acceptance test</li>
+</ol>
+
+<p>Second step in our case is usually series of unit tests for all modules taking part in acceptance test from top module to most nested one (so called “outside-in” approach). Behave enforces specific folder and file structure with some flexibility, but main components need to be set in our app. Typical structure of acceptance tests with behave is shown below:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox flask_and_travis_ci]<span class="nv">$ </span>tree .
+.
+|
+|-- features/
+|   |-- environment.py
+|   |-- home.feature
+|   <span class="sb">`</span>-- steps/
+|       <span class="sb">`</span>-- home_steps.py
+|
+<span class="sb">`</span>-- test_app.py</code></pre></figure>
+
+<h3 id="acceptance-tests">Acceptance tests</h3>
+
+<p>Another configuration file is located in <code class="highlighter-rouge">features</code> folder and exposes web application context to the test environment.</p>
+
+<p><strong>/features/environment.py</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">webtest</span> <span class="kn">import</span> <span class="n">TestApp</span>
+
+<span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">app</span>
+
+<span class="k">def</span> <span class="nf">before_scenario</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">scenario</span><span class="p">):</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">TestApp</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">after_scenario</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">scenario</span><span class="p">):</span>
+    <span class="k">del</span> <span class="n">context</span><span class="o">.</span><span class="n">client</span></code></pre></figure>
+
+<p>Basic element of acceptance test written in Gherkin. Each scenario is then translated to python code in <code class="highlighter-rouge">steps</code> folder.</p>
+
+<p><strong>features/home.feature</strong></p>
+
+<figure class="highlight"><pre><code class="language-gherkin" data-lang="gherkin"><span class="kd">Feature</span><span class="p">:</span> Index page display
+
+    <span class="kn">Scenario</span><span class="p">:</span> Navigation to Home Page
+        <span class="nf">When</span> I navigate to Home Page
+        <span class="nf">Then</span> Home Page should be displayed</code></pre></figure>
+
+<p>Execution of each step from <code class="highlighter-rouge">features</code>:</p>
+
+<p><strong>features/steps/home_steps.py</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">behave</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="nd">@when</span><span class="p">(</span><span class="s">u'I navigate to Home Page'</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">step_impl</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+    <span class="n">ctx</span><span class="o">.</span><span class="n">resp</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">'/'</span><span class="p">)</span>
+
+<span class="nd">@then</span><span class="p">(</span><span class="s">u'{text} should be displayed'</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">step_impl</span><span class="p">(</span><span class="n">ctx</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">ctx</span><span class="o">.</span><span class="n">resp</span></code></pre></figure>
+
+<p>We have test, which fails. Now it is time to write simple unit test for our flask app.</p>
+
+<h3 id="unit-tests">Unit tests</h3>
+
+<p>Simple unit tests to check <code class="highlighter-rouge">home()</code> function. We will mock Flask app request, which returns whatever <code class="highlighter-rouge">home</code> function return when <code class="highlighter-rouge">/</code> view is called. There is a difference between Python 2 and Python 3 in using mock module. In Python 3 mock is already part of STL’s <code class="highlighter-rouge">unittest</code> module, while in Python 2 it is a separate module called <code class="highlighter-rouge">mock</code>.</p>
+
+<p><strong>test_app.py</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">import</span> <span class="nn">webapp</span>
+
+
+<span class="k">class</span> <span class="nc">HomeViewTest</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">webapp</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">test_client</span><span class="p">()</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">testing</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="k">def</span> <span class="nf">test_home_page</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">home</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">'/'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="s">'Home Page'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">home</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span></code></pre></figure>
+
+<p>Test fails. Lets add unit tests and acceptance test in <code class="highlighter-rouge">.travis.yml</code></p>
+
+<p><strong>.travis.aml</strong></p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">script</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">python -m unittest discover</span>
+    <span class="pi">-</span> <span class="s">behave</span></code></pre></figure>
+
+<h2 id="application">Application</h2>
+
+<p>Lets place basic Flask application in <code class="highlighter-rouge">webapp.py</code>:</p>
+
+<p><strong>app.py</strong></p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+
+<span class="n">HTML</span> <span class="o">=</span> <span class="s">"""
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en" class="full-height"&gt;
+    &lt;head&gt;
+        &lt;title&gt;Home | TravisCI&lt;/title&gt;
+        &lt;meta charset="utf-8"&gt;
+        &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+        &lt;meta http-equiv="X-UA-Compatible" content="IE=edge"&gt;
+        &lt;meta name="description" content="Social media analytic tool"&gt;
+        &lt;meta name="author" content="Michal Dyzma"&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;Home Page&lt;/h1&gt;
+
+    &lt;/body&gt;
+&lt;/html&gt;
+"""</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">'/'</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">home</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">HTML</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span></code></pre></figure>
+
+<p>Running tests now shows all is green and good to go.</p>
+<h2 id="heroku-deployment">Heroku deployment</h2>
+
+<p>To deploy project to the web we need nice server and domain. Heroku provides nice hosting for python apps. Free to play with (5 applications), test and check how our application might work in real life.</p>
+
+<p>In order to do that we need some Heroku infrastructure. In fact, the only necessary element is <code class="highlighter-rouge">Procfile</code>, instructing Heroku machinery what to launch and how.</p>
+
+<p>Following our app structure we can set following Procfile:</p>
+
+<p><strong>Procfile</strong></p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">web: gunicorn webapp:app</code></pre></figure>
+
+<p>Also deployment may be automated as well. Let’s create Heroku app first.</p>
+
+<p>Apps can be created via Heroku web interface or command line tool <a href="https://toolbelt.heroku.com">HerokuCLI</a>. When it is installed type:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox flask_and_travis_ci]<span class="nv">$ </span>heroku --version
+
+heroku-cli/6.14.43-73d5876 <span class="o">(</span>linux-x64<span class="o">)</span> node-v9.2.0</code></pre></figure>
+
+<p>It seems ok. Now lets login and create app:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">Enter your Heroku credentials:
+Email: mdyzma@gmail.com
+Password: <span class="k">************</span>
+Two-factor code: <span class="k">******</span>
+Logged <span class="k">in </span>as mdyzma@gmail.com
+<span class="o">[</span>mdyzma@devbox flask_and_travis_ci]<span class="nv">$ </span>heroku create --region eu --buildpack heroku/python flask-travis-ci
+Creating ⬢ flask-travis-ci... <span class="k">done</span>, region is eu
+Setting buildpack to heroku/python... <span class="k">done
+</span>https://flask-travis-ci.herokuapp.com/ | https://git.heroku.com/flask-travis-ci.git</code></pre></figure>
+
+<p>Now lets copy heroku api-key and add it to the <code class="highlighter-rouge">.travis.yml</code> using ruby travis gem, which will nicely secure it for us.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>mdyzma@devbox flask_and_travis_ci]<span class="nv">$ </span>gem install travis
+...
+14 gems installed
+<span class="o">[</span>mdyzma@devbox flask_and_travis_ci]<span class="nv">$ </span>travis encrypt <span class="k">$(</span>heroku auth:token<span class="k">)</span> --add deploy.api_key
+Detected repository as mdyzma/travis_python_test, is this correct? |yes|</code></pre></figure>
+
+<p>… this will add api key hash to the <code class="highlighter-rouge">.travis.yml</code></p>
+
+<p><strong>.travis.yml</strong></p>
+
+<figure class="highlight"><pre><code class="language-yml" data-lang="yml"><span class="c1"># Deployment to Heroku</span>
+<span class="s">branches</span><span class="pi">:</span>
+  <span class="s">only</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">master</span>
+
+<span class="s">deploy</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">provider</span><span class="pi">:</span> <span class="s">heroku</span>
+    <span class="s">api_key</span><span class="pi">:</span>
+      <span class="s">secure</span><span class="pi">:</span> <span class="s">mSo7Q2TGXZou3GwctrEX5MBW1CrcNDeocOsau2QT5aqvVb8LUcgL8NqytDiOhWOBVX8u3cxn0nSME+j/Edz8Zxcw21Ls4kpZJu8VsJkn8oF/rPflBWIrW/6kw3hMucfec82eUxCOub2juXMTMbCTspaiWAAnpvsaptVmNhXIkvic3OXxRKKg50he9dpRbqRtyPlgR8nyXFYKJCRedzSwufpQWJ8t/pMy+epp06A6Z0CjbqOByYFfpxx7Vkbzj/L3+j4degED1SsmMmL3OQJHp00PJAcKYNEgPBXpgvRcppY/pS9YH/UnDT5nulU/1+K/IiBP/8/SRNj8MXdzlSAXqFBevEbCKyJRfWLMZ3tflbhdm3/0OeSN/3ncc2ypuwXHE5K/Td/P5NuPLmD5vH+di53Hxo/RHmltCxAKturPjrM6uS0bB24KctyztLERDudZkIBYAAZBZJ2t7alWeMY+cgPkfzs9fw0w6+ECphesdI2ZovE5pXXKEqX9Z83fgkAlw1d1iPpfOrz28C4QT12gsopYNFzW76lKKAGRtEUH07bu/R8IB4xohgtTf9a57mYcMYDcYCpJtMkNbqIEgYRDSS9nKdnL6pLNoJPGxsLrLarAYWMA1k7j5UaPBMweSuOj7Haowf84eH4tc/W4CRKMBvJw/HTDIxXdJWEaicpfljI=</span>
+    <span class="s">app</span><span class="pi">:</span> <span class="s">flask-travis-ci</span></code></pre></figure>
+
+<p>All done. Application is alive and served on Heroku:</p>
+
+<p><img src="/assets/2017-05-20/app-deped.png" alt="app-deployed" /></p>
+
+<p>Temporary link to the working application: <a href="https://flask-travis-ci.herokuapp.com">https://flask-travis-ci.herokuapp.com</a></p>
+
+<h2 id="summary">Summary</h2>
+
+<p>We have created Flask application with automated pipeline spanning most important aspects of agile software development. From source control, to automatic code metrics, testing and deployment.</p>
+
+<p>Finally projects  <code class="highlighter-rouge">.travis.yml</code> file should look like this:</p>
+
+<p><strong>.travis.yml</strong></p>
+
+<figure class="highlight"><pre><code class="language-yml" data-lang="yml"><span class="s">language</span><span class="pi">:</span> <span class="s">python</span>
+
+<span class="s">python</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">2.7</span>
+  <span class="pi">-</span> <span class="s">3.5</span>
+  <span class="pi">-</span> <span class="s">3.6</span>
+
+<span class="s">install</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">pip install -r requirements/dev.txt</span>
+  <span class="pi">-</span> <span class="s">pip install codecov</span>
+
+<span class="s">script</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">python -m unittest discover</span>
+  <span class="pi">-</span> <span class="s">behave</span>
+  <span class="pi">-</span> <span class="s">coverage erase</span>
+  <span class="pi">-</span> <span class="s">coverage run test_webapp.py &amp;&amp; coverage html</span>
+  <span class="pi">-</span> <span class="s">pylint --output-format=text webapp.py</span>
+
+<span class="s">after_success</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">codecov</span>
+
+<span class="s">deploy</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">provider</span><span class="pi">:</span> <span class="s">heroku</span>
+    <span class="s">api_key</span><span class="pi">:</span>
+      <span class="s">secure</span><span class="pi">:</span> <span class="s">mSo7Q2TGXZou3GwctrEX5MBW1CrcNDeocOsau2QT5aqvVb8LUcgL8NqytDiOhWOBVX8u3cxn0nSME+j/Edz8Zxcw21Ls4kpZJu8VsJkn8oF/rPflBWIrW/6kw3hMucfec82eUxCOub2juXMTMbCTspaiWAAnpvsaptVmNhXIkvic3OXxRKKg50he9dpRbqRtyPlgR8nyXFYKJCRedzSwufpQWJ8t/pMy+epp06A6Z0CjbqOByYFfpxx7Vkbzj/L3+j4degED1SsmMmL3OQJHp00PJAcKYNEgPBXpgvRcppY/pS9YH/UnDT5nulU/1+K/IiBP/8/SRNj8MXdzlSAXqFBevEbCKyJRfWLMZ3tflbhdm3/0OeSN/3ncc2ypuwXHE5K/Td/P5NuPLmD5vH+di53Hxo/RHmltCxAKturPjrM6uS0bB24KctyztLERDudZkIBYAAZBZJ2t7alWeMY+cgPkfzs9fw0w6+ECphesdI2ZovE5pXXKEqX9Z83fgkAlw1d1iPpfOrz28C4QT12gsopYNFzW76lKKAGRtEUH07bu/R8IB4xohgtTf9a57mYcMYDcYCpJtMkNbqIEgYRDSS9nKdnL6pLNoJPGxsLrLarAYWMA1k7j5UaPBMweSuOj7Haowf84eH4tc/W4CRKMBvJw/HTDIxXdJWEaicpfljI=</span>
+    <span class="s">app</span><span class="pi">:</span> <span class="s">flask-travis-ci</span></code></pre></figure>
+
+<p><br /></p>
+<div class="alert alert-info" role="alert" style="text-align: justify; vertical-align:middle;">
+Source code from the article can be downloaded from this <a href="https://github.com/mdyzma/travis_python_test">GitHub repository</a>
+</div>
+
+<!-- Images -->
+
+
+  </div>
+<div class="container">
+    <div class="row ">
+        <div class="col-xs-2"></div>
+        <div class="col-xs-8">
+
+        <!-- Twitter -->
+        <a href="https://twitter.com/share" class="twitter-share-button" data-via="MichalDyzma">Tweet</a>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+        <!-- Google + -->
+        <div class="g-plus" data-action="share" data-annotation="bubble"></div>
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+        <!-- Facebook -->
+        <div class="fb-share-button" data-href="http://localhost:4000/2017/05/20/flask-and-travis-ci/" data-layout="button_count" data-size="small" data-mobile-iframe="true" style="position: relative; top: -8px;"></div>
+
+
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/pl_PL/sdk.js#xfbml=1&version=v2.9&appId=422251294815916";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+
+    </div>
+    </div>
+    <div class="col-xs-2"></div>
+</div>
+
+
+<div id="disqus_thread"></div>
+    <script type="text/javascript">
+
+        var disqus_config = function () {
+            this.page.url = "http://localhost:4000/2017/05/20/flask-and-travis-ci/";
+            this.page.identifier = "/2017/05/20/flask-and-travis-ci";
+        };
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'md-blog';
+        var disqus_developer = 1; // Comment out when the site is live
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var d = document, s = d.createElement('script');
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript"></noscript>
+
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy; Michal Dyzma - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://localhost:4000/feed.xml">RSS</a>
+
+
+<!-- mathjax -->
+
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
