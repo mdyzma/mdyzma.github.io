@@ -1,7 +1,7 @@
 ---
 layout:     post
 author:     Michal Dyzma
-title:      Naive Bayes classifier for Iris Data Set
+title:      Machine Learning Basics: Naive Bayes classifier
 date:       2017-06-12 14:53:32 +0200
 comments:   true
 mathjakx:   false

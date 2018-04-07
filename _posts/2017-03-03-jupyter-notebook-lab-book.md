@@ -13,7 +13,7 @@ Data analysis using **Jupyter Notebook**. Natural sciences more and more rely on
 
 
 <br>
-{% include note.html content="Notebooks and related data files from this article can be downloaded from this [GitHub repository](https://github.com/mdyzma/blog-src-files/tree/master/2017-03-03-jupyter-notebook-lab-book)" %}
+{% include note.html content="Notebooks and related data files from this article can be downloaded from this [**GitHub repository**](https://github.com/mdyzma/blog-src-files/tree/master/2017-03-03-jupyter-notebook-lab-book)" %}
 
 # Install Anaconda
 
@@ -523,7 +523,7 @@ That is why only points fitted within x data range make sense and rest is irrele
 
 -----
 
-Example Jupyter notebook can be downloaded from [GitHub][github].
+Example Jupyter notebook can be downloaded from [**GitHub**][github].
 
 -----
 

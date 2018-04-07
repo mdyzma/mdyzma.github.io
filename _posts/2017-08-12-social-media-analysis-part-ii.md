@@ -13,7 +13,7 @@ keywords:   python, twitter, Flask, Jinja2, MongoDB
 Flask application presenting social media accounts analysis in form of dashboard. It transforms various data sources into clear and concise report. __Part II__ describes creation of landing page and dashboard, including blueprints pattern, jinja templates, login/register mechanism and data storage in development and production.
 
 <br>
-{% include note.html content="Source files for this article can be downloaded from this [GitHub repository](https://github.com/mdyzma/md_analytics/releases/tag/v0.0.4)" %}
+{% include note.html content="Source files for this article can be downloaded from this [**GitHub repository**](https://github.com/mdyzma/md_analytics/releases/tag/v0.0.4)" %}
 
 -----
 

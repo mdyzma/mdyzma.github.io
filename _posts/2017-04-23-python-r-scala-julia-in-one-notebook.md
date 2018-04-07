@@ -674,9 +674,16 @@ Available kernels:
   python3      /home/mdyzma/anaconda3/share/jupyter/kernels/python3
 {% endhighlight %}
 
-## Examples
+Unfortunately those kernels are not connected. In current configuration only one kernel is accessible. Jupyter supports nearly 100 scripting languages, but each notebook is allowed to use only single kernel. Moving data between kernels is not possible. This is why notebooks are usually used sequentially. It means, that changing kernel during computation may not be possible for all kernels. Python kernel is able to use ipython magic functions to switch kernels from cell to cell, Julia has very useful packages - `pycall` and `rcall`, which allow to execute native code in this languages. Only R kernel has no connections outside, and it's usage as a base and execute other kernel is impossible without complicated serialization and deserialization system.
 
-Usually notebooks are used sequentially. It means, that changing kernel during ccomputation may not be possible for all kernels. Python kernel is able to use ipython magic functions to switch kernels from cell to cell, Julia has very usefull packages - pycall and rcall, which allow to execute native code in this languages. Only R kernel has no connections outside, and it's usage with other kernel is impossible without complicated serialization and deserialization system.
+To sum up, it is possible to use other kernels in python and Julia based notebooks. But this functionality is limited.
+
+## One to bind them all
+
+There is initiative of **Vatlab** called [SoS notebook][vatlab]. A kernel capable of translating other kernels data structures and functions to perform truly multi-language analysis in one notebook document.
+
+<iframe width="560" height="420" src=\"https://youtu.be/xrwhNMRTBp4\"></iframe>
+
 ## Summary
 
 Now we have versatile, multi-language prototyping environment in the browser.
@@ -703,6 +710,7 @@ If you struggle between using python Julia, Scala or R, don't! Use all of them! 
 [pep373]:     https://www.python.org/dev/peps/pep-0373/
 [miniconda]:  https://conda.io/miniconda.html
 [javainstaller]: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+[vatlab]:     https://vatlab.github.io/sos-docs/ 
 
 <!-- Images -->
 

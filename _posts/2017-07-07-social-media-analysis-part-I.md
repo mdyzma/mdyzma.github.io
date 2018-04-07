@@ -13,7 +13,7 @@ keywords:   python, social-media, Flask, TravisCI, Heroku
 Flask application presenting social media accounts analysis in form of dashboard. It transforms various data sources into clear and concise report. __This part__ describes backbone of the application, which is basic Flask configuration, Travis Continuous Integration (with tests) and Heroku Continuous Deployment to multiple environments with a single button. It is under version control, tested and CI/CD ready.
 
 <br>
-{% include note.html content="Source files for this article can be downloaded from this [GitHub repository](https://github.com/mdyzma/md_analytics/releases/tag/v0.0.3)" %}
+{% include note.html content="Source files for this article can be downloaded from this [**GitHub repository**](https://github.com/mdyzma/md_analytics/releases/tag/v0.0.3)" %}
 
 -----
 

@@ -13,7 +13,7 @@ TravisCI is a very nice service, which allows to easily build your own  CI/CD pl
 
 
 <br>
-{% include note.html content="Source code from the article can be downloaded from this [GitHub repository](https://github.com/mdyzma/travis_python_test)" %}
+{% include note.html content="Source code from the article can be downloaded from this [**GitHub repository**](https://github.com/mdyzma/travis_python_test)" %}
 `
 
 ## TravisCI & GitHub integration
@@ -754,7 +754,7 @@ deploy:
 {% endhighlight %}
 
 <br>
-{% include note.html content="Source code from the article can be downloaded from this [GitHub repository](https://github.com/mdyzma/travis_python_test)" %}
+{% include note.html content="Source code from the article can be downloaded from this [**GitHub repository**](https://github.com/mdyzma/travis_python_test)" %}
 
 
 <!-- Images -->
