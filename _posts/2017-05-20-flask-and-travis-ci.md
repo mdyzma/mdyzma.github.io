@@ -720,7 +720,7 @@ Temporary link to the working application: [https://flask-travis-ci.herokuapp.co
 
 We have created Flask application with automated pipeline spanning most important aspects of agile software development. From source control, to automatic code metrics, testing and deployment.
 
-Finally projects  `.travis.yml` file should look like this:
+Finally projects `.travis.yml` file should look like this:
 
 __.travis.yml__
 {% highlight yml %}
