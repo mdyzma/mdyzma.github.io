@@ -18,14 +18,14 @@ Jenkins is an open source automation server. It can run any task with sophistica
 
 >It works on my machine!
 
-Hom many times did you hear this sentence? Whenever I hear it, it is clear to me, that project has no Continuous Integration implemented. It is built and tested manually (at best) and it is always a bad idea.
+How many times did you hear this sentence? Whenever I hear it, it is clear to me, that project has no Continuous Integration implemented. It is built and tested manually (at best) and it is always a bad idea.
 
 Continuous integration is very powerful practice used during software development. And helps save tons of money. Bugs caught early cost ten times less, compared to the bugs spotted at production. Jenkins is considered one of the best DevOps tool, which maximizes chance to produce bug free software, which results in high quality software. It allows to quickly take the code, build it (step omitted in case of python packages, which usually do not require compilation step) on a frequent schedule and deploy into designated, representative environment for testing. Without the ability to automate code deployment, you are left with an enormous piece of manual, repetitive tasks in deployment pipeline:
 
 1. Get current software version from source control server
 2. Create test environment
 3. Install dependencies
-4. Test software (unit and acceptance tests)
+4. Test software (unit and integration tests)
 5. Deploy
 
 This is typical pipeline in most IT projects. Jenkins can help to automate this work. And not only automate, but to establish common baseline for all developers working in the project. What is baseline? It is entire projects configuration and dependencies i.e. third party packages used in computation, environmental variables and other settings characteristic for the project.
@@ -200,7 +200,7 @@ Traditionally our basic pipeline will comprise of the following elements:
     - errors and style check
 3. Testing pulled source code
     - unit tests
-    - acceptance tests
+    - integration tests
 4. Building proper python distribution package (`.whl`)
 5. Deploying to PyPI
 
@@ -491,9 +491,9 @@ We can also check code errors and style violations. Unfortunately `pylint` has t
 Two types of testing are essential:
 
 1. Unit tests (`pytest` or `unittest`)
-1. Acceptance tests (`behave`)
+1. Integration tests (`behave`)
 
-In case of more complex software integration tests may be added to the list. According to agile "outside-in" approach first we should write acceptance tests (more general test), then precise unit tests (classic TDD). Test results will be stored for comparison. JUnit plugin gives quick and easy access to the tests.
+In case of more complex software integration tests may be added to the list. According to agile "outside-in" approach first we should write integration tests (more general test), then precise unit tests (classic TDD). Test results will be stored for comparison. JUnit plugin gives quick and easy access to the tests.
 
 ### Unit tests
 
@@ -521,9 +521,9 @@ Tests report is accessible on special **Tests** tab:
 
 ![tests-tab][tests_tab]
 
-### Acceptance tests
+### Integration tests
 
-Behave package is able to return results of acceptance tests in JSON format, however this format is not compatible with any Jenkins cucumber repoprt plugins. There is a workaround to this problem. Actually two. 
+Behave package is able to return results of integration tests in JSON format, however this format is not compatible with any Jenkins cucumber repoprt plugins. There is a workaround to this problem. Actually two. 
 
 1. Use custom json formatter (there is gist [published on GitHub](https://gist.github.com/fredizzimo/b92adf1d4596c0c1da1b05cc9899574b) with formatter compatible with cuccumber plugin style)). How to use user-specific formatters with behave, please checks [behave documentation](http://behave.readthedocs.io/en/latest/formatters.html#user-defined-formatters).
 2. Use [`behave2cucumber` package](https://github.com/behalf-oss/behave2cucumber), which adds another dependency to te project. Also, last post post in [this](https://github.com/behave/behave/issues/267) discussions suggests, that `behave2cucumber` fails in some cases.
@@ -532,15 +532,15 @@ Behave package is able to return results of acceptance tests in JSON format, how
 __first option__
 {% highlight groovy %}
 ...
-        stage('Acceptance tests') {
+        stage('integration tests') {
             steps {
                 sh  ''' source activate ${BUILD_TAG}
-                        behave -f=formatters.cucumber_json:PrettyCucumberJSONFormatter -o ./reports/acceptance.json
+                        behave -f=formatters.cucumber_json:PrettyCucumberJSONFormatter -o ./reports/integration.json
                     '''
             }
             post {
                 always {
-                    cucumber (fileIncludePattern: '**/acceptance*.json',
+                    cucumber (fileIncludePattern: '**/integration*.json',
                               jsonReportDirectory: './reports/',
                               parallelTesting: true,
                               sortingMethod: 'ALPHABETICAL')
@@ -555,16 +555,16 @@ __first option__
 __second option__
 {% highlight groovy %}
 ...
-        stage('Acceptance tests') {
+        stage('integration tests') {
             steps {
                 sh  ''' source activate ${BUILD_TAG}
-                        behave -f=json.pretty -o ./reports/acceptance.json
-                        python -m behave2cucumber ./reports/acceptance.json
+                        behave -f=json.pretty -o ./reports/integration.json
+                        python -m behave2cucumber ./reports/integration.json
                     '''
             }
             post {
                 always {
-                    cucumber (fileIncludePattern: '**/acceptance*.json',
+                    cucumber (fileIncludePattern: '**/integration*.json',
                               jsonReportDirectory: './reports/',
                               parallelTesting: true,
                               sortingMethod: 'ALPHABETICAL')
@@ -716,10 +716,10 @@ pipeline {
             }
         }
 
-        stage('Acceptance tests') {
+        stage('Integration tests') {
             steps {
                 sh  ''' source activate ${BUILD_TAG}
-                        behave -f=formatters.cucumber_json:PrettyCucumberJSONFormatter -o ./reports/acceptance.json
+                        behave -f=formatters.cucumber_json:PrettyCucumberJSONFormatter -o ./reports/integration.json
                     '''
             }
             post {
